@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otomasyon", "Otomasyon.csproj", "{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "M-CLK_Otomation_Setup", "..\M-CLK_Otomation_Setup\M-CLK_Otomation_Setup.vdproj", "{C113BEB7-6614-4E2B-A765-2C1F5B3A8DC4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CD_ROM|Any CPU = CD_ROM|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		DVD-5|Any CPU = DVD-5|Any CPU
+		Release|Any CPU = Release|Any CPU
+		SingleImage|Any CPU = SingleImage|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{FE432FFB-F2FE-4F4D-B3B0-C7E70BF3808B}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{C113BEB7-6614-4E2B-A765-2C1F5B3A8DC4}.CD_ROM|Any CPU.ActiveCfg = Release
+		{C113BEB7-6614-4E2B-A765-2C1F5B3A8DC4}.Debug|Any CPU.ActiveCfg = Debug
+		{C113BEB7-6614-4E2B-A765-2C1F5B3A8DC4}.DVD-5|Any CPU.ActiveCfg = Debug
+		{C113BEB7-6614-4E2B-A765-2C1F5B3A8DC4}.Release|Any CPU.ActiveCfg = Release
+		{C113BEB7-6614-4E2B-A765-2C1F5B3A8DC4}.SingleImage|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B692D2F3-D938-4C39-BEEE-8A9753E40A75}
+	EndGlobalSection
+EndGlobal
