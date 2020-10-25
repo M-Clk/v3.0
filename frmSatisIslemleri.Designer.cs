@@ -489,7 +489,7 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.001995F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.09503F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.88302F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 263F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 267F));
             this.tableLayoutPanel2.Controls.Add(this.lblTire, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.cbSecenek, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.dtBaslangicTarihi, 1, 0);
@@ -510,9 +510,9 @@
             this.lblTire.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTire.AutoSize = true;
             this.lblTire.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.lblTire.Location = new System.Drawing.Point(433, 4);
+            this.lblTire.Location = new System.Drawing.Point(431, 4);
             this.lblTire.Name = "lblTire";
-            this.lblTire.Size = new System.Drawing.Size(37, 25);
+            this.lblTire.Size = new System.Drawing.Size(36, 25);
             this.lblTire.TabIndex = 3;
             this.lblTire.Text = "-";
             this.lblTire.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -539,7 +539,7 @@
             // dtBaslangicTarihi
             // 
             this.dtBaslangicTarihi.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.dtBaslangicTarihi.Location = new System.Drawing.Point(277, 7);
+            this.dtBaslangicTarihi.Location = new System.Drawing.Point(275, 7);
             this.dtBaslangicTarihi.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.dtBaslangicTarihi.Name = "dtBaslangicTarihi";
             this.dtBaslangicTarihi.Size = new System.Drawing.Size(151, 20);
@@ -550,7 +550,7 @@
             // dtBitisTarihi
             // 
             this.dtBitisTarihi.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtBitisTarihi.Location = new System.Drawing.Point(475, 7);
+            this.dtBitisTarihi.Location = new System.Drawing.Point(472, 7);
             this.dtBitisTarihi.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.dtBitisTarihi.Name = "dtBitisTarihi";
             this.dtBitisTarihi.Size = new System.Drawing.Size(151, 20);
@@ -566,12 +566,12 @@
             this.tableLayoutPanel10.Controls.Add(this.lblId, 0, 0);
             this.tableLayoutPanel10.Controls.Add(this.txtAra, 1, 0);
             this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel10.Location = new System.Drawing.Point(648, 2);
+            this.tableLayoutPanel10.Location = new System.Drawing.Point(644, 2);
             this.tableLayoutPanel10.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel10.Name = "tableLayoutPanel10";
             this.tableLayoutPanel10.RowCount = 1;
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(210, 30);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(209, 30);
             this.tableLayoutPanel10.TabIndex = 12;
             // 
             // lblId
@@ -594,7 +594,7 @@
             this.txtAra.Location = new System.Drawing.Point(110, 4);
             this.txtAra.Margin = new System.Windows.Forms.Padding(2, 0, 2, 1);
             this.txtAra.Name = "txtAra";
-            this.txtAra.Size = new System.Drawing.Size(98, 20);
+            this.txtAra.Size = new System.Drawing.Size(97, 20);
             this.txtAra.TabIndex = 1;
             this.txtAra.TextChanged += new System.EventHandler(this.txtAra_TextChanged);
             this.txtAra.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtAra_KeyDown);
@@ -605,10 +605,10 @@
             this.btnCokSatanlar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCokSatanlar.FlatAppearance.BorderSize = 0;
             this.btnCokSatanlar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCokSatanlar.Location = new System.Drawing.Point(862, 2);
+            this.btnCokSatanlar.Location = new System.Drawing.Point(857, 2);
             this.btnCokSatanlar.Margin = new System.Windows.Forms.Padding(2);
             this.btnCokSatanlar.Name = "btnCokSatanlar";
-            this.btnCokSatanlar.Size = new System.Drawing.Size(261, 30);
+            this.btnCokSatanlar.Size = new System.Drawing.Size(266, 30);
             this.btnCokSatanlar.TabIndex = 13;
             this.btnCokSatanlar.Text = "Ürün Satış Verileri";
             this.btnCokSatanlar.UseVisualStyleBackColor = false;
@@ -897,7 +897,7 @@
             this.label2.Location = new System.Drawing.Point(2, 77);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(706, 13);
+            this.label2.Size = new System.Drawing.Size(718, 13);
             this.label2.TabIndex = 40;
             this.label2.Text = "Kasadaki Toplam : Satılan ürülerin maliyeti hesaplanmadan; ek gelir, gider ve öde" +
     "nmeyen borçların hesaplanarak bulunan işletmeye kalan net paradır.";
@@ -1041,7 +1041,7 @@
             this.label1.Location = new System.Drawing.Point(2, 93);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(582, 13);
+            this.label1.Size = new System.Drawing.Size(595, 13);
             this.label1.TabIndex = 35;
             this.label1.Text = "Net Kazanç : Satılan ürülerin maliyeti, ek gelir,gider ve verilen borçlar da hesa" +
     "planarak bulunan işletmeye kalan net paradır.";

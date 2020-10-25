@@ -48,7 +48,6 @@ namespace Otomasyon
 
         string SeriNoAl()
         {
-
                 ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
                 ManagementObjectCollection mcol = mangnmt.GetInstances();
                 string result = "";
@@ -89,21 +88,12 @@ namespace Otomasyon
             //Hashlenmiş verileri depolamak için StringBuilder nesnesi oluşturduk.
             StringBuilder sb = new StringBuilder();
             //Her byte'i dizi içerisinden alarak string türüne dönüştürdük.
-
             foreach (byte ba in dizi)
-            {
                 sb.Append(ba.ToString("x2").ToUpper());
-            }
-
             string md5li = sb.ToString();
             mclksiz = md5li;
-            char[] sonHal = new char[24];  // "MCLKMXXXXCXXXXLXXXXKXXXX";
-                                           //Kendi şifreleme yöntemim => MCLK-MXXXX-CXXXX-LXXXX-KXXXX  (24)
-
-            sonHal[0] = 'M';
-            sonHal[1] = 'C';
-            sonHal[2] = 'L';
-            sonHal[3] = 'K';
+            char[] sonHal = new char[24];  // "MCLKMXXXXCXXXXLXXXXKXXXX"; Kendi şifreleme yöntemim => MCLK-MXXXX-CXXXX-LXXXX-KXXXX  (24)
+            sonHal[0] = 'M'; sonHal[1] = 'C'; sonHal[2] = 'L'; sonHal[3] = 'K';
 
             sonHal[4] = 'M';
             sonHal[5] = md5li[6];
@@ -131,9 +121,7 @@ namespace Otomasyon
             md5li = "";
 
             for (int i = 0; i < 24; i++)
-            {
                 md5li += sonHal[i];
-            }
 
             //İlk 4 karakteri dikkate alma
             //Dizenin [4] indexli karakteri M yap.
@@ -142,9 +130,6 @@ namespace Otomasyon
             //Dizenin [19] indexli karakteri K yap.
             //Aynı dizenin [24](dahil) indexli ve sonraki karakterlerini dikkate alma
             //Bunlardan yola çıkarak Yeni bir string oluştur.
-
-
-
             return md5li.ToString();
         }
 
@@ -405,22 +390,22 @@ namespace Otomasyon
                     SqlParameter[] EkleParam = new SqlParameter[3];
                     EkleParam[0] = new SqlParameter();
                     EkleParam[0].ParameterName = "@Adi";
-                    EkleParam[0].SqlDbType = System.Data.SqlDbType.NVarChar;
+                    EkleParam[0].SqlDbType = SqlDbType.NVarChar;
                     EkleParam[0].SqlValue = txtKullaniciAdi.Text;
 
                     EkleParam[1] = new SqlParameter();
                     EkleParam[1].ParameterName = "@Sifre";
-                    EkleParam[1].SqlDbType = System.Data.SqlDbType.NVarChar;
+                    EkleParam[1].SqlDbType = SqlDbType.NVarChar;
                     EkleParam[1].SqlValue = txtKullaniciSifresi.Text;
 
                     EkleParam[2] = new SqlParameter();
                     EkleParam[2].ParameterName = "@Yetki";
-                    EkleParam[2].SqlDbType = System.Data.SqlDbType.TinyInt;
+                    EkleParam[2].SqlDbType = SqlDbType.TinyInt;
                     EkleParam[2].SqlValue = 1;
                     if (SqlCn.GuncelleProcedure("KULLANICIEKLE", EkleParam) == 1)
                     {
 
-                        nfBasarili.BalloonTipText = "İşletme adı başarılı bir şekilde güncellendi.";
+                        nfBasarili.BalloonTipText = "İlk kullanıcı başarılı bir şekilde eklendi. "+txtKullaniciAdi.Text+" kullanıcı adı ile sisteme giriş yapabilirsiniz.";
                         nfBasarili.Visible = true;
                         nfBasarili.ShowBalloonTip(2000);
                     }

@@ -798,7 +798,7 @@ chrtSatislar.Series[0].Points.AddXY(Convert.ToInt32(dgSatislar.Rows[i].Cells[0].
             if (cbSecenek.SelectedIndex == 4) SatislariGoster();
         }
 
-        private void dgSatislar_KeyDown(object sender, KeyEventArgs e)
+        private void dgSatislar_KeyDown(object sender, KeyEventArgs e) 
         {
             if (e.KeyCode == Keys.Enter)
             {

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Drawing.Printing;
 using System.Diagnostics;
+using System.IO;
 
 namespace Otomasyon
 {
@@ -45,7 +46,6 @@ ConnectionString,
         [STAThread]
         static void Main()
         {
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Uyguluma açık mı diye kontrol et
@@ -71,7 +71,7 @@ ConnectionString,
         static void checkSqlConnection()
         {
             DbOperations dbOperations = new DbOperations();
-            string server = dbOperations.FirstConnection(serverType);
+            string server = dbOperations.FirstConnection();
             if (server != null)
             {
                 SqlConfiguration.SetValue("SqlConnectString", @"Server=" + server + ";DataBase=OtomasyonDB;Trusted_Connection=True;");
@@ -87,7 +87,7 @@ ConnectionString,
             RegistryKey sifreIste = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
             try
             {
-                sifreIstesin = Convert.ToBoolean(sifreIste.GetValue("SifreIste"));
+                sifreIstesin = Convert.ToBoolean(sifreIste.GetValue("SifreIste",1));
                 if (!sifreIstesin)
                 {
                     k_adi = sifreIste.GetValue("KayitliK_Adi").ToString();
@@ -98,7 +98,7 @@ ConnectionString,
             catch (Exception ex)
             {
                 sifreIstesin = false;
-                sifreIste.SetValue("SifreIste", 0);
+                sifreIste.SetValue("SifreIste", 1);
                 sifreIste.SetValue("KayitliK_Adi", "");
                 sifreIste.SetValue("KayitliK_Sifre", "");
             }

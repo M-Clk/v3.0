@@ -39,29 +39,8 @@ namespace Otomasyon
         {
             try
             {
-               
                 if (EklemeKontrolEt())
                 {
-                    if (!Program.lisans)
-                    {
-                        int urunSayisi = Convert.ToInt32(SqlBaglantisi.ScalarTextCommand("Select COUNT(Bakod_Kodu) From Urunler"));
-                        if (urunSayisi < 10)
-                        {
-                            islemYap.LisansUyarisi("Lisanssız yazılım kullanıyorsunuz. En fazla 10 ürün kaydedebilirsizin. " + (9 - urunSayisi) + " hakkınız kaldı. Eğer ürün anahtarınız varsa etkinleştirmek için tıklayın.");
-                        }
-                        else
-                        {
-                            islemYap.LisansUyarisiMesaj("Lisanssız yazılım kullanıyorsunuz. Maksimum ürün kayıt limitinize ulaştınız. Artık ürün kaydedemezsiniz. Eğer ürün anahtarınız varsa limitsiz kullanım için etkinleştirin.");
-                            txtAdiEkle.Text = "";
-                            txtStokEkle.Text = "";
-                            txtMaliyetiEkle.Text = "";
-                            txtSatisFiyatiEkle.Text = "";
-                            txtEkleKritikMiktar.Text = "";
-                            txtBarkodEkle.Text = "";
-                            cbBirimler.SelectedIndex = 0;
-                            return;
-                        }
-                    }
                     SqlParameter[] parameterEkleme = new SqlParameter[7];
                     parameterEkleme[0] = new SqlParameter();
                     parameterEkleme[0].ParameterName = "@Adi";
@@ -141,8 +120,6 @@ namespace Otomasyon
             {
                 return;
             }
-
-
         }
         bool EklemeKontrolEt()
         {

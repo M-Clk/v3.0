@@ -5,27 +5,22 @@ using System.Windows.Forms;
 using System;
 using System.Data.Sql;
 using System.ServiceProcess;
+using System.IO;
 
 namespace Otomasyon
 {
     class DbOperations
     {
-
         public DbOperations()
         { }
-        //private void Bekle()
-        //{
-        //    frmWait frm = new frmWait();
-        //    frm.ShowDialog();
-        //}
         public string bilgiMessage;
         public SqlConnection con;
         public SqlCommand cmd;
-        public static bool BaglantiKontrol(string ConString)
+        public static bool BaglantiKontrol(string conString)
         {
             try
             {
-                using (SqlConnection connect = new SqlConnection(ConString))
+                using (SqlConnection connect = new SqlConnection(conString))
                     connect.Open();
                 return true;
             }
@@ -56,14 +51,14 @@ namespace Otomasyon
             catch (Exception e)
 
             {
-                    MessageBox.Show("Veritabanına bağlanılamadı. Veritabanı bağlantı sorunu varken hiçbir işlem yapılamaz. Sunucuya erişim sağlandığından emin olun.\n Hata Mesajı :  " + e.Message, "Sunucu Bağlantı Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Veritabanına bağlanılamadı. Veritabanı bağlantı sorunu varken hiçbir işlem yapılamaz. Sunucuya erişim sağlandığından emin olun.\n Hata Mesajı :  " + e.Message, "Sunucu Bağlantı Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 dataRead = null;
                 return dataRead;
             }
             finally
             {
                 Application.UseWaitCursor = false;
-            }    
+            }
         }
         public SqlDataReader OkuProcedure(string command, SqlParameter[] prm)
         {
@@ -93,9 +88,9 @@ namespace Otomasyon
 
             {
                 Application.UseWaitCursor = false;
-                if (e.Message.IndexOf("ENCOKSATANLAR")>-1)
+                if (e.Message.IndexOf("ENCOKSATANLAR") > -1)
                 {
-                    
+
                     using (con = new SqlConnection(Program.ConnectionString))
                     {
                         using (cmd = new SqlCommand("CREATE Procedure ENCOKSATANLAR @GoruntelenecekAdet int, @Tur tinyint AS BEGIN if(@Tur=0) Select Top(@GoruntelenecekAdet) ROW_NUMBER() OVER(Order By Urunler.Adi) AS 'No',Barkod_Kodu,Urunler.Adi,SUM(Miktar) AS ToplamMiktar, Birimler.Adi from Satis_Detayi,Urunler,Birimler  Where Bakod_kodu=Barkod_Kodu AND Iade=0 AND Bakod_kodu!='0' AND Birimler.Id=Urunler.Stok_birimi Group By Barkod_Kodu,Urunler.Adi,Birimler.Adi Order By (ToplamMiktar) Desc else if(@Tur=1) Select Top(@GoruntelenecekAdet) ROW_NUMBER() OVER(Order By Urunler.Adi) AS 'No', Barkod_Kodu,Urunler.Adi,SUM(Miktar) AS ToplamMiktar, Birimler.Adi  from Satis_Detayi,Urunler,Birimler  Where Bakod_kodu=Barkod_Kodu AND Iade=0 AND Bakod_kodu!='0' AND Birimler.Id=Urunler.Stok_birimi Group By Barkod_Kodu,Urunler.Adi,Birimler.Adi Order By ToplamMiktar else Select ROW_NUMBER() OVER(Order By Urunler.Adi) AS 'No', Bakod_kodu,Urunler.Adi, (Select 0) AS ToplamMiktar, Birimler.Adi from Urunler,Birimler Where Bakod_Kodu NOT IN(Select Barkod_Kodu from Satis_Detayi) AND Bakod_kodu!='0' AND Birimler.Id=Urunler.Stok_birimi END", con))
@@ -104,15 +99,15 @@ namespace Otomasyon
                             con.Open();
                             cmd.ExecuteNonQuery();
                             con.Close();
-                            
                         }
                     }
                 }
                 else
-                { 
-                //if(thread.ThreadState==ThreadState.Running)
-                //thread.Abort();
-                MessageBox.Show("Veritabanına bağlanılamadı. Veritabanı bağlantı sorunu varken hiçbir işlem yapılamaz. Sunucuya erişim sağlandığından emin olun.\n Hata Mesajı :  " + e.Message, "Sunucu Bağlantı Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                {
+                    //if(thread.ThreadState==ThreadState.Running)
+                    //thread.Abort();
+                    MessageBox.Show("Veritabanına bağlanılamadı. Veritabanı bağlantı sorunu varken hiçbir işlem yapılamaz. Sunucuya erişim sağlandığından emin olun.\n Hata Mesajı :  " + e.Message, "Sunucu Bağlantı Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 dataRead = null;
                 return dataRead;
             }
@@ -232,6 +227,7 @@ namespace Otomasyon
                             MessageBox.Show("Bu numarayı kullanan bir müşteri zaten var. İkinci bir müşteri adına kaydedilemez.", "Veri Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         else
                             MessageBox.Show("Veritabanına bağlanılamadı. Veritabanı bağlantı sorunu varken hiçbir işlem yapılamaz. Sunucuya erişim sağlandığından emin olun. \n Hata Mesajı :  " + e.Message, "Sunucu Bağlantı Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                       
                         return false;
                     }
                     finally
@@ -316,7 +312,7 @@ namespace Otomasyon
                     {
                         cmd.Parameters.Add(parameterCollection[i]);
                     }
-                    
+
                     using (SqlDataAdapter dAdapter = new SqlDataAdapter(cmd))
                     {
                         using (DataTable table = new DataTable())
@@ -328,16 +324,13 @@ namespace Otomasyon
                     }
                 }
             }
-            
+
         }
-        public string FirstConnection(int serverType)
+        public string FirstConnection()
         {
             try
             {
                 string serverName = null;
-                SqlDataSourceEnumerator instance = SqlDataSourceEnumerator.Instance;
-                DataTable table = instance.GetDataSources();
-                string computerName = table.Rows[0][0].ToString();
                 string dbName = "OtomasyonDB";
 
                 ServiceController[] controllers = ServiceController.GetServices();
@@ -349,8 +342,11 @@ namespace Otomasyon
                         serverName = serverName.Remove(0, serverName.IndexOf('(') + 1);
                     }
                 }
+                if(serverName == null)
+                    serverName = "LOCALHOST";
+                else serverName = $"LOCALHOST\\{serverName}";
                 //SQL sunucu icin baglanti oluştur            
-                SqlConnection baglanti = new SqlConnection("Server=" + computerName + "\\" + serverName + ";database = Master; Integrated Security=SSPI");
+                SqlConnection baglanti = new SqlConnection("Server="+ serverName + ";database = master; Integrated Security=SSPI");
                 //SQL icerisindeki tüm veritabanı bilgileri MASTER tablosunda tutulur. Master Tablosunu sorgula
                 SqlCommand komut = new SqlCommand("SELECT Count(name) FROM master.dbo.sysdatabases WHERE name=@prmVeritabani", baglanti);
                 //Komut nesnesine parametre ile kontrol edilecek veritabanin adini geciyoruz. 
@@ -359,28 +355,76 @@ namespace Otomasyon
                 baglanti.Open();
                 //Executescalar ile sorgu sonucunda dönen degeri aliyoruz. Veritabanı varsa 1 yoksa 0 dönecektir.
                 int sonuc = (int)komut.ExecuteScalar();
-                //işlem bitti. Baglantiyi kapatiyoruz.
-                baglanti.Close();
-                //Veritabanı var ise yapılacaklar
-                if (sonuc != 0)
+
+                if (sonuc != 0) //Veritabanı var ise yapılacaklar
                 {
-                    return computerName + "\\" + serverName;
+                    baglanti.Close();
+                    return serverName;
                 }
-                else if (CreateDb())
-                    return computerName + "\\" + serverName;
-                else return null;
-               
-                
+                else  //Veritabanı yok ise oluştur
+                {
+                    komut.CommandText = $"CREATE DATABASE {dbName}";
+                    komut.ExecuteScalar();
+                    baglanti.Close();
+                    Program.ConnectionString = $"Server={serverName};database = {dbName}; Integrated Security=SSPI";
+                    if (CreateDbComponents("Tables") && CreateDbComponents("SetKeys") && CreateDbComponents("Triggers") && CreateDbComponents("StoredProcedures") && CreateDbComponents("Functions") && CreateDbComponents("DefaultRecords"))
+                        return serverName;
+                    else return null;
+                }
+
             }
             catch (Exception)
             {
                 return null;
             }
-           
+
+
         }
-        bool CreateDb()
+        bool Create(string command)
         {
-            return true;
+            using (con = new SqlConnection(Program.ConnectionString))
+            {
+                using (cmd = new SqlCommand(command, con))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    try //Bağlantı açılmazsa hata fırlatır ona göre işlem yap
+                    {
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+
+                    catch (Exception ex)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        string sqlMainPath = Application.StartupPath + "\\DatabaseFiles\\";
+        bool CreateDbComponents(string directoryName)
+        {
+            try
+            {
+                string filePath = sqlMainPath + directoryName;
+                string[] files = Directory.GetFiles(filePath);
+                bool flag = true;
+                foreach (var item in files)
+                {
+                    string sql_text = File.ReadAllText(item);
+                    if(sql_text.IndexOf("CREATE")>-1)
+                    sql_text = sql_text.Remove(0, sql_text.IndexOf("CREATE"));
+                    sql_text=sql_text.Replace("\r\nGO\r\n", "\r\n");
+                    flag=Create(sql_text);
+                    if (!flag) break;
+                }
+                return flag;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
     }
 }
