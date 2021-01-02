@@ -40,9 +40,10 @@
             this.lblIP = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lblAdi = new System.Windows.Forms.Label();
-            this.txtSunucuAdi = new System.Windows.Forms.TextBox();
             this.cbSunucuTipi = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.cbSunucuAdi = new System.Windows.Forms.ComboBox();
+            this.txtSunucuAdi = new System.Windows.Forms.TextBox();
             this.grpLisans = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
@@ -56,8 +57,8 @@
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.grpGenelYapilandirma = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
             this.cbOdemeTipi = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.grpBirimler = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
             this.cbBirimler = new System.Windows.Forms.ComboBox();
@@ -77,6 +78,9 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txtTelefon = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtHidden = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel15 = new System.Windows.Forms.TableLayoutPanel();
             this.grpYaziciYapilandirma = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel16 = new System.Windows.Forms.TableLayoutPanel();
@@ -112,6 +116,7 @@
             this.grpIletisim.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
             this.tableLayoutPanel14.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel15.SuspendLayout();
             this.grpYaziciYapilandirma.SuspendLayout();
             this.tableLayoutPanel16.SuspendLayout();
@@ -123,7 +128,7 @@
             // 
             this.btnUygula.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUygula.Location = new System.Drawing.Point(202, 143);
+            this.btnUygula.Location = new System.Drawing.Point(202, 138);
             this.btnUygula.Margin = new System.Windows.Forms.Padding(2);
             this.btnUygula.Name = "btnUygula";
             this.btnUygula.Size = new System.Drawing.Size(74, 40);
@@ -142,7 +147,7 @@
             this.grpVeritbaniYapilandirma.Margin = new System.Windows.Forms.Padding(2);
             this.grpVeritbaniYapilandirma.Name = "grpVeritbaniYapilandirma";
             this.grpVeritbaniYapilandirma.Padding = new System.Windows.Forms.Padding(11, 12, 2, 2);
-            this.grpVeritbaniYapilandirma.Size = new System.Drawing.Size(291, 212);
+            this.grpVeritbaniYapilandirma.Size = new System.Drawing.Size(291, 207);
             this.grpVeritbaniYapilandirma.TabIndex = 1;
             this.grpVeritbaniYapilandirma.TabStop = false;
             this.grpVeritbaniYapilandirma.Text = "Veritabanı Yapılandırma";
@@ -160,9 +165,9 @@
             this.tableLayoutPanel3.Controls.Add(this.lblIP, 0, 2);
             this.tableLayoutPanel3.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.lblAdi, 0, 3);
-            this.tableLayoutPanel3.Controls.Add(this.txtSunucuAdi, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.cbSunucuTipi, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.label2, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.cbSunucuAdi, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(11, 25);
             this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(2);
@@ -174,13 +179,13 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.67568F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.91892F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 23.24324F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(278, 185);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(278, 180);
             this.tableLayoutPanel3.TabIndex = 11;
             // 
             // txtSifre
             // 
             this.txtSifre.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSifre.Location = new System.Drawing.Point(141, 114);
+            this.txtSifre.Location = new System.Drawing.Point(141, 109);
             this.txtSifre.Margin = new System.Windows.Forms.Padding(2);
             this.txtSifre.Name = "txtSifre";
             this.txtSifre.PasswordChar = '•';
@@ -190,7 +195,7 @@
             // txtIP
             // 
             this.txtIP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtIP.Location = new System.Drawing.Point(141, 55);
+            this.txtIP.Location = new System.Drawing.Point(141, 53);
             this.txtIP.Margin = new System.Windows.Forms.Padding(2);
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(135, 20);
@@ -200,7 +205,7 @@
             // 
             this.lblSifre.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSifre.AutoSize = true;
-            this.lblSifre.Location = new System.Drawing.Point(2, 117);
+            this.lblSifre.Location = new System.Drawing.Point(2, 113);
             this.lblSifre.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblSifre.Name = "lblSifre";
             this.lblSifre.Size = new System.Drawing.Size(135, 13);
@@ -210,7 +215,7 @@
             // txtKAdi
             // 
             this.txtKAdi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtKAdi.Location = new System.Drawing.Point(141, 83);
+            this.txtKAdi.Location = new System.Drawing.Point(141, 79);
             this.txtKAdi.Margin = new System.Windows.Forms.Padding(2);
             this.txtKAdi.Name = "txtKAdi";
             this.txtKAdi.Size = new System.Drawing.Size(135, 20);
@@ -220,7 +225,7 @@
             // 
             this.lblIP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblIP.AutoSize = true;
-            this.lblIP.Location = new System.Drawing.Point(2, 59);
+            this.lblIP.Location = new System.Drawing.Point(2, 56);
             this.lblIP.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblIP.Name = "lblIP";
             this.lblIP.Size = new System.Drawing.Size(135, 13);
@@ -231,7 +236,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(2, 6);
+            this.label1.Location = new System.Drawing.Point(2, 5);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(135, 13);
@@ -242,21 +247,12 @@
             // 
             this.lblAdi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAdi.AutoSize = true;
-            this.lblAdi.Location = new System.Drawing.Point(2, 86);
+            this.lblAdi.Location = new System.Drawing.Point(2, 83);
             this.lblAdi.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblAdi.Name = "lblAdi";
             this.lblAdi.Size = new System.Drawing.Size(135, 13);
             this.lblAdi.TabIndex = 4;
             this.lblAdi.Text = "Adı";
-            // 
-            // txtSunucuAdi
-            // 
-            this.txtSunucuAdi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSunucuAdi.Location = new System.Drawing.Point(141, 2);
-            this.txtSunucuAdi.Margin = new System.Windows.Forms.Padding(2);
-            this.txtSunucuAdi.Name = "txtSunucuAdi";
-            this.txtSunucuAdi.Size = new System.Drawing.Size(135, 20);
-            this.txtSunucuAdi.TabIndex = 0;
             // 
             // cbSunucuTipi
             // 
@@ -266,7 +262,7 @@
             this.cbSunucuTipi.Items.AddRange(new object[] {
             "Yerel Sunucu",
             "Uzak Sunucu"});
-            this.cbSunucuTipi.Location = new System.Drawing.Point(141, 28);
+            this.cbSunucuTipi.Location = new System.Drawing.Point(141, 26);
             this.cbSunucuTipi.Margin = new System.Windows.Forms.Padding(2);
             this.cbSunucuTipi.Name = "cbSunucuTipi";
             this.cbSunucuTipi.Size = new System.Drawing.Size(135, 21);
@@ -277,12 +273,30 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 32);
+            this.label2.Location = new System.Drawing.Point(2, 30);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(135, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "SQL Sunucu Tipi";
+            // 
+            // cbSunucuAdi
+            // 
+            this.cbSunucuAdi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbSunucuAdi.FormattingEnabled = true;
+            this.cbSunucuAdi.Location = new System.Drawing.Point(142, 3);
+            this.cbSunucuAdi.Name = "cbSunucuAdi";
+            this.cbSunucuAdi.Size = new System.Drawing.Size(133, 21);
+            this.cbSunucuAdi.TabIndex = 9;
+            // 
+            // txtSunucuAdi
+            // 
+            this.txtSunucuAdi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSunucuAdi.Location = new System.Drawing.Point(2, 48);
+            this.txtSunucuAdi.Margin = new System.Windows.Forms.Padding(2);
+            this.txtSunucuAdi.Name = "txtSunucuAdi";
+            this.txtSunucuAdi.Size = new System.Drawing.Size(142, 20);
+            this.txtSunucuAdi.TabIndex = 0;
             // 
             // grpLisans
             // 
@@ -422,13 +436,14 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel5, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel15, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 1, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(2, 2);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(599, 436);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
@@ -447,18 +462,18 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.67593F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 67.12963F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 13.19444F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(296, 432);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(296, 422);
             this.tableLayoutPanel5.TabIndex = 2;
             // 
             // grpGenelYapilandirma
             // 
             this.grpGenelYapilandirma.Controls.Add(this.tableLayoutPanel8);
             this.grpGenelYapilandirma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpGenelYapilandirma.Location = new System.Drawing.Point(2, 377);
+            this.grpGenelYapilandirma.Location = new System.Drawing.Point(2, 368);
             this.grpGenelYapilandirma.Margin = new System.Windows.Forms.Padding(2);
             this.grpGenelYapilandirma.Name = "grpGenelYapilandirma";
             this.grpGenelYapilandirma.Padding = new System.Windows.Forms.Padding(2);
-            this.grpGenelYapilandirma.Size = new System.Drawing.Size(292, 53);
+            this.grpGenelYapilandirma.Size = new System.Drawing.Size(292, 52);
             this.grpGenelYapilandirma.TabIndex = 3;
             this.grpGenelYapilandirma.TabStop = false;
             this.grpGenelYapilandirma.Text = "Genel Yapılandırma";
@@ -468,27 +483,16 @@
             this.tableLayoutPanel8.ColumnCount = 2;
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.22222F));
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.77778F));
-            this.tableLayoutPanel8.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel8.Controls.Add(this.cbOdemeTipi, 1, 0);
+            this.tableLayoutPanel8.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel8.Location = new System.Drawing.Point(2, 15);
             this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel8.Name = "tableLayoutPanel8";
             this.tableLayoutPanel8.RowCount = 1;
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 61.90476F));
-            this.tableLayoutPanel8.Size = new System.Drawing.Size(288, 36);
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(288, 35);
             this.tableLayoutPanel8.TabIndex = 0;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(2, 11);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(131, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Varsayılan Ödeme Şekli";
             // 
             // cbOdemeTipi
             // 
@@ -505,6 +509,17 @@
             this.cbOdemeTipi.TabIndex = 11;
             this.cbOdemeTipi.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(2, 11);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(131, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Varsayılan Ödeme Şekli";
+            // 
             // grpBirimler
             // 
             this.grpBirimler.Controls.Add(this.tableLayoutPanel10);
@@ -513,7 +528,7 @@
             this.grpBirimler.Margin = new System.Windows.Forms.Padding(2);
             this.grpBirimler.Name = "grpBirimler";
             this.grpBirimler.Padding = new System.Windows.Forms.Padding(2);
-            this.grpBirimler.Size = new System.Drawing.Size(292, 81);
+            this.grpBirimler.Size = new System.Drawing.Size(292, 79);
             this.grpBirimler.TabIndex = 0;
             this.grpBirimler.TabStop = false;
             this.grpBirimler.Text = "Birimler";
@@ -534,7 +549,7 @@
             this.tableLayoutPanel10.RowCount = 2;
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(288, 64);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(288, 62);
             this.tableLayoutPanel10.TabIndex = 35;
             // 
             // cbBirimler
@@ -557,10 +572,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBirimEkle.Enabled = false;
             this.btnBirimEkle.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnBirimEkle.Location = new System.Drawing.Point(188, 34);
+            this.btnBirimEkle.Location = new System.Drawing.Point(188, 33);
             this.btnBirimEkle.Margin = new System.Windows.Forms.Padding(2);
             this.btnBirimEkle.Name = "btnBirimEkle";
-            this.btnBirimEkle.Size = new System.Drawing.Size(98, 28);
+            this.btnBirimEkle.Size = new System.Drawing.Size(98, 27);
             this.btnBirimEkle.TabIndex = 0;
             this.btnBirimEkle.Text = "Ekle";
             this.btnBirimEkle.UseVisualStyleBackColor = true;
@@ -575,7 +590,7 @@
             this.btnBirimSil.Location = new System.Drawing.Point(188, 2);
             this.btnBirimSil.Margin = new System.Windows.Forms.Padding(2);
             this.btnBirimSil.Name = "btnBirimSil";
-            this.btnBirimSil.Size = new System.Drawing.Size(98, 28);
+            this.btnBirimSil.Size = new System.Drawing.Size(98, 27);
             this.btnBirimSil.TabIndex = 1;
             this.btnBirimSil.Text = "Sil";
             this.btnBirimSil.UseVisualStyleBackColor = true;
@@ -589,18 +604,18 @@
             this.tableLayoutPanel6.Controls.Add(this.txtBirimKisaltma, 1, 0);
             this.tableLayoutPanel6.Controls.Add(this.txtBirimEkle, 0, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 35);
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 34);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
             this.tableLayoutPanel6.RowCount = 1;
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(180, 26);
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(180, 25);
             this.tableLayoutPanel6.TabIndex = 34;
             // 
             // txtBirimKisaltma
             // 
             this.txtBirimKisaltma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBirimKisaltma.ForeColor = System.Drawing.Color.DarkGray;
-            this.txtBirimKisaltma.Location = new System.Drawing.Point(113, 3);
+            this.txtBirimKisaltma.Location = new System.Drawing.Point(113, 2);
             this.txtBirimKisaltma.Margin = new System.Windows.Forms.Padding(2);
             this.txtBirimKisaltma.Name = "txtBirimKisaltma";
             this.txtBirimKisaltma.Size = new System.Drawing.Size(65, 20);
@@ -614,7 +629,7 @@
             // 
             this.txtBirimEkle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBirimEkle.ForeColor = System.Drawing.Color.DarkGray;
-            this.txtBirimEkle.Location = new System.Drawing.Point(2, 3);
+            this.txtBirimEkle.Location = new System.Drawing.Point(2, 2);
             this.txtBirimEkle.Margin = new System.Windows.Forms.Padding(2);
             this.txtBirimEkle.Name = "txtBirimEkle";
             this.txtBirimEkle.Size = new System.Drawing.Size(107, 20);
@@ -628,11 +643,11 @@
             // 
             this.grpIletisim.Controls.Add(this.tableLayoutPanel7);
             this.grpIletisim.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpIletisim.Location = new System.Drawing.Point(2, 87);
+            this.grpIletisim.Location = new System.Drawing.Point(2, 85);
             this.grpIletisim.Margin = new System.Windows.Forms.Padding(2);
             this.grpIletisim.Name = "grpIletisim";
             this.grpIletisim.Padding = new System.Windows.Forms.Padding(2);
-            this.grpIletisim.Size = new System.Drawing.Size(292, 286);
+            this.grpIletisim.Size = new System.Drawing.Size(292, 279);
             this.grpIletisim.TabIndex = 1;
             this.grpIletisim.TabStop = false;
             this.grpIletisim.Text = "İşletme Bilgileri";
@@ -650,14 +665,14 @@
             this.tableLayoutPanel7.RowCount = 2;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.67213F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80.32787F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(288, 269);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(288, 262);
             this.tableLayoutPanel7.TabIndex = 0;
             // 
             // txtIsletmeAdi
             // 
             this.txtIsletmeAdi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtIsletmeAdi.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.txtIsletmeAdi.Location = new System.Drawing.Point(2, 13);
+            this.txtIsletmeAdi.Location = new System.Drawing.Point(2, 12);
             this.txtIsletmeAdi.Margin = new System.Windows.Forms.Padding(2);
             this.txtIsletmeAdi.MaxLength = 60;
             this.txtIsletmeAdi.Name = "txtIsletmeAdi";
@@ -678,7 +693,7 @@
             this.tableLayoutPanel14.Controls.Add(this.txtTelefon, 1, 0);
             this.tableLayoutPanel14.Controls.Add(this.label11, 0, 2);
             this.tableLayoutPanel14.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel14.Location = new System.Drawing.Point(2, 54);
+            this.tableLayoutPanel14.Location = new System.Drawing.Point(2, 53);
             this.tableLayoutPanel14.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel14.Name = "tableLayoutPanel14";
             this.tableLayoutPanel14.RowCount = 4;
@@ -686,27 +701,27 @@
             this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.12121F));
             this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.0101F));
             this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24.24242F));
-            this.tableLayoutPanel14.Size = new System.Drawing.Size(284, 213);
+            this.tableLayoutPanel14.Size = new System.Drawing.Size(284, 207);
             this.tableLayoutPanel14.TabIndex = 2;
             // 
             // txtAdres
             // 
             this.txtAdres.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtAdres.Location = new System.Drawing.Point(96, 56);
+            this.txtAdres.Location = new System.Drawing.Point(96, 54);
             this.txtAdres.MaxLength = 400;
             this.txtAdres.Multiline = true;
             this.txtAdres.Name = "txtAdres";
-            this.txtAdres.Size = new System.Drawing.Size(185, 101);
+            this.txtAdres.Size = new System.Drawing.Size(185, 98);
             this.txtAdres.TabIndex = 2;
             // 
             // btnGuncelle
             // 
             this.btnGuncelle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGuncelle.Location = new System.Drawing.Point(169, 162);
+            this.btnGuncelle.Location = new System.Drawing.Point(169, 157);
             this.btnGuncelle.Margin = new System.Windows.Forms.Padding(2);
             this.btnGuncelle.Name = "btnGuncelle";
-            this.btnGuncelle.Size = new System.Drawing.Size(113, 49);
+            this.btnGuncelle.Size = new System.Drawing.Size(113, 48);
             this.btnGuncelle.TabIndex = 1;
             this.btnGuncelle.Text = "Güncelle";
             this.btnGuncelle.UseVisualStyleBackColor = true;
@@ -715,7 +730,7 @@
             // txtEmail
             // 
             this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtEmail.Location = new System.Drawing.Point(96, 32);
+            this.txtEmail.Location = new System.Drawing.Point(96, 30);
             this.txtEmail.MaxLength = 60;
             this.txtEmail.Multiline = true;
             this.txtEmail.Name = "txtEmail";
@@ -726,7 +741,7 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(2, 34);
+            this.label8.Location = new System.Drawing.Point(2, 32);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(89, 13);
@@ -758,12 +773,40 @@
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(2, 100);
+            this.label11.Location = new System.Drawing.Point(2, 96);
             this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(89, 13);
             this.label11.TabIndex = 7;
             this.label11.Text = "Adres";
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.panel1);
+            this.flowLayoutPanel1.Controls.Add(this.txtHidden);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(302, 429);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(87, 4);
+            this.flowLayoutPanel1.TabIndex = 11;
+            // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(117, 29);
+            this.panel1.TabIndex = 10;
+            // 
+            // txtHidden
+            // 
+            this.txtHidden.BackColor = System.Drawing.SystemColors.Control;
+            this.txtHidden.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtHidden.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.txtHidden.ForeColor = System.Drawing.SystemColors.Control;
+            this.txtHidden.Location = new System.Drawing.Point(3, 38);
+            this.txtHidden.Name = "txtHidden";
+            this.txtHidden.Size = new System.Drawing.Size(87, 13);
+            this.txtHidden.TabIndex = 9;
+            this.txtHidden.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtHidden_KeyDown);
             // 
             // tableLayoutPanel15
             // 
@@ -780,18 +823,18 @@
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 27.31482F));
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.68518F));
-            this.tableLayoutPanel15.Size = new System.Drawing.Size(295, 432);
+            this.tableLayoutPanel15.Size = new System.Drawing.Size(295, 422);
             this.tableLayoutPanel15.TabIndex = 3;
             // 
             // grpYaziciYapilandirma
             // 
             this.grpYaziciYapilandirma.Controls.Add(this.tableLayoutPanel16);
             this.grpYaziciYapilandirma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpYaziciYapilandirma.Location = new System.Drawing.Point(2, 218);
+            this.grpYaziciYapilandirma.Location = new System.Drawing.Point(2, 213);
             this.grpYaziciYapilandirma.Margin = new System.Windows.Forms.Padding(2);
             this.grpYaziciYapilandirma.Name = "grpYaziciYapilandirma";
             this.grpYaziciYapilandirma.Padding = new System.Windows.Forms.Padding(2);
-            this.grpYaziciYapilandirma.Size = new System.Drawing.Size(291, 114);
+            this.grpYaziciYapilandirma.Size = new System.Drawing.Size(291, 111);
             this.grpYaziciYapilandirma.TabIndex = 3;
             this.grpYaziciYapilandirma.TabStop = false;
             this.grpYaziciYapilandirma.Text = "Yazıcı Yapılandırma";
@@ -815,7 +858,7 @@
             this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 26.80412F));
             this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 27.83505F));
             this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.36082F));
-            this.tableLayoutPanel16.Size = new System.Drawing.Size(287, 97);
+            this.tableLayoutPanel16.Size = new System.Drawing.Size(287, 94);
             this.tableLayoutPanel16.TabIndex = 0;
             // 
             // label9
@@ -833,7 +876,7 @@
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(2, 32);
+            this.label10.Location = new System.Drawing.Point(2, 31);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(143, 13);
@@ -870,10 +913,10 @@
             this.btnYaziciUygula.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnYaziciUygula.Enabled = false;
-            this.btnYaziciUygula.Location = new System.Drawing.Point(211, 54);
+            this.btnYaziciUygula.Location = new System.Drawing.Point(211, 53);
             this.btnYaziciUygula.Margin = new System.Windows.Forms.Padding(2);
             this.btnYaziciUygula.Name = "btnYaziciUygula";
-            this.btnYaziciUygula.Size = new System.Drawing.Size(74, 41);
+            this.btnYaziciUygula.Size = new System.Drawing.Size(74, 39);
             this.btnYaziciUygula.TabIndex = 12;
             this.btnYaziciUygula.Text = "Uygula";
             this.btnYaziciUygula.UseVisualStyleBackColor = true;
@@ -885,9 +928,9 @@
             this.chkDevamliYazdir.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkDevamliYazdir.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkDevamliYazdir.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.chkDevamliYazdir.Location = new System.Drawing.Point(3, 55);
+            this.chkDevamliYazdir.Location = new System.Drawing.Point(3, 54);
             this.chkDevamliYazdir.Name = "chkDevamliYazdir";
-            this.chkDevamliYazdir.Size = new System.Drawing.Size(141, 39);
+            this.chkDevamliYazdir.Size = new System.Drawing.Size(141, 37);
             this.chkDevamliYazdir.TabIndex = 13;
             this.chkDevamliYazdir.Text = "Her Satışta Fatura Yazdır";
             this.chkDevamliYazdir.UseVisualStyleBackColor = true;
@@ -897,11 +940,11 @@
             // 
             this.grpIlkKullanici.Controls.Add(this.tableLayoutPanel9);
             this.grpIlkKullanici.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpIlkKullanici.Location = new System.Drawing.Point(2, 336);
+            this.grpIlkKullanici.Location = new System.Drawing.Point(2, 328);
             this.grpIlkKullanici.Margin = new System.Windows.Forms.Padding(2);
             this.grpIlkKullanici.Name = "grpIlkKullanici";
             this.grpIlkKullanici.Padding = new System.Windows.Forms.Padding(2);
-            this.grpIlkKullanici.Size = new System.Drawing.Size(291, 94);
+            this.grpIlkKullanici.Size = new System.Drawing.Size(291, 92);
             this.grpIlkKullanici.TabIndex = 2;
             this.grpIlkKullanici.TabStop = false;
             this.grpIlkKullanici.Text = "İlk Kullanıcı";
@@ -916,6 +959,7 @@
             this.tableLayoutPanel9.Controls.Add(this.label5, 0, 0);
             this.tableLayoutPanel9.Controls.Add(this.label6, 0, 1);
             this.tableLayoutPanel9.Controls.Add(this.btnEkle, 1, 2);
+            this.tableLayoutPanel9.Controls.Add(this.txtSunucuAdi, 0, 2);
             this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel9.Location = new System.Drawing.Point(2, 15);
             this.tableLayoutPanel9.Margin = new System.Windows.Forms.Padding(2);
@@ -924,13 +968,13 @@
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.19149F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.80851F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.tableLayoutPanel9.Size = new System.Drawing.Size(287, 77);
+            this.tableLayoutPanel9.Size = new System.Drawing.Size(287, 75);
             this.tableLayoutPanel9.TabIndex = 0;
             // 
             // txtKullaniciSifresi
             // 
             this.txtKullaniciSifresi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtKullaniciSifresi.Location = new System.Drawing.Point(149, 26);
+            this.txtKullaniciSifresi.Location = new System.Drawing.Point(149, 25);
             this.txtKullaniciSifresi.Name = "txtKullaniciSifresi";
             this.txtKullaniciSifresi.PasswordChar = '•';
             this.txtKullaniciSifresi.Size = new System.Drawing.Size(135, 20);
@@ -948,7 +992,7 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(2, 5);
+            this.label5.Location = new System.Drawing.Point(2, 4);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(142, 13);
@@ -959,7 +1003,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(2, 26);
+            this.label6.Location = new System.Drawing.Point(2, 25);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(142, 13);
@@ -970,7 +1014,7 @@
             // 
             this.btnEkle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEkle.Location = new System.Drawing.Point(211, 45);
+            this.btnEkle.Location = new System.Drawing.Point(211, 43);
             this.btnEkle.Margin = new System.Windows.Forms.Padding(2);
             this.btnEkle.Name = "btnEkle";
             this.btnEkle.Size = new System.Drawing.Size(74, 30);
@@ -999,11 +1043,13 @@
             this.ClientSize = new System.Drawing.Size(603, 551);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmConfiguration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Yapılandırma Merkezi";
             this.Load += new System.EventHandler(this.frmConfiguration_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmConfiguration_KeyDown);
             this.grpVeritbaniYapilandirma.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
@@ -1027,6 +1073,8 @@
             this.tableLayoutPanel7.PerformLayout();
             this.tableLayoutPanel14.ResumeLayout(false);
             this.tableLayoutPanel14.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.tableLayoutPanel15.ResumeLayout(false);
             this.grpYaziciYapilandirma.ResumeLayout(false);
             this.tableLayoutPanel16.ResumeLayout(false);
@@ -1105,5 +1153,9 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cbOdemeTipi;
+        private System.Windows.Forms.ComboBox cbSunucuAdi;
+        private System.Windows.Forms.TextBox txtHidden;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Panel panel1;
     }
 }

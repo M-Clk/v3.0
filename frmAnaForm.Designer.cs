@@ -64,6 +64,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.rbNakit = new System.Windows.Forms.RadioButton();
             this.lblParaUstu = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.cbYazdir = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
@@ -256,9 +257,9 @@
             // 
             this.chkExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkExcel.AutoSize = true;
-            this.chkExcel.Location = new System.Drawing.Point(2623, 546);
+            this.chkExcel.Location = new System.Drawing.Point(2621, 546);
             this.chkExcel.Name = "chkExcel";
-            this.chkExcel.Size = new System.Drawing.Size(139, 17);
+            this.chkExcel.Size = new System.Drawing.Size(141, 17);
             this.chkExcel.TabIndex = 21;
             this.chkExcel.Text = "Bu alışveriş için fatura al";
             this.chkExcel.UseVisualStyleBackColor = true;
@@ -384,6 +385,7 @@
             this.tableLayoutPanel17.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 59.38375F));
             this.tableLayoutPanel17.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.61625F));
             this.tableLayoutPanel17.Controls.Add(this.tableLayoutPanel24, 0, 0);
+            this.tableLayoutPanel17.Controls.Add(this.button4, 1, 0);
             this.tableLayoutPanel17.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel17.Location = new System.Drawing.Point(2, 68);
             this.tableLayoutPanel17.Margin = new System.Windows.Forms.Padding(2);
@@ -687,6 +689,16 @@
             this.lblParaUstu.Text = "Para Üstü : 0 TL";
             this.lblParaUstu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblParaUstu.Visible = false;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(214, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 2;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // tableLayoutPanel8
             // 
@@ -1280,6 +1292,7 @@
             this.txtBarkodOku.Size = new System.Drawing.Size(104, 20);
             this.txtBarkodOku.TabIndex = 13;
             this.txtBarkodOku.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarkodOku_KeyDown);
+            this.txtBarkodOku.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtBarkodOku_PreviewKeyDown);
             // 
             // groupBox1
             // 
@@ -1868,6 +1881,7 @@
             this.ClientSize = new System.Drawing.Size(1127, 658);
             this.Controls.Add(this.tlpGenel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "frmAnaForm";
             this.Padding = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.Text = "Otomasyon";
@@ -1956,10 +1970,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgSonSatislar;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.CheckBox chkExcel;
-        private System.Windows.Forms.DataGridView dgSepet;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel11;
@@ -1969,34 +1979,9 @@
         private System.Windows.Forms.Button btnMusteriIslemleri;
         private System.Windows.Forms.Button btnKullaniciIslemleri;
         private System.Windows.Forms.Button btnCikis;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
-        private System.Windows.Forms.Button btnSatisYap;
-        private System.Windows.Forms.Button btnSatisIptalEt;
-        private System.Windows.Forms.TableLayoutPanel tblBorcIslemleri;
-        private System.Windows.Forms.CheckBox chkBorc;
-        private System.Windows.Forms.TableLayoutPanel tblBorcHesabi;
-        private System.Windows.Forms.TextBox txtBorc;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel15;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel16;
-        private System.Windows.Forms.Label lblToplam;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel17;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button btnHepsi;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel18;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NotifyIcon nfUyari;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel22;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel21;
-        private System.Windows.Forms.Button btnHesapla;
-        private System.Windows.Forms.TextBox txtOdendi;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel20;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
-        private System.Windows.Forms.CheckBox cbYazdir;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.NotifyIcon nfBasarili;
         private System.Windows.Forms.SaveFileDialog saveExceleKaydet;
@@ -2017,32 +2002,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel13;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel14;
-        private System.Windows.Forms.DataGridViewTextBoxColumn No;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Barkod;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Ad;
-        private System.Windows.Forms.DataGridViewTextBoxColumn BirimFiyat;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Miktar;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Birim;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Maliyet;
-        private System.Windows.Forms.DataGridViewTextBoxColumn BirimId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TopTutar;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel23;
-        private System.Windows.Forms.RadioButton rbNakit;
-        private System.Windows.Forms.RadioButton rbKrediKarti;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel24;
-        private System.Windows.Forms.Label lblParaUstu;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel25;
-        private System.Windows.Forms.Label lblVerileNakit;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel26;
-        private System.Windows.Forms.Label lblVerilenKredi;
-        private System.Windows.Forms.TextBox txtOdenenKredi;
-        private System.Windows.Forms.Label lblTaksit;
-        private System.Windows.Forms.ComboBox cbTaksit;
-        private System.Windows.Forms.ComboBox cbOdenenNakit;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel28;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel27;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Numra;
         private System.Windows.Forms.DataGridViewTextBoxColumn MusteriAdi;
         private System.Windows.Forms.DataGridViewTextBoxColumn Numara;
@@ -2053,5 +2012,61 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Nakit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Kredi;
         private System.Windows.Forms.DataGridViewTextBoxColumn Taksit;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox chkExcel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel15;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel16;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
+        private System.Windows.Forms.Label lblToplam;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel17;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel24;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel23;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel28;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.RadioButton rbKrediKarti;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel25;
+        private System.Windows.Forms.Label lblVerileNakit;
+        private System.Windows.Forms.ComboBox cbOdenenNakit;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel26;
+        private System.Windows.Forms.Label lblTaksit;
+        private System.Windows.Forms.Label lblVerilenKredi;
+        private System.Windows.Forms.TextBox txtOdenenKredi;
+        private System.Windows.Forms.ComboBox cbTaksit;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel27;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.RadioButton rbNakit;
+        private System.Windows.Forms.Label lblParaUstu;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
+        private System.Windows.Forms.CheckBox cbYazdir;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
+        private System.Windows.Forms.Button btnSatisIptalEt;
+        private System.Windows.Forms.Button btnSatisYap;
+        private System.Windows.Forms.TableLayoutPanel tblBorcIslemleri;
+        private System.Windows.Forms.CheckBox chkBorc;
+        private System.Windows.Forms.TableLayoutPanel tblBorcHesabi;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel22;
+        private System.Windows.Forms.Button btnHepsi;
+        private System.Windows.Forms.TextBox txtBorc;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel21;
+        private System.Windows.Forms.Button btnHesapla;
+        private System.Windows.Forms.TextBox txtOdendi;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel20;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataGridView dgSepet;
+        private System.Windows.Forms.DataGridViewTextBoxColumn No;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Barkod;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Ad;
+        private System.Windows.Forms.DataGridViewTextBoxColumn BirimFiyat;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Miktar;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Birim;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Maliyet;
+        private System.Windows.Forms.DataGridViewTextBoxColumn BirimId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TopTutar;
+        private System.Windows.Forms.Button button4;
     }
 }

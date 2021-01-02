@@ -4,6 +4,10 @@ using Microsoft.Win32;
 using System.Drawing.Printing;
 using System.Diagnostics;
 using System.IO;
+using System.Data.Common;
+using System.Data.SqlClient;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace Otomasyon
 {
@@ -23,12 +27,11 @@ namespace Otomasyon
             satisYapildi = false,
             lisans = false,
             sifreIstesin = true,
-            herSatistaYazdir = false,
-            sql_calisiyor=false;
+            herSatistaYazdir = false;
+            public static bool sql_calisiyor { get; set; } = false;
         public static Yetki yetki = Yetki.eleman;
         public static string
             k_adi = "",
-ConnectionString,
             sifre = "",
             isletmeAdi = "",
             telefon = "",
@@ -46,43 +49,31 @@ ConnectionString,
         [STAThread]
         static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHadler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Uyguluma açık mı diye kontrol et
-            Process[] uyglama;
-            uyglama = Process.GetProcessesByName(Application.ProductName);
-            if (uyglama.Length > 1)
+            if (Process.GetProcessesByName(Application.ProductName).Length > 1)
             {
                 MessageBox.Show(Application.ProductName + " zaten açık.");
             }
             else
             {
-                checkAutoLogin();
+                Properties.Settings.Default.Load();
+                if(!Properties.Settings.Default.IsDbCreated)
+                    new DbOperations().CreateDb();
+                if(!DbOperations.CheckSqlConnection())
+                    throw new SqlServerManagementException("Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
+                CheckAutoLogin();
                 DefaultYapilandirma();
                 if (SqlConfiguration.ValueCount > 0)
                      serverType = (int)SqlConfiguration.GetValue("ServerType");
                 if(serverType==0)
-                checkSqlConnection();
-                sql_calisiyor = DbOperations.BaglantiKontrol(Program.ConnectionString);
                 Application.Run(new frmAnaForm());
             }
 
         }
-        static void checkSqlConnection()
-        {
-            DbOperations dbOperations = new DbOperations();
-            string server = dbOperations.FirstConnection();
-            if (server != null)
-            {
-                SqlConfiguration.SetValue("SqlConnectString", @"Server=" + server + ";DataBase=OtomasyonDB;Trusted_Connection=True;");
-                ConnectionString = SqlConfiguration.GetValue("SqlConnectString").ToString();
-            }
-
-            else
-                MessageBox.Show("Veritabanı ile bağlantı sağlanamadı. Yapılandırma merkezinden ayarlarınızı yapılandırmayı deneyin.", "Uyarı Mesajı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        static void checkAutoLogin()
+        static void CheckAutoLogin()
         {
             RegistryKey sifreIste = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
             try
@@ -105,6 +96,7 @@ ConnectionString,
         }
         static void DefaultYapilandirma()
         {
+            //TOO butun ayarlari RegistryKey den cek Properties.Settings e aktar. uygulamada oraya eris.
             //Yazıcı Adı
             try
             {
@@ -125,16 +117,7 @@ ConnectionString,
             {
                 Yapilandirma.SetValue("KagitTuru", "");
             }
-            //Yazdırma Seçeneği
-            try
-            {
-                herSatistaYazdir = (bool)Yapilandirma.GetValue("HerSatisiYazdir");
-            }
-            catch
-            {
-                herSatistaYazdir = false;
-                Yapilandirma.SetValue("HerSatisiYazdir", 0);
-            }
+            Properties.Settings.Default.PrintEveryBills = herSatistaYazdir;
             //Ödeme Tipi
             try
             {
@@ -160,6 +143,11 @@ ConnectionString,
                 }
             }
             catch { }
+        }
+        static void ExceptionHadler(object sender, UnhandledExceptionEventArgs args)
+        {
+            var e = (Exception)args.ExceptionObject;
+            MessageBox.Show($"Bilinmeyen bir hata ile karşılaşıldı. Hata: {e.Message}", "Bir Problem Var!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

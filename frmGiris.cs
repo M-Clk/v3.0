@@ -15,7 +15,7 @@ using System.Globalization;
 
 namespace Otomasyon
 {
-    public partial class frmGiris : Form
+    public partial class frmGiris :Form
     {
         DbOperations SqlOperation = new DbOperations();
         private RegistryKey SerialKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\License");
@@ -30,7 +30,7 @@ namespace Otomasyon
             parameterCollection[0] = new SqlParameter();
             parameterCollection[0].ParameterName = "@Adi";
             parameterCollection[0].SqlDbType = SqlDbType.NVarChar;
-            if (Program.sifreIstesin)
+            if(Program.sifreIstesin)
                 parameterCollection[0].SqlValue = txtKullaniciAdi.Text;
             else
                 parameterCollection[0].SqlValue = Program.k_adi;
@@ -38,27 +38,29 @@ namespace Otomasyon
             parameterCollection[1] = new SqlParameter();
             parameterCollection[1].ParameterName = "@Sifre";
             parameterCollection[1].SqlDbType = SqlDbType.NVarChar;
-            if (Program.sifreIstesin)
+            if(Program.sifreIstesin)
                 parameterCollection[1].SqlValue = txtSifre.Text;
-            else parameterCollection[1].SqlValue = Program.sifre;
+            else
+                parameterCollection[1].SqlValue = Program.sifre;
 
             this.Cursor = Cursors.WaitCursor;
             SqlDataReader dataRead = SqlOperation.OkuProcedure("KULLANICISORGULA", parameterCollection);
             this.Cursor = Cursors.Default;
             try
             {
-                if (dataRead != null)
+                if(dataRead != null)
                 {
-                    if (SqlOperation.con.State == ConnectionState.Closed)
+                    if(SqlOperation.con.State == ConnectionState.Closed)
                     {
                         SqlOperation.con.Open();
                     }
 
-                    if (dataRead.NextResult()) //KULLANICISORGULA Stored Procedure göre eğer iki tablo sonuç geri döndüyse kullanıcı adı doğru girildi, şifre yanlış olabilir.
+                    if(dataRead.NextResult()) //KULLANICISORGULA Stored Procedure göre eğer iki tablo sonuç geri döndüyse kullanıcı adı doğru girildi, şifre yanlış olabilir.
                     {
-                        if (dataRead.HasRows) //Eğer tablo boş değilse kullanıcı adı ve şifre doğru girildi. Kullanıcı adı ve şifreyi hafızda tut programa giriş yap.
+                        if(dataRead.HasRows) //Eğer tablo boş değilse kullanıcı adı ve şifre doğru girildi. Kullanıcı adı ve şifreyi hafızda tut programa giriş yap.
                         {
-                            if (SqlOperation.con.State == ConnectionState.Closed) SqlOperation.con.Open();
+                            if(SqlOperation.con.State == ConnectionState.Closed)
+                                SqlOperation.con.Open();
                             dataRead.Read();
                             Program.k_adi = dataRead["Adi"].ToString();
                             Program.k_id = Convert.ToInt32(dataRead["Id"]);
@@ -67,9 +69,9 @@ namespace Otomasyon
 
                             SqlOperation.con.Close();
                             //Eğer cbHatirla seçili ise kayıt defterindeki K_Adi kaydının değerini girilen kullanıcı adı ile değiştir. Seçili değilse kaydı sil.
-                            if (Program.sifreIstesin)
+                            if(Program.sifreIstesin)
                             {
-                                if (cbHatirla.Checked)
+                                if(cbHatirla.Checked)
                                 {
                                     OtomasyonKeys.SetValue("K_Adi", txtKullaniciAdi.Text);
                                 }
@@ -92,13 +94,15 @@ namespace Otomasyon
                             SqlOperation.con.Close();
                         }
                     }
-                    else MessageBox.Show(SqlOperation.bilgiMessage, "Kullanıcı Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        MessageBox.Show(SqlOperation.bilgiMessage, "Kullanıcı Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     SqlOperation.con.Close();
                 }
-                else { txtSifre.Text = ""; return; }
+                else
+                { txtSifre.Text = ""; return; }
                 Program.sifreIstesin = true;
             }
-            catch (Exception)
+            catch(Exception)
             {
 
                 throw;
@@ -128,23 +132,25 @@ namespace Otomasyon
                 smtp.SendAsync(ePosta, (object)ePosta);
                 return true;
             }
-            catch (Exception)
+            catch(Exception)
             {
                 return false;
             }
         }
         void GirisKapisi()
         {
-            if (LisansKontrol())
+            if(LisansKontrol())
                 Program.lisans = true;
             else
             {
                 Program.lisans = false;
-                if (OtomasyonKeys.GetValue("MailGittiMi") == null || (int)OtomasyonKeys.GetValue("MailGittiMi") == 0)
-                    if (MailGonder())
+                if(OtomasyonKeys.GetValue("MailGittiMi") == null || (int)OtomasyonKeys.GetValue("MailGittiMi") == 0)
+                    if(MailGonder())
                         OtomasyonKeys.SetValue("MailGittiMi", 1);
-                    else OtomasyonKeys.SetValue("MailGittiMi", 0);
-                else OtomasyonKeys.SetValue("MailGittiMi", 0);
+                    else
+                        OtomasyonKeys.SetValue("MailGittiMi", 0);
+                else
+                    OtomasyonKeys.SetValue("MailGittiMi", 0);
             }
 
             GirisYap();
@@ -153,21 +159,23 @@ namespace Otomasyon
         {
             try
             {
-                if (SerialKey.ValueCount >= 1)
+                if(SerialKey.ValueCount >= 1)
                 {
                     string Key = SerialKey.GetValue("LicenseCode").ToString();
                     ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
                     ManagementObjectCollection mcol = mangnmt.GetInstances();
                     string result = "";
-                    foreach (ManagementObject strt in mcol) result += Convert.ToString(strt["VolumeSerialNumber"]);
+                    foreach(ManagementObject strt in mcol)
+                        result += Convert.ToString(strt["VolumeSerialNumber"]);
                     result = MClkSifremele(result);
-                    if (result == Key)
+                    if(result == Key)
                         return true;
 
                 }
-                else return false;
+                else
+                    return false;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 MessageBox.Show("Lisans kontrolü yapılırken bir sorun oluştu. Hata Mesajı : " + ex.Message);
             }
@@ -188,7 +196,7 @@ namespace Otomasyon
             StringBuilder sb = new StringBuilder();
             //Her byte'i dizi içerisinden alarak string türüne dönüştürdük.
 
-            foreach (byte ba in dizi)
+            foreach(byte ba in dizi)
                 sb.Append(ba.ToString("x2").ToUpper());
             string md5li = sb.ToString();
             mclksiz = md5li;
@@ -219,7 +227,7 @@ namespace Otomasyon
             sonHal[22] = md5li[27];
             sonHal[23] = md5li[25];
             md5li = "";
-            for (int i = 0; i < 24; i++)
+            for(int i = 0; i < 24; i++)
             {
                 md5li += sonHal[i];
             }
@@ -227,7 +235,7 @@ namespace Otomasyon
         }
         private void frmGiris_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (Program.giris == false)
+            if(Program.giris == false)
             {
                 Application.ExitThread();
                 Application.Exit();
@@ -238,15 +246,16 @@ namespace Otomasyon
         {
             //Software\Otomasyon dizininde adı K_Adi olan kaydın varlığını kontrol et. Eğer varsa txtKullaniciAdi textbox'ına K_Adi kaydının değerini yaz.
             string[] degerler = OtomasyonKeys.GetValueNames();
-            for (int i = 0; i < degerler.Length; i++)
+            for(int i = 0; i < degerler.Length; i++)
             {
-                if (degerler[i] == "K_Adi")
+                if(degerler[i] == "K_Adi")
                 {
                     txtKullaniciAdi.Text = OtomasyonKeys.GetValue("K_Adi").ToString();
                     cbHatirla.Checked = true;
                     txtSifre.Select();
                 }
-                else txtKullaniciAdi.Select();
+                else
+                    txtKullaniciAdi.Select();
             }
         }
         void IsletmeKontrol()
@@ -254,7 +263,7 @@ namespace Otomasyon
             SqlDataReader IsletmeOku = SqlOperation.SqlTextReader("SELECT Adi,Telefon,Email,Adres FROM Isletme");
             try
             {
-                if (IsletmeOku.Read())
+                if(IsletmeOku.Read())
                 {
                     Program.isletmeAdi = IsletmeOku[0].ToString();
                     Program.telefon = IsletmeOku[1].ToString();
@@ -269,11 +278,11 @@ namespace Otomasyon
         }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked == true)
+            if(checkBox1.Checked == true)
             {
                 txtSifre.PasswordChar = '\0';
             }
-            else if (checkBox1.Checked == false)
+            else if(checkBox1.Checked == false)
             {
                 txtSifre.PasswordChar = '•';
             }
@@ -281,30 +290,22 @@ namespace Otomasyon
 
         private void txtSifre_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if(e.KeyCode == Keys.Enter)
                 GirisKapisi();
         }
 
         private void frmGiris_Load(object sender, EventArgs e)
         {
-            if (!Program.sql_calisiyor)
-            {
-                frmConfiguration conf = new frmConfiguration();
-                conf.ShowDialog();
-                if (Program.sql_calisiyor)
-                    DefaultLoad();
-            }
-            else
-                DefaultLoad();
-
-
+            DefaultLoad();
         }
         void DefaultLoad()
         {
             KullaniciKontrol();
             IsletmeKontrol();
-            if (!Program.sifreIstesin) GirisKapisi();
-            if (txtKullaniciAdi.TextLength > 0) txtSifre.Select();
+            if(!Program.sifreIstesin)
+                GirisKapisi();
+            if(txtKullaniciAdi.TextLength > 0)
+                txtSifre.Select();
         }
 
         private void label3_Click(object sender, EventArgs e)
