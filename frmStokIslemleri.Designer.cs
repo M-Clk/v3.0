@@ -61,6 +61,7 @@
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.chkHizliEkrandaGoster = new System.Windows.Forms.CheckBox();
             this.btnGuncelle = new System.Windows.Forms.Button();
             this.btnExcel = new System.Windows.Forms.Button();
             this.dgUrunler = new System.Windows.Forms.DataGridView();
@@ -174,10 +175,10 @@
             // 
             this.label18.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(49, 12);
+            this.label18.Location = new System.Drawing.Point(51, 12);
             this.label18.Margin = new System.Windows.Forms.Padding(3);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(120, 13);
+            this.label18.Size = new System.Drawing.Size(118, 13);
             this.label18.TabIndex = 10;
             this.label18.Text = "Adına Göre Ürün Arayın";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -295,9 +296,9 @@
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(30, 12);
+            this.label7.Location = new System.Drawing.Point(33, 12);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(60, 13);
+            this.label7.Size = new System.Drawing.Size(57, 13);
             this.label7.TabIndex = 13;
             this.label7.Text = "Maliyeti (₺)";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -324,9 +325,9 @@
             // 
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 49);
+            this.label8.Location = new System.Drawing.Point(18, 49);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(76, 13);
+            this.label8.Size = new System.Drawing.Size(72, 13);
             this.label8.TabIndex = 14;
             this.label8.Text = "Satış Fiyatı (₺)";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -408,9 +409,9 @@
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 12);
+            this.label4.Location = new System.Drawing.Point(21, 12);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(67, 13);
+            this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 7;
             this.label4.Text = "Barkod Kodu";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -430,9 +431,9 @@
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(28, 86);
+            this.label6.Location = new System.Drawing.Point(27, 86);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(62, 13);
+            this.label6.Size = new System.Drawing.Size(63, 13);
             this.label6.TabIndex = 11;
             this.label6.Text = "Stok Miktarı";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -477,7 +478,7 @@
             this.label2.Location = new System.Drawing.Point(3, 1);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(236, 13);
+            this.label2.Size = new System.Drawing.Size(230, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "*Ürün bilgisini değiştirmek için ürüne çift tıklayın.\r\n";
             // 
@@ -487,6 +488,7 @@
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.Controls.Add(this.chkHizliEkrandaGoster, 0, 0);
             this.tableLayoutPanel8.Controls.Add(this.btnGuncelle, 1, 0);
             this.tableLayoutPanel8.Controls.Add(this.btnExcel, 2, 0);
             this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -497,6 +499,19 @@
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel8.Size = new System.Drawing.Size(366, 74);
             this.tableLayoutPanel8.TabIndex = 5;
+            // 
+            // chkHizliEkrandaGoster
+            // 
+            this.chkHizliEkrandaGoster.AutoSize = true;
+            this.chkHizliEkrandaGoster.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkHizliEkrandaGoster.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkHizliEkrandaGoster.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chkHizliEkrandaGoster.Location = new System.Drawing.Point(3, 3);
+            this.chkHizliEkrandaGoster.Name = "chkHizliEkrandaGoster";
+            this.chkHizliEkrandaGoster.Size = new System.Drawing.Size(116, 68);
+            this.chkHizliEkrandaGoster.TabIndex = 24;
+            this.chkHizliEkrandaGoster.Text = "Satış Ekranında Hızlı Ürün Olarak Göster";
+            this.chkHizliEkrandaGoster.UseVisualStyleBackColor = true;
             // 
             // btnGuncelle
             // 
@@ -693,9 +708,9 @@
             // 
             this.label14.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(31, 16);
+            this.label14.Location = new System.Drawing.Point(34, 16);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(60, 13);
+            this.label14.Size = new System.Drawing.Size(57, 13);
             this.label14.TabIndex = 28;
             this.label14.Text = "Maliyeti (₺)";
             // 
@@ -703,9 +718,9 @@
             // 
             this.label13.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(15, 61);
+            this.label13.Location = new System.Drawing.Point(19, 61);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(76, 13);
+            this.label13.Size = new System.Drawing.Size(72, 13);
             this.label13.TabIndex = 29;
             this.label13.Text = "Satış Fiyatı (₺)";
             // 
@@ -798,9 +813,9 @@
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(44, 16);
+            this.label9.Location = new System.Drawing.Point(42, 16);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(67, 13);
+            this.label9.Size = new System.Drawing.Size(69, 13);
             this.label9.TabIndex = 7;
             this.label9.Text = "Barkod Kodu";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -820,9 +835,9 @@
             // 
             this.label12.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(49, 106);
+            this.label12.Location = new System.Drawing.Point(48, 106);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(62, 13);
+            this.label12.Size = new System.Drawing.Size(63, 13);
             this.label12.TabIndex = 11;
             this.label12.Text = "Stok Miktarı";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -911,7 +926,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(457, 27);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(153, 13);
+            this.label3.Size = new System.Drawing.Size(155, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Eklenecek ürünün türünü seçin";
             // 
@@ -959,7 +974,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Stok Islemleri";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmStokIslemleri_FormClosed);
-            this.Load += new System.EventHandler(this.frmStokIslemleri_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmAnaForm_AllControls);
             this.gbDuzenle.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -976,6 +990,7 @@
             this.tableLayoutPanel7.ResumeLayout(false);
             this.tableLayoutPanel7.PerformLayout();
             this.tableLayoutPanel8.ResumeLayout(false);
+            this.tableLayoutPanel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgUrunler)).EndInit();
             this.gbUrunEkle.ResumeLayout(false);
             this.gbUrunEkle.PerformLayout();
@@ -1064,5 +1079,6 @@
         private System.Windows.Forms.Label lblMaxKarakterEkle;
         private System.Windows.Forms.NotifyIcon nfBasarili;
         private System.Windows.Forms.SaveFileDialog saveExceleKaydet;
+        private System.Windows.Forms.CheckBox chkHizliEkrandaGoster;
     }
 }

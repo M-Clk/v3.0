@@ -1,38 +1,37 @@
-﻿using System;
-using System.Data.Sql;
-using System.Data.SqlClient;
+﻿using Microsoft.Win32;
+using System;
 using System.Data;
-using System.Windows.Forms;
-using Microsoft.Win32;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.Linq;
 using System.Management;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
-using System.Drawing.Printing;
-using System.Drawing;
-using System.Net.Mail;
-using Microsoft.SqlServer.Management.Smo.Wmi;
-using Otomasyon.Properties;
+using System.Windows.Forms;
 
 namespace Otomasyon
 {
-    public partial class frmConfiguration :Form
+    public partial class frmConfiguration : Form
     {
-        DbOperations SqlCn = new DbOperations();
-
-        RegistryKey SqlConfiguration = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\SqlServerConfiguration");
+        DbOperations _dbOperations = new DbOperations();
         RegistryKey SerialKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\License");
-        RegistryKey Yapilandirma = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Yazici");
+        RegistryKey _settingsKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Settings");
         RegistryKey Pass = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
-        public frmConfiguration()
+        private bool _isDbCreated;
+        public frmConfiguration(bool isDbCreated = true)
         {
             InitializeComponent();
+            _isDbCreated = isDbCreated;
+            btnVeritabaniOlustur.Visible = !isDbCreated;
         }
-        void IsletmeAdiGetır()
+        void IsletmeAdiGetir()
         {
-            if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
+            if (DbOperations.Connection.IsAvailable())
             {
-                SqlDataReader IsletmeOku = SqlCn.SqlTextReader("SELECT Adi,Telefon,Email,Adres FROM Isletme");
-                if(IsletmeOku.Read())
+                SqlDataReader IsletmeOku = _dbOperations.SqlTextReader("SELECT Adi,Telefon,Email,Adres FROM Isletme");
+                if (IsletmeOku.Read())
                 {
                     txtIsletmeAdi.Text = IsletmeOku[0].ToString();
                     txtTelefon.Text = IsletmeOku[1].ToString();
@@ -42,7 +41,6 @@ namespace Otomasyon
             }
             else
             {
-                Program.sql_calisiyor = false;
                 MessageBox.Show("Veritabanına bağlantı yapılamadı. Lütfen veritabanı yapılandırmasını doğru yaptığınızdan emin olun.", " Bağlantı Sorunu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -53,7 +51,7 @@ namespace Otomasyon
             ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
             ManagementObjectCollection mcol = mangnmt.GetInstances();
             string result = "";
-            foreach(ManagementObject strt in mcol)
+            foreach (ManagementObject strt in mcol)
             {
                 result += Convert.ToString(strt["VolumeSerialNumber"]);
             }
@@ -63,11 +61,11 @@ namespace Otomasyon
         }
         bool LisansKontrol()
         {
-            if(SerialKey.ValueCount >= 1)
+            if (SerialKey.ValueCount >= 1)
             {
-                Key = SerialKey.GetValue("LicenseCode").ToString();
+                Key = SerialKey.GetValue("LicenseCode", "").ToString();
                 string result = MClkSifremele(SeriNoAl());
-                if(result == Key)
+                if (result == Key)
                     return true;
             }
             else
@@ -76,7 +74,7 @@ namespace Otomasyon
         }
         void CBDoldur(ComboBox cb, string procString)
         {
-            cb.DataSource = SqlCn.DisconnectedProcedure(procString, new SqlParameter[0]);
+            cb.DataSource = _dbOperations.DisconnectedProcedure(procString, new SqlParameter[0]);
             cb.ValueMember = "Id";
             cb.DisplayMember = "Adi";
         }
@@ -91,7 +89,7 @@ namespace Otomasyon
             //Hashlenmiş verileri depolamak için StringBuilder nesnesi oluşturduk.
             StringBuilder sb = new StringBuilder();
             //Her byte'i dizi içerisinden alarak string türüne dönüştürdük.
-            foreach(byte ba in dizi)
+            foreach (byte ba in dizi)
                 sb.Append(ba.ToString("x2").ToUpper());
             string md5li = sb.ToString();
             mclksiz = md5li;
@@ -126,7 +124,7 @@ namespace Otomasyon
             sonHal[23] = md5li[25];
             md5li = "";
 
-            for(int i = 0; i < 24; i++)
+            for (int i = 0; i < 24; i++)
                 md5li += sonHal[i];
 
             //İlk 4 karakteri dikkate alma
@@ -141,10 +139,10 @@ namespace Otomasyon
 
         void IlkKullaniciKontrol()
         {
-            if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
+            if (DbOperations.Connection.IsAvailable())
             {
-                SqlDataReader dr = SqlCn.OkuProcedure("KULLANICILARIGETIR", new SqlParameter[0]);
-                if(dr.Read())
+                SqlDataReader dr = _dbOperations.OkuProcedure("KULLANICILARIGETIR", new SqlParameter[0]);
+                if (dr.Read())
                 {
                     txtKullaniciAdi.Text = dr["Adi"].ToString();
                     txtKullaniciAdi.Enabled = false;
@@ -152,15 +150,11 @@ namespace Otomasyon
                     txtKullaniciSifresi.Text = dr["Sifre"].ToString();
                     txtKullaniciSifresi.Enabled = false;
                     btnEkle.Enabled = false;
-                    SqlCn.con.Dispose();
-                    SqlCn.cmd.Dispose();
                 }
             }
             else
             {
-                Program.sql_calisiyor = false;
                 MessageBox.Show("Veritabanına bağlantı yapılamadı. Lütfen veritabanı yapılandırmasını doğru yaptığınızdan emin olun.", " Bağlantı Sorunu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
             }
         }
 
@@ -168,9 +162,9 @@ namespace Otomasyon
         {
             try
             {
-                if(durum)
+                if (durum)
                 {
-                    mskLisansAnahtari.Text = SerialKey.GetValue("LicenseCode").ToString();
+                    mskLisansAnahtari.Text = SerialKey.GetValue("LicenseCode", "").ToString();
                     mskLisansAnahtari.ReadOnly = true;
                     btnEtkinlestir.Enabled = false;
                     lblBilgi.Text = "Lisanslı Yazılım Kullanıyorsunuz. Teşekkür Ederiz.";
@@ -187,7 +181,7 @@ namespace Otomasyon
                     btnLisansIste.Visible = true;
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
 
                 throw;
@@ -200,9 +194,9 @@ namespace Otomasyon
             string pass = "m-clk-123";
             try
             {
-                pass = Pass.GetValue("Pass").ToString();
+                pass = Pass.GetValue("Pass", "").ToString();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Pass.SetValue("Pass", "m-clk-123");
             }
@@ -225,7 +219,7 @@ namespace Otomasyon
                 smtp.SendAsync(ePosta, (object)ePosta);
                 return true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
@@ -240,7 +234,7 @@ namespace Otomasyon
             grpLisans.Enabled = status;
             grpYaziciYapilandirma.Enabled = status;
             grpLisans.Enabled = status;
-            if(status)
+            if (status)
                 grpVeritbaniYapilandirma.BackColor = grpLisans.BackColor;
             else
                 grpVeritbaniYapilandirma.BackColor = Color.GhostWhite;
@@ -251,20 +245,23 @@ namespace Otomasyon
             try
             {
                 AktiflikKontrol(LisansKontrol());
-                if(Program.sql_calisiyor)
-                {
-                    CBDoldur(cbBirimler, "BIRIMSORGULAMA");
-                    IlkKullaniciKontrol();
-                    IsletmeAdiGetır();
-                }
-                foreach(string yazici in PrinterSettings.InstalledPrinters)
+                CBDoldur(cbBirimler, "BIRIMSORGULAMA");
+                IlkKullaniciKontrol();
+                IsletmeAdiGetir();
+                ChangeGroupsVisible(true);
+                foreach (string yazici in PrinterSettings.InstalledPrinters)
                 {
                     cbYazici.Items.Add(yazici);
                 }
                 string yaziciAdi = "";
                 try
                 {
-                    yaziciAdi = Yapilandirma.GetValue("YaziciAdi").ToString();
+                    yaziciAdi = Program.Yapilandirma.GetValue("YaziciAdi", "").ToString();
+                    int count = (int)_settingsKey.GetValue("QuickProductsCount", 10);
+
+                    rdHizliEkranUrunleriEnCokSatilan.Checked = count > 0;
+                    comboBox1.SelectedIndex = rdHizliEkranUrunleriEnCokSatilan.Checked ? (count / 5) - 1 : 0;
+                    rdHizliEkranUrunleriSadeceSectiklerim.Checked = !rdHizliEkranUrunleriEnCokSatilan.Checked;
                 }
                 catch
                 {
@@ -273,45 +270,28 @@ namespace Otomasyon
                 cbOdemeTipi.SelectedIndex = Program.odemeTipi;
 
                 chkDevamliYazdir.Checked = Program.herSatistaYazdir;
-                cbKagiTuru.DataSource = Enum.GetValues(typeof(CrystalDecisions.Shared.PaperSize));
+                //cbKagiTuru.DataSource = Enum.GetValues(typeof(CrystalDecisions.Shared.PaperSize));
                 cbKagiTuru.DisplayMember = "Value";
-                cbKagiTuru.SelectedItem = Program.kagiTuru;
+                //cbKagiTuru.SelectedItem = Program.kagiTuru;
 
-                if(yaziciAdi != null && yaziciAdi != "")
+                if (yaziciAdi != null && yaziciAdi != "")
                     cbYazici.SelectedItem = yaziciAdi;
                 else
                     cbYazici.SelectedIndex = 0;
                 uygulaKontrol = true;
-                cbSunucuTipi.SelectedIndex = 0;
-                string[] degerler = SqlConfiguration.GetValueNames();
-                if(degerler.Length == 6)
-                {
-                    txtIP.Text = SqlConfiguration.GetValue("ServerIP").ToString();
-                    txtSunucuAdi.Text = SqlConfiguration.GetValue("ServerName").ToString();
-                    txtKAdi.Text = SqlConfiguration.GetValue("DBUserName").ToString();
-                    txtSifre.Text = SqlConfiguration.GetValue("DBUserPassword").ToString();
-                    cbSunucuTipi.SelectedIndex = Convert.ToInt32(SqlConfiguration.GetValue("ServerType"));
-                }
-                else
-                {
-                    SqlConfiguration.SetValue("ServerIP", txtIP.Text);
-                    SqlConfiguration.SetValue("ServerType", cbSunucuTipi.SelectedIndex);
-                    SqlConfiguration.SetValue("ServerName", txtSunucuAdi.Text);
-                    SqlConfiguration.SetValue("DBUserName", txtKAdi.Text);
-                    SqlConfiguration.SetValue("DBUserPassword", txtSifre.Text);
-                    SqlConfiguration.SetValue("SqlConnectString", "Server=" + @SqlConfiguration.GetValue("Server=" + @SqlConfiguration.GetValue("ServerName") + ";DataBase=OtomasyonDB;Trusted_Connection=True;"));
-                }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
         private void frmConfiguration_Load(object sender, EventArgs e)
         {
-            grpVeritbaniYapilandirma.Enabled = false;
-            if(Program.sql_calisiyor)
+            txtServer.Text = (string)DbOperations.SqlConfiguration.GetValue("Server", "");
+            txtKAdi.Text = (string)DbOperations.SqlConfiguration.GetValue("DBUserName", "");
+            txtSifre.Text = (string)DbOperations.SqlConfiguration.GetValue("DBUserPassword", "");
+            if (DbOperations.IsDbCreated && DbOperations.Connection.IsAvailable())
                 LoadControls();
             else
                 ChangeGroupsVisible(false);
@@ -319,88 +299,57 @@ namespace Otomasyon
         }
 
         private void btnUygula_Click(object sender, EventArgs e)
-        {
-
-            SqlConfiguration.SetValue("ServerType", cbSunucuTipi.SelectedIndex);
-            SqlConfiguration.SetValue("ServerName", txtSunucuAdi.Text);
-
-            SqlConfiguration.SetValue("SqlConnectString", @"Server=" + @SqlConfiguration.GetValue("ServerName") + ";DataBase=OtomasyonDB;Trusted_Connection=True;");
-            Settings.Default.ConnectionString = "Server=" + @SqlConfiguration.GetValue("ServerName") + ";DataBase=OtomasyonDB;Trusted_Connection=True;";
-
-            if(cbSunucuTipi.SelectedIndex == 1)
+        {                                                                                                                                                                                                           
+            if (string.IsNullOrWhiteSpace(txtServer.Text))
             {
-                SqlConfiguration.SetValue("ServerIP", txtIP.Text);
-                SqlConfiguration.SetValue("ServerType", cbSunucuTipi.SelectedIndex);
-                SqlConfiguration.SetValue("DBUserName", txtKAdi.Text);
-                SqlConfiguration.SetValue("DBUserPassword", txtSifre.Text);
-                SqlConfiguration.SetValue("SqlConnectString", @"Server=" + @txtIP.Text + ";Database=OtomasyonDB;User ID=" + @txtKAdi.Text + ";Password = " + @txtSifre.Text + "; ");
-                Settings.Default.ConnectionString = @"Server=" + @txtIP.Text + ";Database=OtomasyonDB;User ID=" + @txtKAdi.Text + ";Password = " + @txtSifre.Text + "; ";
+                MessageBox.Show("Lütfen server adı girin.","Eksik Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
+            DbOperations.SetSqlConfiguration(txtServer.Text, txtKAdi.Text, txtSifre.Text);
+            if (DbOperations.Connection.IsAvailable())
             {
-                nfBasarili.BalloonTipText = "Veritabanı ayarlarınız yapılandırıldı. Veritabanı ile başarılı bir şekilde bağlantı kuruldu.";
+                nfBasarili.BalloonTipText = "Veritabanı ayarlarınız yapılandırıldı. " + (_isDbCreated ? "Ancak veritabanı henüz oluşmadı." : "Sistemi kullanabilirsiniz.");
                 nfBasarili.Visible = true;
                 nfBasarili.ShowBalloonTip(2000);
-                Program.sql_calisiyor = true;
+                if (DbOperations.IsDbCreated)
+                {
+
+                }
+                btnVeritabaniOlustur.Enabled = !DbOperations.IsDbCreated;
             }
             else
                 MessageBox.Show("Veritabanı ayarlarınız yapılandırıldı. Ancak veritabanı ile bağlantı kurulamadı. Bu halde hiçbir işlem yapamazsınız. ", "Uyarı Mesajı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        private void cbSunucuTipi_SelectedIndexChanged(object sender, EventArgs e)
+        private void SetEnable(bool enable)
         {
-            if(cbSunucuTipi.SelectedIndex == 1)
-                AktifEt();
-            else
-                PasifEt();
-
-        }
-
-        private void AktifEt()
-        {
-            txtSunucuAdi.Enabled = false;
-            cbSunucuAdi.Enabled = false;
-            txtIP.Enabled = true;
-            txtKAdi.Enabled = true;
-            txtSifre.Enabled = true;
-        }
-
-        private void PasifEt()
-        {
-            txtSunucuAdi.Enabled = true;
-            cbSunucuAdi.Enabled = true;
-            txtIP.Enabled = false;
-            txtKAdi.Enabled = false;
-            txtSifre.Enabled = false;
+            txtServer.Enabled = enable;
+            txtKAdi.Enabled = enable;
+            txtSifre.Enabled = enable;
         }
 
         private void btnGuncelle_Click(object sender, EventArgs e)
         {
-            if(!Program.sql_calisiyor)
-                return;
-            if(txtIsletmeAdi.Text != "")
+            if (DbOperations.Connection.IsAvailable())
             {
-                if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
-                {
-                    SqlCn.OkuScalar("Delete from Isletme; Insert Into Isletme Values ('" + txtIsletmeAdi.Text + "','" + txtTelefon.Text + "','" + txtEmail.Text + "','" + txtAdres.Text + "')", System.Data.CommandType.Text, new SqlParameter[0]);
-                    Program.isletmeAdi = txtIsletmeAdi.Text;
-                    Program.email = txtEmail.Text;
-                    Program.telefon = txtTelefon.Text;
-                    Program.adres = txtAdres.Text;
-                    nfBasarili.BalloonTipText = "İşletme bilgileri başarılı bir şekilde güncellendi.";
-                    nfBasarili.Visible = true;
-                    nfBasarili.ShowBalloonTip(2000);
-                }
-                else
-                    MessageBox.Show("Veritabanına bağlantı yapılamadı. Lütfen veritabanı yapılandırmasını doğru yaptığınızdan emin olun.", " Bağlantı Sorunu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                _dbOperations.OkuScalar("Delete from Isletme; Insert Into Isletme Values ('" + txtIsletmeAdi.Text + "','" + txtTelefon.Text + "','" + txtEmail.Text + "','" + txtAdres.Text + "')", System.Data.CommandType.Text, new SqlParameter[0]);
+                Program.isletmeAdi = txtIsletmeAdi.Text;
+                Program.email = txtEmail.Text;
+                Program.telefon = txtTelefon.Text;
+                Program.adres = txtAdres.Text;
+                nfBasarili.BalloonTipText = "İşletme bilgileri başarılı bir şekilde güncellendi.";
+                nfBasarili.Visible = true;
+                nfBasarili.ShowBalloonTip(2000);
             }
+            else
+                MessageBox.Show("Veritabanına bağlantı yapılamadı. Lütfen veritabanı yapılandırmasını doğru yaptığınızdan emin olun.", " Bağlantı Sorunu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void btnEkle_Click(object sender, EventArgs e)
         {
-            if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
+            if (DbOperations.Connection.IsAvailable())
             {
-                if(txtKullaniciSifresi.Text.Length >= 3 && txtKullaniciSifresi.Text.Length >= 6)
+                if (txtKullaniciSifresi.Text.Length >= 3 && txtKullaniciSifresi.Text.Length >= 6)
                 {
                     SqlParameter[] EkleParam = new SqlParameter[3];
                     EkleParam[0] = new SqlParameter();
@@ -417,7 +366,7 @@ namespace Otomasyon
                     EkleParam[2].ParameterName = "@Yetki";
                     EkleParam[2].SqlDbType = SqlDbType.TinyInt;
                     EkleParam[2].SqlValue = 1;
-                    if(SqlCn.GuncelleProcedure("KULLANICIEKLE", EkleParam) == 1)
+                    if (_dbOperations.GuncelleProcedure("KULLANICIEKLE", EkleParam) == 1)
                     {
 
                         nfBasarili.BalloonTipText = "İlk kullanıcı başarılı bir şekilde eklendi. " + txtKullaniciAdi.Text + " kullanıcı adı ile sisteme giriş yapabilirsiniz.";
@@ -435,17 +384,17 @@ namespace Otomasyon
 
         private void btnBirimSil_Click(object sender, EventArgs e)
         {
-            if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
+            if (DbOperations.Connection.IsAvailable())
             {
-                if(cbBirimler.Items.Count > 1)
+                if (cbBirimler.Items.Count > 1)
                 {
                     DialogResult silmeOnayi = MessageBox.Show("Seçili birimi silmek üzeresiniz. \nDevam etmek istiyor musunuz?", "Silgi Onayı", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
-                    if(silmeOnayi == DialogResult.Yes)
+                    if (silmeOnayi == DialogResult.Yes)
                     {
                         try
                         {
-                            Convert.ToInt32(SqlCn.OkuScalar("Delete from Birimler Where Id=" + cbBirimler.SelectedValue.ToString(), CommandType.Text, new SqlParameter[0]));
+                            Convert.ToInt32(_dbOperations.OkuScalar("Delete from Birimler Where Id=" + cbBirimler.SelectedValue.ToString(), CommandType.Text, new SqlParameter[0]));
                             CBDoldur(cbBirimler, "BIRIMSORGULAMA");
 
                             nfBasarili.BalloonTipText = "Seçili birim başarılı bir şekilde silindi.";
@@ -469,21 +418,21 @@ namespace Otomasyon
 
         private void btnBirimEkle_Click(object sender, EventArgs e)
         {
-            if(DbOperations.BaglantiKontrol(Settings.Default.ConnectionString))
+            if (DbOperations.Connection.IsAvailable())
             {
 
                 try
                 {
-                    for(int i = 0; i < cbBirimler.Items.Count; i++)
+                    for (int i = 0; i < cbBirimler.Items.Count; i++)
                     {
-                        if(txtBirimEkle.Text.ToUpper().Trim() == cbBirimler.Items[i].ToString().ToUpper().Trim())
+                        if (txtBirimEkle.Text.ToUpper().Trim() == cbBirimler.Items[i].ToString().ToUpper().Trim())
                         {
                             MessageBox.Show("Eklemek istediğiniz birim zaten var.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
                     }
-                    Convert.ToInt32(SqlCn.OkuScalar("Insert Into Birimler(Adi,Kisaltma) Values('" + txtBirimEkle.Text.ToUpper() + "','" + txtBirimKisaltma.Text.ToUpper() + "')", CommandType.Text, new SqlParameter[0]));
+                    Convert.ToInt32(_dbOperations.OkuScalar("Insert Into Birimler(Adi,Kisaltma) Values('" + txtBirimEkle.Text.ToUpper() + "','" + txtBirimKisaltma.Text.ToUpper() + "')", CommandType.Text, new SqlParameter[0]));
                     CBDoldur(cbBirimler, "BIRIMSORGULAMA");
                     txtBirimEkle.Text = "";
                     txtBirimKisaltma.Text = "";
@@ -491,7 +440,7 @@ namespace Otomasyon
                     nfBasarili.Visible = true;
                     nfBasarili.ShowBalloonTip(2000);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                     txtBirimEkle.Text = "";
@@ -505,7 +454,7 @@ namespace Otomasyon
 
         private void txtBirimEkle_TextChanged(object sender, EventArgs e)
         {
-            if(txtBirimEkle.Text.Length >= 3 && txtBirimKisaltma.Text.Trim().Length <= 3 && txtBirimKisaltma.Text.Trim().Length > 0)
+            if (txtBirimEkle.Text.Length >= 3 && txtBirimKisaltma.Text.Trim().Length <= 3 && txtBirimKisaltma.Text.Trim().Length > 0)
                 btnBirimEkle.Enabled = true;
             else
                 btnBirimEkle.Enabled = false;
@@ -513,7 +462,7 @@ namespace Otomasyon
 
         private void cbBirimler_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(cbBirimler.Items.Count > 1)
+            if (cbBirimler.Items.Count > 1)
                 btnBirimSil.Enabled = true;
             else
                 btnBirimSil.Enabled = false;
@@ -539,7 +488,7 @@ namespace Otomasyon
         private void btnEtkinlestir_Click(object sender, EventArgs e)
         {
             SerialKey.SetValue("LicenseCode", EksileriYokEt());
-            if(LisansKontrol())
+            if (LisansKontrol())
             {
                 nfBasarili.BalloonTipText = "Lisans anahtarınız kabul edildi! Barkodlu sistemi hayırlı günlerde kullanmanız dileğiyle...";
                 nfBasarili.BalloonTipTitle = "Lisans Onaylandı!";
@@ -552,7 +501,7 @@ namespace Otomasyon
             else
             {
                 mskLisansAnahtari.Text = "";
-                MessageBox.Show("Lisans anahtarı onaylanmadı. Lütfen tekrar deneyin. Eğer ürün anahtarınız yoksa Muhammed ÇELİK (GSM : 0534 818 31 26) ile iletişime geçin.", "Lisans Onaylanmadı", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lisans anahtarı onaylanmadı. Lütfen tekrar deneyin.", "Lisans Onaylanmadı", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -563,28 +512,28 @@ namespace Otomasyon
 
         private void btnYaziciUygula_Click(object sender, EventArgs e)
         {
-            Yapilandirma.SetValue("HerSatisiYazdir", chkDevamliYazdir.Checked);
-            Program.herSatistaYazdir = chkDevamliYazdir.Checked;
-            Yapilandirma.SetValue("YaziciAdi", cbYazici.SelectedItem);
-            Program.yaziciAdi = cbYazici.SelectedItem.ToString();
-            Yapilandirma.SetValue("KagitTuru", (CrystalDecisions.Shared.PaperSize)cbKagiTuru.SelectedValue);
-            Program.kagiTuru = (CrystalDecisions.Shared.PaperSize)cbKagiTuru.SelectedValue;
-            btnYaziciUygula.Enabled = false;
+            //Yapilandirma.SetValue("HerSatisiYazdir", chkDevamliYazdir.Checked);
+            //Program.herSatistaYazdir = chkDevamliYazdir.Checked;
+            //Yapilandirma.SetValue("YaziciAdi", cbYazici.SelectedItem);
+            //Program.yaziciAdi = cbYazici.SelectedItem.ToString();
+            ////Yapilandirma.SetValue("KagitTuru", (CrystalDecisions.Shared.PaperSize)cbKagiTuru.SelectedValue);
+            ////Program.kagiTuru = (CrystalDecisions.Shared.PaperSize)cbKagiTuru.SelectedValue;
+            //btnYaziciUygula.Enabled = false;
         }
 
         private void cbYazici_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(uygulaKontrol)
-                if(Program.yaziciAdi != cbYazici.SelectedItem.ToString() || Program.kagiTuru != (CrystalDecisions.Shared.PaperSize)cbKagiTuru.SelectedValue || chkDevamliYazdir.Checked != Program.herSatistaYazdir)
-                    btnYaziciUygula.Enabled = true;
-                else
-                    btnYaziciUygula.Enabled = false;
+            //if (uygulaKontrol)
+            //    if (Program.yaziciAdi != cbYazici.SelectedItem.ToString() || Program.kagiTuru != (CrystalDecisions.Shared.PaperSize)cbKagiTuru.SelectedValue || chkDevamliYazdir.Checked != Program.herSatistaYazdir)
+            //        btnYaziciUygula.Enabled = true;
+            //    else
+            //        btnYaziciUygula.Enabled = false;
 
         }
 
         private void txtBirimEkle_Enter(object sender, EventArgs e)
         {
-            if(txtBirimEkle.Text == "Adı")
+            if (txtBirimEkle.Text == "Adı")
             {
                 txtBirimEkle.Text = "";
                 txtBirimEkle.ForeColor = System.Drawing.Color.Black;
@@ -593,7 +542,7 @@ namespace Otomasyon
 
         private void textBox1_Enter(object sender, EventArgs e)
         {
-            if(txtBirimKisaltma.Text == "Kısaltma")
+            if (txtBirimKisaltma.Text == "Kısaltma")
             {
                 txtBirimKisaltma.Text = "";
                 txtBirimKisaltma.ForeColor = System.Drawing.Color.Black;
@@ -610,7 +559,7 @@ namespace Otomasyon
 
         private void btnLisansIste_Click(object sender, EventArgs e)
         {
-            if(MailGonder())
+            if (MailGonder())
             { MessageBox.Show("Lisans anahtarı talebiniz iletildi. Geri dönüt bekleyin.", "İşlem Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information); btnLisansIste.Visible = false; }
             else
                 MessageBox.Show("Bir sorun oluştu lütfen internet bağlantınız olduğundan emin olun ve tekrar deneyin. Ya da \"mclk.yzlm@gmail.com\" e-posta adresi aracılığı ile lisans anahtarı talep edin.", "Başarısız İşlem", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -623,12 +572,12 @@ namespace Otomasyon
 
         private void cbKagiTuru_MouseHover(object sender, EventArgs e)
         {
-            toolTip1.SetToolTip(cbKagiTuru, cbKagiTuru.SelectedItem.ToString());
+            //toolTip1.SetToolTip(cbKagiTuru, cbKagiTuru.SelectedItem.ToString());
         }
 
         private void txtBirimEkle_Leave(object sender, EventArgs e)
         {
-            if(txtBirimEkle.Text == "")
+            if (txtBirimEkle.Text == "")
             {
                 txtBirimEkle.ForeColor = System.Drawing.Color.DarkGray;
                 txtBirimEkle.Text = "Adı";
@@ -638,7 +587,7 @@ namespace Otomasyon
 
         private void txtBirimKisaltma_Leave(object sender, EventArgs e)
         {
-            if(txtBirimKisaltma.Text == "")
+            if (txtBirimKisaltma.Text == "")
             {
                 txtBirimKisaltma.ForeColor = System.Drawing.Color.DarkGray;
                 txtBirimKisaltma.Text = "Kısaltma";
@@ -649,12 +598,12 @@ namespace Otomasyon
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Program.odemeTipi = cbOdemeTipi.SelectedIndex;
-            Yapilandirma.SetValue("OdemeTipi", cbOdemeTipi.SelectedIndex);
+            Program.Yapilandirma.SetValue("OdemeTipi", cbOdemeTipi.SelectedIndex);
         }
 
         private void frmConfiguration_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Control && e.KeyCode == Keys.M)
+            if (e.Control && e.KeyCode == Keys.M)
             {
                 txtHidden.Focus();
             }
@@ -662,10 +611,42 @@ namespace Otomasyon
 
         private void txtHidden_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter && txtHidden.Text.Equals("Clk12345"))
+            if (e.KeyCode == Keys.Enter && txtHidden.Text.Equals("Clk"))
                 grpVeritbaniYapilandirma.Enabled = true;
             else
                 grpVeritbaniYapilandirma.Enabled = false;
+        }
+
+        private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            setQuickProductsCount();
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            setQuickProductsCount();
+            comboBox1.Enabled = rdHizliEkranUrunleriEnCokSatilan.Checked;
+        }
+        private void setQuickProductsCount()
+        {
+            Program.quickProductsCount = rdHizliEkranUrunleriEnCokSatilan.Checked ? (comboBox1.SelectedIndex + 1) * 5 : 0;
+            _settingsKey.SetValue("QuickProductsCount", Program.quickProductsCount);
+        }
+
+        private void btnVeritabaniOlustur_Click(object sender, EventArgs e)
+        {
+            var failedCommands = _dbOperations.CreateDb();
+            if (!failedCommands.Any())
+            {
+                MessageBox.Show("TÜm komutlar çaşıştırıldı.", "Veritabanı Başarıyla Oluştu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btnVeritabaniOlustur.Visible = false;
+                LoadControls();
+                return;
+            }
+
+            var commandsStr = string.Join("\n", failedCommands);
+            Clipboard.SetText(commandsStr);
+            MessageBox.Show("Hatalı komutlar ponoya kopyalandı. Başarısız Komutlar :\n" + commandsStr, "Veritabanı Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Data.Common;
 using System.Data.SqlClient;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
 
 namespace Otomasyon
 {
@@ -18,8 +16,8 @@ namespace Otomasyon
             yonetici = 1,
             eleman = 0
         }
-        public static RegistryKey SqlConfiguration = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\SqlServerConfiguration");
-        static RegistryKey Yapilandirma = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Yazici");
+
+        public static RegistryKey Yapilandirma;
         public static bool
             stok_calisiyor = false,
             giris = false,
@@ -28,8 +26,8 @@ namespace Otomasyon
             lisans = false,
             sifreIstesin = true,
             herSatistaYazdir = false;
-            public static bool sql_calisiyor { get; set; } = false;
         public static Yetki yetki = Yetki.eleman;
+
         public static string
             k_adi = "",
             sifre = "",
@@ -42,7 +40,7 @@ namespace Otomasyon
         public static CrystalDecisions.Shared.PaperSize
             kagiTuru = CrystalDecisions.Shared.PaperSize.PaperA4;
 
-        public static int k_id = 1, odemeTipi = 0, serverType=0;
+        public static int k_id = 1, odemeTipi = 0, quickProductsCount = 0;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -52,6 +50,7 @@ namespace Otomasyon
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHadler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            initialize();
             // Uyguluma açık mı diye kontrol et
             if (Process.GetProcessesByName(Application.ProductName).Length > 1)
             {
@@ -59,17 +58,16 @@ namespace Otomasyon
             }
             else
             {
-                Properties.Settings.Default.Load();
-                if(!Properties.Settings.Default.IsDbCreated)
-                    new DbOperations().CreateDb();
-                if(!DbOperations.CheckSqlConnection())
-                    throw new SqlServerManagementException("Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
+                if (!DbOperations.IsDbCreated)
+                {
+                    Application.Run(new frmAnaForm(false));
+                    return;
+                }
+                if (!DbOperations.Connection.IsAvailable())
+                    throw new InvalidOperationException("Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
                 CheckAutoLogin();
                 DefaultYapilandirma();
-                if (SqlConfiguration.ValueCount > 0)
-                     serverType = (int)SqlConfiguration.GetValue("ServerType");
-                if(serverType==0)
-                Application.Run(new frmAnaForm());
+                Application.Run(new frmAnaForm(true));
             }
 
         }
@@ -100,7 +98,7 @@ namespace Otomasyon
             //Yazıcı Adı
             try
             {
-                yaziciAdi = Yapilandirma.GetValue("YaziciAdi").ToString();
+                yaziciAdi = Yapilandirma.GetValue("YaziciAdi")?.ToString();
             }
             catch (Exception)
             {
@@ -111,7 +109,7 @@ namespace Otomasyon
             try
             {
                 
-                kayitliKagitTuru = Yapilandirma.GetValue("KagitTuru").ToString();
+                kayitliKagitTuru = Yapilandirma.GetValue("KagitTuru")?.ToString();
             }
             catch (Exception)
             {
@@ -129,7 +127,7 @@ namespace Otomasyon
             }
             try
             {
-                if (yaziciAdi == null || yaziciAdi == "") yaziciAdi = PrinterSettings.InstalledPrinters[0];
+                if (string.IsNullOrEmpty(yaziciAdi)) yaziciAdi = PrinterSettings.InstalledPrinters[0];
                 Array paperDizi = Enum.GetValues(typeof(CrystalDecisions.Shared.PaperSize));
 
                 foreach (var item in paperDizi)
@@ -149,5 +147,12 @@ namespace Otomasyon
             var e = (Exception)args.ExceptionObject;
             MessageBox.Show($"Bilinmeyen bir hata ile karşılaşıldı. Hata: {e.Message}", "Bir Problem Var!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        private static void initialize()
+        {
+            DbOperations.InitializeSqlConfiguration();
+            Yapilandirma = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Yazici");
+        }
+
     }
 }

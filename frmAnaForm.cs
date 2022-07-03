@@ -13,7 +13,7 @@ namespace Otomasyon
 {
     public partial class frmAnaForm :Form
     {
-        int musteriId = 0, sonSatisId = 0;
+        public int musteriId = 0, sonSatisId = 0;
 
         decimal toplam = 0, Borc = 0, seciliMiktar;
 
@@ -26,10 +26,15 @@ namespace Otomasyon
             sepette_var_yeterli
         }
         bool a = true, nf_cagirdi = false;
-        public frmAnaForm()
+        public frmAnaForm(bool isDbCreated)
         {
             InitializeComponent();
-
+            if (!isDbCreated)
+            {
+                var yapilandirma = new frmConfiguration(false);
+                yapilandirma.ShowDialog();
+            }
+            frmStok = frmStokIslemleri.SingletonStokFrmGetir();
         }
         DbOperations SqlOperation = new DbOperations();
         frmStokIslemleri frmStok;
@@ -55,7 +60,7 @@ namespace Otomasyon
                 if(nf_cagirdi)
                     nf_cagirdi = false;
                 Program.stok_calisiyor = true;
-                frmStok = new frmStokIslemleri();
+                frmStok = frmStokIslemleri.SingletonStokFrmGetir();
                 frmStok.ShowDialog();
             }
             txtBarkodOku.Text = "";
@@ -147,7 +152,7 @@ namespace Otomasyon
         {
             if(e.KeyCode == Keys.Right)
                 cbMiktar.Select();
-            if(e.KeyCode == Keys.Enter && txtBarkodOku.Text != "")
+            if(e.KeyCode == Keys.Enter && txtBarkodOku.Text != "" && !_searchingProducs)
                 UrunSorgula();
         }
         miktarDurum MiktarHesapla(string kod, decimal miktar, decimal istenenMiktar) //Sorgulanan ürünün miktarının yeterliliğini kontrol et ve sepette varsa seçilen miktarın eklemesi için yoksa sepete eklemesi için enum gönder
@@ -283,7 +288,7 @@ namespace Otomasyon
                     }
                     finally
                     {
-                        SqlOperation.con.Dispose();
+                        DbOperations.Connection.Close();
                         SqlOperation.cmd.Dispose();
                     }
                 }
@@ -327,7 +332,6 @@ namespace Otomasyon
                 txtBarkodOku.Text = "";
                 txtBarkodOku.Select();
             }
-
         }
         private void dgSepet_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
@@ -523,8 +527,8 @@ namespace Otomasyon
                 return;
             SatisiYap();
             SatisDetayiEkle();
-            if(cbYazdir.Checked)
-                DetayiYazdir();
+            //if(cbYazdir.Checked)
+            //    DetayiYazdir();
             //DetayiExceleAktar();
             //Stok güncellemesi satış detayı eklendiğinde trigger tetiklenecek ve otomatik güncelleyecektir.
             //İşin çoğu bölümü SQL Server da yapılacak
@@ -545,234 +549,234 @@ namespace Otomasyon
         }
         private ExcelPackage _package;
         Color acikGri = ColorTranslator.FromHtml("#f2f2f2");
-        void DetayiYazdir()
-        {
-            try
-            {
-                if(Program.kagiTuru == CrystalDecisions.Shared.PaperSize.PaperEnvelopeB6)
-                {
-                    CrystalReport2 rapor = new CrystalReport2(); //6mm olan kağıt için fatura düzenle
-                    rapor.Load(Application.StartupPath + "\\CrystalReport2.rpt");
-                    dsFatura ftrTable = new dsFatura();
+        //void DetayiYazdir()
+        //{
+        //    try
+        //    {
+        //        if(Program.kagiTuru == CrystalDecisions.Shared.PaperSize.PaperEnvelopeB6)
+        //        {
+        //            CrystalReport2 rapor = new CrystalReport2(); //6mm olan kağıt için fatura düzenle
+        //            rapor.Load(Application.StartupPath + "\\CrystalReport2.rpt");
+        //            dsFatura ftrTable = new dsFatura();
 
-                    for(int i = 0; i < dgSepet.Rows.Count; i++)
-                    {
-                        ftrTable.Tables["tblFatura"].Rows.Add();
-                        ftrTable.Tables["tblFatura"].Rows[i][0] = dgSepet.Rows[i].Cells["Ad"].Value.ToString() + " (" + dgSepet.Rows[i].Cells["Miktar"].Value.ToString() + " " + dgSepet.Rows[i].Cells["Birim"].Value.ToString() + " X " + dgSepet.Rows[i].Cells["BirimFiyat"].Value.ToString() + " TL)";
-                        ftrTable.Tables["tblFatura"].Rows[i][1] = Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
-                    }
-                    rapor.SetDataSource(ftrTable);
-                    rapor.ParameterFields["TopTutar"].CurrentValues.AddValue(toplam);
-                    rapor.ParameterFields["ReportName"].CurrentValues.AddValue(Program.isletmeAdi.ToUpper() + "\n" + Program.adres);
-                    rapor.ParameterFields["Tarih"].CurrentValues.AddValue("TARİH : " + DateTime.Now.ToShortDateString());
-                    rapor.ParameterFields["Saat"].CurrentValues.AddValue("SAAT  : " + DateTime.Now.ToShortTimeString());
-                    rapor.ParameterFields["SatisNo"].CurrentValues.AddValue(sonSatisId.ToString("D10"));
-                    rapor.ParameterFields["KasiyerAdi"].CurrentValues.AddValue(Program.k_adi.ToUpper());
+        //            for(int i = 0; i < dgSepet.Rows.Count; i++)
+        //            {
+        //                ftrTable.Tables["tblFatura"].Rows.Add();
+        //                ftrTable.Tables["tblFatura"].Rows[i][0] = dgSepet.Rows[i].Cells["Ad"].Value.ToString() + " (" + dgSepet.Rows[i].Cells["Miktar"].Value.ToString() + " " + dgSepet.Rows[i].Cells["Birim"].Value.ToString() + " X " + dgSepet.Rows[i].Cells["BirimFiyat"].Value.ToString() + " TL)";
+        //                ftrTable.Tables["tblFatura"].Rows[i][1] = Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
+        //            }
+        //            rapor.SetDataSource(ftrTable);
+        //            rapor.ParameterFields["TopTutar"].CurrentValues.AddValue(toplam);
+        //            rapor.ParameterFields["ReportName"].CurrentValues.AddValue(Program.isletmeAdi.ToUpper() + "\n" + Program.adres);
+        //            rapor.ParameterFields["Tarih"].CurrentValues.AddValue("TARİH : " + DateTime.Now.ToShortDateString());
+        //            rapor.ParameterFields["Saat"].CurrentValues.AddValue("SAAT  : " + DateTime.Now.ToShortTimeString());
+        //            rapor.ParameterFields["SatisNo"].CurrentValues.AddValue(sonSatisId.ToString("D10"));
+        //            rapor.ParameterFields["KasiyerAdi"].CurrentValues.AddValue(Program.k_adi.ToUpper());
 
-                    if(odenenNakit == 0)
-                    {
-                        rapor.ParameterFields["Nakit"].CurrentValues.AddValue("KREDİ KARTI");
-                        rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
-                    }
-                    else
-                    {
-                        rapor.ParameterFields["Nakit"].CurrentValues.AddValue("NAKİT");
-                        rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue(" ₺ " + odenenNakit.ToString("F2"));
-                        decimal seciliParaUstu = odenenNakit + odenenKredi - toplam;
-                        if(seciliParaUstu > 0)
-                        {
-                            rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + seciliParaUstu.ToString("F2"));
-                            rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("PARA ÜSTÜ");
-                        }
-                        else if(odenenKredi <= 0)
-                        {
-                            rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
-                            rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
-                        }
-                        if(odenenKredi > 0)
-                        {
-                            if(seciliParaUstu <= 0)
-                            {
-                                rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                                rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("KREDİ KARTI");
-                                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                            }
-                            else
-                            {
-                                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("KREDİ KARTI");
-                                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                            }
-                        }
-                        else
-                        {
-                            rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                            rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                        }
-                    }
+        //            if(odenenNakit == 0)
+        //            {
+        //                rapor.ParameterFields["Nakit"].CurrentValues.AddValue("KREDİ KARTI");
+        //                rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
+        //            }
+        //            else
+        //            {
+        //                rapor.ParameterFields["Nakit"].CurrentValues.AddValue("NAKİT");
+        //                rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue(" ₺ " + odenenNakit.ToString("F2"));
+        //                decimal seciliParaUstu = odenenNakit + odenenKredi - toplam;
+        //                if(seciliParaUstu > 0)
+        //                {
+        //                    rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + seciliParaUstu.ToString("F2"));
+        //                    rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("PARA ÜSTÜ");
+        //                }
+        //                else if(odenenKredi <= 0)
+        //                {
+        //                    rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
+        //                    rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
+        //                }
+        //                if(odenenKredi > 0)
+        //                {
+        //                    if(seciliParaUstu <= 0)
+        //                    {
+        //                        rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                        rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("KREDİ KARTI");
+        //                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                    }
+        //                    else
+        //                    {
+        //                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("KREDİ KARTI");
+        //                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                    rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                }
+        //            }
 
-                    rapor.PrintOptions.PrinterName = Program.yaziciAdi;
-                    rapor.PrintOptions.PaperSize = Program.kagiTuru;
-                    rapor.PrintToPrinter(1, false, 0, 0);
-                    rapor.Dispose();
-                    ftrTable.Dispose();
+        //            rapor.PrintOptions.PrinterName = Program.yaziciAdi;
+        //            rapor.PrintOptions.PaperSize = Program.kagiTuru;
+        //            rapor.PrintToPrinter(1, false, 0, 0);
+        //            rapor.Dispose();
+        //            ftrTable.Dispose();
 
-                }
-                else if(Program.kagiTuru == CrystalDecisions.Shared.PaperSize.PaperEnvelope11)
-                {
+        //        }
+        //        else if(Program.kagiTuru == CrystalDecisions.Shared.PaperSize.PaperEnvelope11)
+        //        {
 
-                    CrystalReport3 rapor = new CrystalReport3();
-                    rapor.Load(Application.StartupPath + "\\CrystalReport3.rpt");
-                    dsFatura ftrTable = new dsFatura();
+        //            CrystalReport3 rapor = new CrystalReport3();
+        //            rapor.Load(Application.StartupPath + "\\CrystalReport3.rpt");
+        //            dsFatura ftrTable = new dsFatura();
 
-                    for(int i = 0; i < dgSepet.Rows.Count; i++)
-                    {
-                        ftrTable.Tables["tblFatura"].Rows.Add();
-                        ftrTable.Tables["tblFatura"].Rows[i][0] = dgSepet.Rows[i].Cells["Ad"].Value.ToString() + " (" + dgSepet.Rows[i].Cells["Miktar"].Value.ToString() + " " + dgSepet.Rows[i].Cells["Birim"].Value.ToString() + " X " + dgSepet.Rows[i].Cells["BirimFiyat"].Value.ToString() + " TL)";
-                        ftrTable.Tables["tblFatura"].Rows[i][1] = Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
-                    }
-                    rapor.SetDataSource(ftrTable);
-                    rapor.ParameterFields["TopTutar"].CurrentValues.AddValue(toplam);
-                    rapor.ParameterFields["ReportName"].CurrentValues.AddValue(Program.isletmeAdi.ToUpper() + "\n" + Program.adres);
-                    rapor.ParameterFields["Tarih"].CurrentValues.AddValue("TARİH : " + DateTime.Now.ToShortDateString());
-                    rapor.ParameterFields["Saat"].CurrentValues.AddValue("SAAT  : " + DateTime.Now.ToShortTimeString());
-                    rapor.ParameterFields["SatisNo"].CurrentValues.AddValue(sonSatisId.ToString("D10"));
-                    rapor.ParameterFields["KasiyerAdi"].CurrentValues.AddValue(Program.k_adi.ToUpper());
+        //            for(int i = 0; i < dgSepet.Rows.Count; i++)
+        //            {
+        //                ftrTable.Tables["tblFatura"].Rows.Add();
+        //                ftrTable.Tables["tblFatura"].Rows[i][0] = dgSepet.Rows[i].Cells["Ad"].Value.ToString() + " (" + dgSepet.Rows[i].Cells["Miktar"].Value.ToString() + " " + dgSepet.Rows[i].Cells["Birim"].Value.ToString() + " X " + dgSepet.Rows[i].Cells["BirimFiyat"].Value.ToString() + " TL)";
+        //                ftrTable.Tables["tblFatura"].Rows[i][1] = Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
+        //            }
+        //            rapor.SetDataSource(ftrTable);
+        //            rapor.ParameterFields["TopTutar"].CurrentValues.AddValue(toplam);
+        //            rapor.ParameterFields["ReportName"].CurrentValues.AddValue(Program.isletmeAdi.ToUpper() + "\n" + Program.adres);
+        //            rapor.ParameterFields["Tarih"].CurrentValues.AddValue("TARİH : " + DateTime.Now.ToShortDateString());
+        //            rapor.ParameterFields["Saat"].CurrentValues.AddValue("SAAT  : " + DateTime.Now.ToShortTimeString());
+        //            rapor.ParameterFields["SatisNo"].CurrentValues.AddValue(sonSatisId.ToString("D10"));
+        //            rapor.ParameterFields["KasiyerAdi"].CurrentValues.AddValue(Program.k_adi.ToUpper());
 
-                    if(odenenNakit == 0)
-                    {
-                        rapor.ParameterFields["Nakit"].CurrentValues.AddValue("KREDİ KARTI");
-                        rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
-                    }
-                    else
-                    {
-                        rapor.ParameterFields["Nakit"].CurrentValues.AddValue("NAKİT");
-                        rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue(" ₺ " + odenenNakit.ToString("F2"));
-                        decimal seciliParaUstu = odenenNakit + odenenKredi - toplam;
-                        if(seciliParaUstu > 0)
-                        {
-                            rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + seciliParaUstu.ToString("F2"));
-                            rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("PARA ÜSTÜ");
-                        }
-                        else if(odenenKredi <= 0)
-                        {
-                            rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
-                            rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
-                        }
-                        if(odenenKredi > 0)
-                        {
-                            if(seciliParaUstu <= 0)
-                            {
-                                rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                                rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("KREDİ KARTI");
-                                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                            }
-                            else
-                            {
-                                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("KREDİ KARTI");
-                                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                            }
-                        }
-                        else
-                        {
-                            rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                            rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                        }
-                    }
+        //            if(odenenNakit == 0)
+        //            {
+        //                rapor.ParameterFields["Nakit"].CurrentValues.AddValue("KREDİ KARTI");
+        //                rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
+        //            }
+        //            else
+        //            {
+        //                rapor.ParameterFields["Nakit"].CurrentValues.AddValue("NAKİT");
+        //                rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue(" ₺ " + odenenNakit.ToString("F2"));
+        //                decimal seciliParaUstu = odenenNakit + odenenKredi - toplam;
+        //                if(seciliParaUstu > 0)
+        //                {
+        //                    rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + seciliParaUstu.ToString("F2"));
+        //                    rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("PARA ÜSTÜ");
+        //                }
+        //                else if(odenenKredi <= 0)
+        //                {
+        //                    rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
+        //                    rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
+        //                }
+        //                if(odenenKredi > 0)
+        //                {
+        //                    if(seciliParaUstu <= 0)
+        //                    {
+        //                        rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                        rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("KREDİ KARTI");
+        //                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                    }
+        //                    else
+        //                    {
+        //                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("KREDİ KARTI");
+        //                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                    rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                }
+        //            }
 
-                    rapor.PrintOptions.PrinterName = Program.yaziciAdi;
-                    rapor.PrintOptions.PaperSize = Program.kagiTuru;
-                    rapor.PrintToPrinter(1, false, 0, 0);
-                    rapor.Dispose();
-                    ftrTable.Dispose();
-                }
-                else
-                {
-                    CrystalReport1 rapor = new CrystalReport1();
-                    rapor.Load(Application.StartupPath + "\\CrystalReport1.rpt");
-                    dsFatura ftrTable = new dsFatura();
+        //            rapor.PrintOptions.PrinterName = Program.yaziciAdi;
+        //            rapor.PrintOptions.PaperSize = Program.kagiTuru;
+        //            rapor.PrintToPrinter(1, false, 0, 0);
+        //            rapor.Dispose();
+        //            ftrTable.Dispose();
+        //        }
+        //        else
+        //        {
+        //            CrystalReport1 rapor = new CrystalReport1();
+        //            rapor.Load(Application.StartupPath + "\\CrystalReport1.rpt");
+        //            dsFatura ftrTable = new dsFatura();
 
-                    for(int i = 0; i < dgSepet.Rows.Count; i++)
-                    {
-                        ftrTable.Tables["tblFatura"].Rows.Add();
-                        ftrTable.Tables["tblFatura"].Rows[i][0] = dgSepet.Rows[i].Cells["Ad"].Value.ToString() + " (" + dgSepet.Rows[i].Cells["Miktar"].Value.ToString() + " " + dgSepet.Rows[i].Cells["Birim"].Value.ToString() + " X " + dgSepet.Rows[i].Cells["BirimFiyat"].Value.ToString() + " TL)";
-                        ftrTable.Tables["tblFatura"].Rows[i][1] = Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
-                    }
-                    rapor.SetDataSource(ftrTable);
-                    rapor.ParameterFields["TopTutar"].CurrentValues.AddValue(toplam);
-                    rapor.ParameterFields["ReportName"].CurrentValues.AddValue(Program.isletmeAdi.ToUpper() + "\n" + Program.adres);
-                    rapor.ParameterFields["Tarih"].CurrentValues.AddValue("TARİH : " + DateTime.Now.ToShortDateString());
-                    rapor.ParameterFields["Saat"].CurrentValues.AddValue("SAAT  : " + DateTime.Now.ToShortTimeString());
-                    rapor.ParameterFields["SatisNo"].CurrentValues.AddValue(sonSatisId.ToString("D10"));
-                    rapor.ParameterFields["KasiyerAdi"].CurrentValues.AddValue(Program.k_adi.ToUpper());
+        //            for(int i = 0; i < dgSepet.Rows.Count; i++)
+        //            {
+        //                ftrTable.Tables["tblFatura"].Rows.Add();
+        //                ftrTable.Tables["tblFatura"].Rows[i][0] = dgSepet.Rows[i].Cells["Ad"].Value.ToString() + " (" + dgSepet.Rows[i].Cells["Miktar"].Value.ToString() + " " + dgSepet.Rows[i].Cells["Birim"].Value.ToString() + " X " + dgSepet.Rows[i].Cells["BirimFiyat"].Value.ToString() + " TL)";
+        //                ftrTable.Tables["tblFatura"].Rows[i][1] = Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
+        //            }
+        //            rapor.SetDataSource(ftrTable);
+        //            rapor.ParameterFields["TopTutar"].CurrentValues.AddValue(toplam);
+        //            rapor.ParameterFields["ReportName"].CurrentValues.AddValue(Program.isletmeAdi.ToUpper() + "\n" + Program.adres);
+        //            rapor.ParameterFields["Tarih"].CurrentValues.AddValue("TARİH : " + DateTime.Now.ToShortDateString());
+        //            rapor.ParameterFields["Saat"].CurrentValues.AddValue("SAAT  : " + DateTime.Now.ToShortTimeString());
+        //            rapor.ParameterFields["SatisNo"].CurrentValues.AddValue(sonSatisId.ToString("D10"));
+        //            rapor.ParameterFields["KasiyerAdi"].CurrentValues.AddValue(Program.k_adi.ToUpper());
 
-                    if(odenenNakit == 0)
-                    {
-                        rapor.ParameterFields["Nakit"].CurrentValues.AddValue("KREDİ KARTI");
-                        rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                        rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
-                    }
-                    else
-                    {
-                        rapor.ParameterFields["Nakit"].CurrentValues.AddValue("NAKİT");
-                        rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue(" ₺ " + odenenNakit.ToString("F2"));
-                        decimal seciliParaUstu = odenenNakit + odenenKredi - toplam;
-                        if(seciliParaUstu > 0)
-                        {
-                            rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + seciliParaUstu.ToString("F2"));
-                            rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("PARA ÜSTÜ");
-                        }
-                        else if(odenenKredi <= 0)
-                        {
-                            rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
-                            rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
-                        }
-                        if(odenenKredi > 0)
-                        {
-                            if(seciliParaUstu <= 0)
-                            {
-                                rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                                rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("KREDİ KARTI");
-                                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                            }
-                            else
-                            {
-                                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("KREDİ KARTI");
-                                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
-                            }
-                        }
-                        else
-                        {
-                            rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
-                            rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
-                        }
-                    }
+        //            if(odenenNakit == 0)
+        //            {
+        //                rapor.ParameterFields["Nakit"].CurrentValues.AddValue("KREDİ KARTI");
+        //                rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
+        //            }
+        //            else
+        //            {
+        //                rapor.ParameterFields["Nakit"].CurrentValues.AddValue("NAKİT");
+        //                rapor.ParameterFields["NakitDegeri"].CurrentValues.AddValue(" ₺ " + odenenNakit.ToString("F2"));
+        //                decimal seciliParaUstu = odenenNakit + odenenKredi - toplam;
+        //                if(seciliParaUstu > 0)
+        //                {
+        //                    rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + seciliParaUstu.ToString("F2"));
+        //                    rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("PARA ÜSTÜ");
+        //                }
+        //                else if(odenenKredi <= 0)
+        //                {
+        //                    rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("");
+        //                    rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("");
+        //                }
+        //                if(odenenKredi > 0)
+        //                {
+        //                    if(seciliParaUstu <= 0)
+        //                    {
+        //                        rapor.ParameterFields["ParaUstuDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                        rapor.ParameterFields["ParaUstu"].CurrentValues.AddValue("KREDİ KARTI");
+        //                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                    }
+        //                    else
+        //                    {
+        //                        rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("KREDİ KARTI");
+        //                        rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("₺ " + odenenKredi.ToString("F2"));
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    rapor.ParameterFields["KrediKarti"].CurrentValues.AddValue("");
+        //                    rapor.ParameterFields["KrediDegeri"].CurrentValues.AddValue("");
+        //                }
+        //            }
 
-                    rapor.PrintOptions.PrinterName = Program.yaziciAdi;
-                    rapor.PrintOptions.PaperSize = Program.kagiTuru;
-                    rapor.PrintToPrinter(1, false, 0, 0);
-                    rapor.Dispose();
-                    ftrTable.Dispose();
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Satış işlemi gerçekleşti ancak fatura yazdırılırken bir sorunla karşılaşıldı. Lütfen varsayılan olarak ayarlanmış yazıcının (\"Seçili Yazıcı\") sorunsuz bir şekilde çalıştığından ve bağlı olduğundan emin olun. Daha sonra da fatura yazdırabileceğinizi unutmayın.\n Hata Mesajı : " + ex.Message, "Yadırma Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        //            rapor.PrintOptions.PrinterName = Program.yaziciAdi;
+        //            rapor.PrintOptions.PaperSize = Program.kagiTuru;
+        //            rapor.PrintToPrinter(1, false, 0, 0);
+        //            rapor.Dispose();
+        //            ftrTable.Dispose();
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        MessageBox.Show("Satış işlemi gerçekleşti ancak fatura yazdırılırken bir sorunla karşılaşıldı. Lütfen varsayılan olarak ayarlanmış yazıcının (\"Seçili Yazıcı\") sorunsuz bir şekilde çalıştığından ve bağlı olduğundan emin olun. Daha sonra da fatura yazdırabileceğinizi unutmayın.\n Hata Mesajı : " + ex.Message, "Yadırma Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
         void DetayiExceleAktar()
         {
             saveExceleKaydet.Filter = "Excel Dosyaları (*.xlsx)|*.xlsx";
@@ -916,11 +920,9 @@ namespace Otomasyon
             { }
             finally
             {
-                SqlOperation.con.Dispose();
+                DbOperations.Connection.Close();
                 SqlOperation.cmd.Dispose();
             }
-
-
         }
         void SatisDetayiEkle()
         {
@@ -1284,9 +1286,6 @@ namespace Otomasyon
             }
             else
                 rbNakit.BackColor = tableLayoutPanel25.BackColor = rbKrediKarti.BackColor;
-
-
-
         }
         private void rbKrediKarti_CheckedChanged(object sender, EventArgs e)
         {
@@ -1356,6 +1355,7 @@ namespace Otomasyon
         }
         void UrunSorgula()
         {
+            _searchingProducs = true;
             try //Her ihtimale karşı miktarın sayısal girilip girilmediğini kontrol et
             {
                 if(Convert.ToDecimal(cbMiktar.Text) > 0) //Miktar 0'dan büyükse işlem yap değilse uyar ve çık
@@ -1454,13 +1454,13 @@ namespace Otomasyon
 
                     }
                     txtBarkodOku.Text = ""; //Barkod kodu girişini sıfırla
-                    SqlOperation.con.Dispose();
+                    DbOperations.Connection.Close();
                     SqlOperation.cmd.Dispose();
 
                 }
                 else
                 {
-                    SqlOperation.con.Dispose();
+                    DbOperations.Connection.Close();
                     SqlOperation.cmd.Dispose();
                     return;
                 }
@@ -1470,8 +1470,9 @@ namespace Otomasyon
             }
             finally
             {
-                SqlOperation.con.Dispose();
+                DbOperations.Connection.Close();
                 SqlOperation.cmd.Dispose();
+                _searchingProducs = false;
             }
         }
         private void txtOdenenKredi_TextChanged(object sender, EventArgs e)
@@ -1592,16 +1593,17 @@ namespace Otomasyon
 
         private void button4_Click(object sender, EventArgs e)
         {
-            frmSatis satis = frmSatis.GetFrmSatis();
+            frmSatis satis = frmSatis.GetFrmSatis(this);
             satis.Show();
             satis.WindowState = FormWindowState.Maximized;
+            Hide();
         }
-
+        bool _searchingProducs = false;
         private void txtBarkodOku_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if(e.KeyCode == Keys.Right)
                 cbMiktar.Select();
-            if(e.KeyCode == Keys.Enter && txtBarkodOku.Text != "")
+            if(e.KeyCode == Keys.Enter && txtBarkodOku.Text != "" && !_searchingProducs)
                 UrunSorgula();
         }
 
@@ -1686,7 +1688,7 @@ namespace Otomasyon
                 }
                 finally
                 {
-                    SqlOperation.con.Dispose();
+                    DbOperations.Connection.Close();
                     SqlOperation.cmd.Dispose();
                 }
                 return true;

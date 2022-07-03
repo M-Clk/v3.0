@@ -257,9 +257,9 @@
             // 
             this.chkExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkExcel.AutoSize = true;
-            this.chkExcel.Location = new System.Drawing.Point(2621, 546);
+            this.chkExcel.Location = new System.Drawing.Point(2623, 546);
             this.chkExcel.Name = "chkExcel";
-            this.chkExcel.Size = new System.Drawing.Size(141, 17);
+            this.chkExcel.Size = new System.Drawing.Size(139, 17);
             this.chkExcel.TabIndex = 21;
             this.chkExcel.Text = "Bu alışveriş için fatura al";
             this.chkExcel.UseVisualStyleBackColor = true;
@@ -408,7 +408,7 @@
             this.tableLayoutPanel24.RowCount = 2;
             this.tableLayoutPanel24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel24.Size = new System.Drawing.Size(211, 92);
+            this.tableLayoutPanel24.Size = new System.Drawing.Size(212, 92);
             this.tableLayoutPanel24.TabIndex = 1;
             // 
             // tableLayoutPanel23
@@ -427,7 +427,7 @@
             this.tableLayoutPanel23.RowCount = 2;
             this.tableLayoutPanel23.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 32.30769F));
             this.tableLayoutPanel23.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 67.69231F));
-            this.tableLayoutPanel23.Size = new System.Drawing.Size(211, 67);
+            this.tableLayoutPanel23.Size = new System.Drawing.Size(212, 67);
             this.tableLayoutPanel23.TabIndex = 0;
             // 
             // tableLayoutPanel28
@@ -438,7 +438,7 @@
             this.tableLayoutPanel28.Controls.Add(this.button3, 1, 0);
             this.tableLayoutPanel28.Controls.Add(this.rbKrediKarti, 0, 0);
             this.tableLayoutPanel28.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel28.Location = new System.Drawing.Point(99, 0);
+            this.tableLayoutPanel28.Location = new System.Drawing.Point(100, 0);
             this.tableLayoutPanel28.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel28.Name = "tableLayoutPanel28";
             this.tableLayoutPanel28.RowCount = 1;
@@ -494,7 +494,7 @@
             this.tableLayoutPanel25.RowCount = 2;
             this.tableLayoutPanel25.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel25.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel25.Size = new System.Drawing.Size(93, 40);
+            this.tableLayoutPanel25.Size = new System.Drawing.Size(94, 40);
             this.tableLayoutPanel25.TabIndex = 2;
             this.tableLayoutPanel25.Visible = false;
             // 
@@ -532,7 +532,7 @@
             "1500",
             "2000",
             "5000"});
-            this.cbOdenenNakit.Location = new System.Drawing.Point(49, 3);
+            this.cbOdenenNakit.Location = new System.Drawing.Point(50, 3);
             this.cbOdenenNakit.Name = "cbOdenenNakit";
             this.cbOdenenNakit.Size = new System.Drawing.Size(41, 21);
             this.cbOdenenNakit.TabIndex = 21;
@@ -550,7 +550,7 @@
             this.tableLayoutPanel26.Controls.Add(this.txtOdenenKredi, 1, 0);
             this.tableLayoutPanel26.Controls.Add(this.cbTaksit, 1, 1);
             this.tableLayoutPanel26.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel26.Location = new System.Drawing.Point(102, 24);
+            this.tableLayoutPanel26.Location = new System.Drawing.Point(103, 24);
             this.tableLayoutPanel26.Name = "tableLayoutPanel26";
             this.tableLayoutPanel26.RowCount = 2;
             this.tableLayoutPanel26.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -635,7 +635,7 @@
             this.tableLayoutPanel27.Name = "tableLayoutPanel27";
             this.tableLayoutPanel27.RowCount = 1;
             this.tableLayoutPanel27.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel27.Size = new System.Drawing.Size(99, 21);
+            this.tableLayoutPanel27.Size = new System.Drawing.Size(100, 21);
             this.tableLayoutPanel27.TabIndex = 4;
             // 
             // button2
@@ -646,7 +646,7 @@
             this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.button2.Location = new System.Drawing.Point(60, 0);
+            this.button2.Location = new System.Drawing.Point(61, 0);
             this.button2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(37, 21);
@@ -665,7 +665,7 @@
             this.rbNakit.Location = new System.Drawing.Point(0, 0);
             this.rbNakit.Margin = new System.Windows.Forms.Padding(0);
             this.rbNakit.Name = "rbNakit";
-            this.rbNakit.Size = new System.Drawing.Size(58, 21);
+            this.rbNakit.Size = new System.Drawing.Size(59, 21);
             this.rbNakit.TabIndex = 1;
             this.rbNakit.TabStop = true;
             this.rbNakit.Tag = "a";
@@ -684,7 +684,7 @@
             this.lblParaUstu.ForeColor = System.Drawing.Color.DarkRed;
             this.lblParaUstu.Location = new System.Drawing.Point(3, 67);
             this.lblParaUstu.Name = "lblParaUstu";
-            this.lblParaUstu.Size = new System.Drawing.Size(205, 25);
+            this.lblParaUstu.Size = new System.Drawing.Size(206, 25);
             this.lblParaUstu.TabIndex = 1;
             this.lblParaUstu.Text = "Para Üstü : 0 TL";
             this.lblParaUstu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -692,11 +692,19 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(214, 3);
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.FlatAppearance.BorderSize = 0;
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button4.Image = global::Otomasyon.Properties.Resources.icons8_buying_40;
+            this.button4.Location = new System.Drawing.Point(215, 3);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(139, 86);
             this.button4.TabIndex = 2;
-            this.button4.Text = "button4";
+            this.button4.Text = "Satış Ekranına Geç";
+            this.button4.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.button4.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -1983,7 +1991,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NotifyIcon nfUyari;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.NotifyIcon nfBasarili;
+        public System.Windows.Forms.NotifyIcon nfBasarili;
         private System.Windows.Forms.SaveFileDialog saveExceleKaydet;
         private System.Windows.Forms.NotifyIcon nfHata;
         private System.Data.DataSet dsFatura;

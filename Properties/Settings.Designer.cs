@@ -12,7 +12,7 @@ namespace Otomasyon.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,8 +49,8 @@ namespace Otomasyon.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=LOCALHOST;Database=OtomasyonDB;Trusted_Connection=True;Connection Timeout=" +
-            "5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=LOCALHOST\\SqlExpress;Database=OtomasyonDB;Trusted_Connection=True;Connecti" +
+            "on Timeout=5")]
         public string ConnectionString {
             get {
                 return ((string)(this["ConnectionString"]));
@@ -107,7 +107,7 @@ namespace Otomasyon.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("LOCALHOST\\SqlExpress")]
         public string LocalSqlServerName {
             get {
                 return ((string)(this["LocalSqlServerName"]));

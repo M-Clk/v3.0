@@ -36,6 +36,7 @@
             this.chkExcel = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.button4 = new System.Windows.Forms.Button();
             this.tableLayoutPanel15 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel16 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel19 = new System.Windows.Forms.TableLayoutPanel();
@@ -64,19 +65,6 @@
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.btnSatisIptalEt = new System.Windows.Forms.Button();
             this.btnSatisYap = new System.Windows.Forms.Button();
-            this.tblBorcIslemleri = new System.Windows.Forms.TableLayoutPanel();
-            this.chkBorc = new System.Windows.Forms.CheckBox();
-            this.tblBorcHesabi = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel22 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnHepsi = new System.Windows.Forms.Button();
-            this.txtBorc = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel21 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnHesapla = new System.Windows.Forms.Button();
-            this.txtOdendi = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel20 = new System.Windows.Forms.TableLayoutPanel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.dgSepet = new System.Windows.Forms.DataGridView();
             this.No = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Barkod = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -111,12 +99,6 @@
             this.tableLayoutPanel27.SuspendLayout();
             this.tableLayoutPanel8.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
-            this.tblBorcIslemleri.SuspendLayout();
-            this.tblBorcHesabi.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel22.SuspendLayout();
-            this.tableLayoutPanel21.SuspendLayout();
-            this.tableLayoutPanel20.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSepet)).BeginInit();
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -158,9 +140,9 @@
             // 
             this.chkExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkExcel.AutoSize = true;
-            this.chkExcel.Location = new System.Drawing.Point(3376, 546);
+            this.chkExcel.Location = new System.Drawing.Point(3378, 546);
             this.chkExcel.Name = "chkExcel";
-            this.chkExcel.Size = new System.Drawing.Size(141, 17);
+            this.chkExcel.Size = new System.Drawing.Size(139, 17);
             this.chkExcel.TabIndex = 21;
             this.chkExcel.Text = "Bu alışveriş için fatura al";
             this.chkExcel.UseVisualStyleBackColor = true;
@@ -195,6 +177,7 @@
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tableLayoutPanel7.Controls.Add(this.button4, 2, 0);
             this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel15, 1, 0);
             this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel8, 0, 0);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -205,6 +188,24 @@
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel7.Size = new System.Drawing.Size(1312, 244);
             this.tableLayoutPanel7.TabIndex = 15;
+            // 
+            // button4
+            // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.FlatAppearance.BorderSize = 0;
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button4.Image = global::Otomasyon.Properties.Resources.icons8_responsive_40;
+            this.button4.Location = new System.Drawing.Point(1183, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(126, 238);
+            this.button4.TabIndex = 3;
+            this.button4.Text = "Ana Ekrana Geç";
+            this.button4.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.button4.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // tableLayoutPanel15
             // 
@@ -363,6 +364,7 @@
             this.button3.Text = "Tümü";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Visible = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // rbKrediKarti
             // 
@@ -377,6 +379,8 @@
             this.rbKrediKarti.Text = "Kredi Kartı";
             this.rbKrediKarti.UseVisualStyleBackColor = true;
             this.rbKrediKarti.Visible = false;
+            this.rbKrediKarti.CheckedChanged += new System.EventHandler(this.rbKrediKarti_CheckedChanged);
+            this.rbKrediKarti.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmSatis_KeyDown);
             // 
             // tableLayoutPanel25
             // 
@@ -434,6 +438,9 @@
             this.cbOdenenNakit.Name = "cbOdenenNakit";
             this.cbOdenenNakit.Size = new System.Drawing.Size(100, 21);
             this.cbOdenenNakit.TabIndex = 21;
+            this.cbOdenenNakit.TextChanged += new System.EventHandler(this.cbOdenenNakit_TextChanged);
+            this.cbOdenenNakit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbOdenenNakit_KeyDown);
+            this.cbOdenenNakit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbOdenenNakit_KeyPress);
             // 
             // tableLayoutPanel26
             // 
@@ -492,6 +499,9 @@
             this.txtOdenenKredi.Size = new System.Drawing.Size(116, 19);
             this.txtOdenenKredi.TabIndex = 21;
             this.txtOdenenKredi.Visible = false;
+            this.txtOdenenKredi.TextChanged += new System.EventHandler(this.txtOdenenKredi_TextChanged);
+            this.txtOdenenKredi.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOdenenKredi_KeyDown);
+            this.txtOdenenKredi.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtOdenenKredi_KeyPress_1);
             // 
             // cbTaksit
             // 
@@ -512,6 +522,7 @@
             this.cbTaksit.Size = new System.Drawing.Size(114, 20);
             this.cbTaksit.TabIndex = 23;
             this.cbTaksit.Visible = false;
+            this.cbTaksit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOdenenKredi_KeyDown);
             // 
             // tableLayoutPanel27
             // 
@@ -545,6 +556,7 @@
             this.button2.Text = "Tümü";
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // rbNakit
             // 
@@ -562,6 +574,8 @@
             this.rbNakit.Text = "Nakit";
             this.rbNakit.UseVisualStyleBackColor = false;
             this.rbNakit.Visible = false;
+            this.rbNakit.CheckedChanged += new System.EventHandler(this.rbNakit_CheckedChanged);
+            this.rbNakit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmSatis_KeyDown);
             // 
             // lblParaUstu
             // 
@@ -584,7 +598,6 @@
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel8.Controls.Add(this.cbYazdir, 0, 2);
             this.tableLayoutPanel8.Controls.Add(this.tableLayoutPanel9, 0, 1);
-            this.tableLayoutPanel8.Controls.Add(this.tblBorcIslemleri, 0, 0);
             this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel8.Location = new System.Drawing.Point(2, 2);
             this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(2);
@@ -650,6 +663,7 @@
             this.btnSatisIptalEt.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnSatisIptalEt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnSatisIptalEt.UseVisualStyleBackColor = false;
+            this.btnSatisIptalEt.Click += new System.EventHandler(this.btnSatisIptalEt_Click);
             // 
             // btnSatisYap
             // 
@@ -674,199 +688,6 @@
             this.btnSatisYap.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnSatisYap.UseVisualStyleBackColor = false;
             this.btnSatisYap.Click += new System.EventHandler(this.btnSatisYap_Click);
-            // 
-            // tblBorcIslemleri
-            // 
-            this.tblBorcIslemleri.ColumnCount = 1;
-            this.tblBorcIslemleri.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblBorcIslemleri.Controls.Add(this.chkBorc, 0, 0);
-            this.tblBorcIslemleri.Controls.Add(this.tblBorcHesabi, 0, 1);
-            this.tblBorcIslemleri.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblBorcIslemleri.Location = new System.Drawing.Point(2, 2);
-            this.tblBorcIslemleri.Margin = new System.Windows.Forms.Padding(2);
-            this.tblBorcIslemleri.Name = "tblBorcIslemleri";
-            this.tblBorcIslemleri.RowCount = 2;
-            this.tblBorcIslemleri.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblBorcIslemleri.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblBorcIslemleri.Size = new System.Drawing.Size(385, 73);
-            this.tblBorcIslemleri.TabIndex = 22;
-            // 
-            // chkBorc
-            // 
-            this.chkBorc.AutoSize = true;
-            this.chkBorc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkBorc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.chkBorc.Location = new System.Drawing.Point(3, 0);
-            this.chkBorc.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.chkBorc.Name = "chkBorc";
-            this.chkBorc.Size = new System.Drawing.Size(379, 20);
-            this.chkBorc.TabIndex = 17;
-            this.chkBorc.Text = "Borç Yapılacak";
-            this.chkBorc.UseVisualStyleBackColor = true;
-            this.chkBorc.Visible = false;
-            // 
-            // tblBorcHesabi
-            // 
-            this.tblBorcHesabi.ColumnCount = 2;
-            this.tblBorcHesabi.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
-            this.tblBorcHesabi.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
-            this.tblBorcHesabi.Controls.Add(this.tableLayoutPanel2, 1, 0);
-            this.tblBorcHesabi.Controls.Add(this.tableLayoutPanel20, 0, 0);
-            this.tblBorcHesabi.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblBorcHesabi.Location = new System.Drawing.Point(2, 22);
-            this.tblBorcHesabi.Margin = new System.Windows.Forms.Padding(2);
-            this.tblBorcHesabi.Name = "tblBorcHesabi";
-            this.tblBorcHesabi.RowCount = 1;
-            this.tblBorcHesabi.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblBorcHesabi.Size = new System.Drawing.Size(381, 49);
-            this.tblBorcHesabi.TabIndex = 18;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel22, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel21, 0, 1);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(121, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(260, 49);
-            this.tableLayoutPanel2.TabIndex = 17;
-            // 
-            // tableLayoutPanel22
-            // 
-            this.tableLayoutPanel22.ColumnCount = 2;
-            this.tableLayoutPanel22.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.tableLayoutPanel22.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
-            this.tableLayoutPanel22.Controls.Add(this.btnHepsi, 1, 0);
-            this.tableLayoutPanel22.Controls.Add(this.txtBorc, 0, 0);
-            this.tableLayoutPanel22.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel22.Location = new System.Drawing.Point(2, 2);
-            this.tableLayoutPanel22.Margin = new System.Windows.Forms.Padding(2);
-            this.tableLayoutPanel22.Name = "tableLayoutPanel22";
-            this.tableLayoutPanel22.RowCount = 1;
-            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel22.Size = new System.Drawing.Size(256, 20);
-            this.tableLayoutPanel22.TabIndex = 19;
-            // 
-            // btnHepsi
-            // 
-            this.btnHepsi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHepsi.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnHepsi.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnHepsi.FlatAppearance.BorderSize = 0;
-            this.btnHepsi.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.btnHepsi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnHepsi.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnHepsi.Location = new System.Drawing.Point(117, 0);
-            this.btnHepsi.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.btnHepsi.Name = "btnHepsi";
-            this.btnHepsi.Size = new System.Drawing.Size(137, 20);
-            this.btnHepsi.TabIndex = 19;
-            this.btnHepsi.Text = "Hepsi";
-            this.btnHepsi.UseVisualStyleBackColor = false;
-            this.btnHepsi.Visible = false;
-            // 
-            // txtBorc
-            // 
-            this.txtBorc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBorc.Location = new System.Drawing.Point(2, 1);
-            this.txtBorc.Margin = new System.Windows.Forms.Padding(2, 1, 2, 2);
-            this.txtBorc.Name = "txtBorc";
-            this.txtBorc.Size = new System.Drawing.Size(111, 20);
-            this.txtBorc.TabIndex = 18;
-            this.txtBorc.Visible = false;
-            // 
-            // tableLayoutPanel21
-            // 
-            this.tableLayoutPanel21.ColumnCount = 2;
-            this.tableLayoutPanel21.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.tableLayoutPanel21.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
-            this.tableLayoutPanel21.Controls.Add(this.btnHesapla, 1, 0);
-            this.tableLayoutPanel21.Controls.Add(this.txtOdendi, 0, 0);
-            this.tableLayoutPanel21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel21.Location = new System.Drawing.Point(2, 26);
-            this.tableLayoutPanel21.Margin = new System.Windows.Forms.Padding(2);
-            this.tableLayoutPanel21.Name = "tableLayoutPanel21";
-            this.tableLayoutPanel21.RowCount = 1;
-            this.tableLayoutPanel21.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel21.Size = new System.Drawing.Size(256, 21);
-            this.tableLayoutPanel21.TabIndex = 18;
-            // 
-            // btnHesapla
-            // 
-            this.btnHesapla.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHesapla.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnHesapla.FlatAppearance.BorderSize = 0;
-            this.btnHesapla.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.btnHesapla.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnHesapla.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnHesapla.Location = new System.Drawing.Point(117, 0);
-            this.btnHesapla.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.btnHesapla.Name = "btnHesapla";
-            this.btnHesapla.Size = new System.Drawing.Size(137, 20);
-            this.btnHesapla.TabIndex = 20;
-            this.btnHesapla.Text = "Hesapla";
-            this.btnHesapla.UseVisualStyleBackColor = false;
-            this.btnHesapla.Visible = false;
-            // 
-            // txtOdendi
-            // 
-            this.txtOdendi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOdendi.Location = new System.Drawing.Point(2, 1);
-            this.txtOdendi.Margin = new System.Windows.Forms.Padding(2, 1, 2, 2);
-            this.txtOdendi.Name = "txtOdendi";
-            this.txtOdendi.Size = new System.Drawing.Size(111, 20);
-            this.txtOdendi.TabIndex = 19;
-            this.txtOdendi.Visible = false;
-            // 
-            // tableLayoutPanel20
-            // 
-            this.tableLayoutPanel20.ColumnCount = 1;
-            this.tableLayoutPanel20.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel20.Controls.Add(this.label4, 0, 0);
-            this.tableLayoutPanel20.Controls.Add(this.label2, 0, 1);
-            this.tableLayoutPanel20.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel20.Location = new System.Drawing.Point(2, 2);
-            this.tableLayoutPanel20.Margin = new System.Windows.Forms.Padding(2);
-            this.tableLayoutPanel20.Name = "tableLayoutPanel20";
-            this.tableLayoutPanel20.RowCount = 2;
-            this.tableLayoutPanel20.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel20.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel20.Size = new System.Drawing.Size(117, 45);
-            this.tableLayoutPanel20.TabIndex = 15;
-            // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label4.Location = new System.Drawing.Point(3, 4);
-            this.label4.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(34, 13);
-            this.label4.TabIndex = 19;
-            this.label4.Text = "Kalan";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label4.Visible = false;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label2.Location = new System.Drawing.Point(2, 27);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 13);
-            this.label2.TabIndex = 20;
-            this.label2.Text = "Ödenen";
-            this.label2.Visible = false;
             // 
             // dgSepet
             // 
@@ -919,8 +740,20 @@
             this.dgSepet.Size = new System.Drawing.Size(1310, 368);
             this.dgSepet.TabIndex = 1;
             this.dgSepet.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgSepet_CellClick);
+            this.dgSepet.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgSepet_CellDoubleClick);
+            this.dgSepet.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgSepet_CellEnter);
             this.dgSepet.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgSepet_CellMouseDoubleClick);
+            this.dgSepet.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgSepet_CellEnter);
+            this.dgSepet.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgSepet_CellMouseMove);
+            this.dgSepet.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgSepet_CellValueChanged);
+            this.dgSepet.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgSepet_RowEnter);
             this.dgSepet.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgSepet_RowsAdded);
+            this.dgSepet.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgSepet_RowsRemoved);
+            this.dgSepet.Click += new System.EventHandler(this.dgSepet_Click);
+            this.dgSepet.Enter += new System.EventHandler(this.dgSepet_Enter);
+            this.dgSepet.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgSepet_KeyDown);
+            this.dgSepet.MouseLeave += new System.EventHandler(this.dgSepet_MouseLeave);
+            this.dgSepet.MouseHover += new System.EventHandler(this.dgSepet_MouseHover);
             // 
             // No
             // 
@@ -1019,7 +852,6 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(1044, 175);
@@ -1068,6 +900,8 @@
             this.txtBarkodOku.Name = "txtBarkodOku";
             this.txtBarkodOku.Size = new System.Drawing.Size(180, 20);
             this.txtBarkodOku.TabIndex = 13;
+            this.txtBarkodOku.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarkodOku_KeyDown);
+            this.txtBarkodOku.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtBarkodOku_PreviewKeyDown);
             // 
             // cbMiktar
             // 
@@ -1078,6 +912,8 @@
             this.cbMiktar.Name = "cbMiktar";
             this.cbMiktar.Size = new System.Drawing.Size(69, 21);
             this.cbMiktar.TabIndex = 16;
+            this.cbMiktar.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbMiktar_KeyDown);
+            this.cbMiktar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbMiktar_KeyPress);
             // 
             // label9
             // 
@@ -1117,6 +953,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Satış İşlemi";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSatis_FormClosing);
             this.Load += new System.EventHandler(this.frmSatis_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmSatis_KeyDown);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -1144,16 +981,6 @@
             this.tableLayoutPanel8.ResumeLayout(false);
             this.tableLayoutPanel8.PerformLayout();
             this.tableLayoutPanel9.ResumeLayout(false);
-            this.tblBorcIslemleri.ResumeLayout(false);
-            this.tblBorcIslemleri.PerformLayout();
-            this.tblBorcHesabi.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel22.ResumeLayout(false);
-            this.tableLayoutPanel22.PerformLayout();
-            this.tableLayoutPanel21.ResumeLayout(false);
-            this.tableLayoutPanel21.PerformLayout();
-            this.tableLayoutPanel20.ResumeLayout(false);
-            this.tableLayoutPanel20.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSepet)).EndInit();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
@@ -1198,19 +1025,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.Button btnSatisIptalEt;
         private System.Windows.Forms.Button btnSatisYap;
-        private System.Windows.Forms.TableLayoutPanel tblBorcIslemleri;
-        private System.Windows.Forms.CheckBox chkBorc;
-        private System.Windows.Forms.TableLayoutPanel tblBorcHesabi;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel22;
-        private System.Windows.Forms.Button btnHepsi;
-        private System.Windows.Forms.TextBox txtBorc;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel21;
-        private System.Windows.Forms.Button btnHesapla;
-        private System.Windows.Forms.TextBox txtOdendi;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel20;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DataGridView dgSepet;
         private System.Windows.Forms.DataGridViewTextBoxColumn No;
         private System.Windows.Forms.DataGridViewTextBoxColumn Barkod;
@@ -1229,5 +1043,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+        private System.Windows.Forms.Button button4;
     }
 }

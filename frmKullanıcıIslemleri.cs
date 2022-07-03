@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Microsoft.Win32;
+using System;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Data.SqlClient;
-using System.Data.Sql;
+using System.Drawing;
 using System.Globalization;
-using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace Otomasyon
 {
@@ -53,14 +47,7 @@ namespace Otomasyon
             if (dgvBtn!=null)
             dgKullanicilar.Columns.Remove(dgvBtn);
             cbSifreIste.Visible = true;
-            try
-            {
-                cbSifreIste.Checked = Convert.ToBoolean(sifreIste.GetValue("SifreIste"));
-            }
-            catch (Exception)
-            {
-                cbSifreIste.Checked = true ;
-            }
+            cbSifreIste.Checked = Convert.ToBoolean(sifreIste.GetValue("SifreIste", true));
             dgKullanicilar.Rows.Clear();
             SqlDataReader KullaniciOku = SqlOp.OkuProcedure("KULLANICILARIGETIR",  new SqlParameter[0]);
             while (KullaniciOku.Read())

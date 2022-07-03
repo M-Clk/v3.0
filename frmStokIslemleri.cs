@@ -19,9 +19,18 @@ namespace Otomasyon
     public partial class frmStokIslemleri : Form
     {
         private ExcelPackage _package;
-        public frmStokIslemleri()
+        private static frmStokIslemleri _frmStokIslemleri;
+        private frmStokIslemleri()
         {
             InitializeComponent();
+            Load();
+        }
+
+        public static frmStokIslemleri SingletonStokFrmGetir()
+        {
+            if (_frmStokIslemleri == null)
+                _frmStokIslemleri = new frmStokIslemleri();
+            return _frmStokIslemleri;
         }
         DbOperations SqlBaglantisi = new DbOperations();
         private void tmYanipSonme_Tick(object sender, EventArgs e)
@@ -35,12 +44,26 @@ namespace Otomasyon
             }
         }
         OrtakIslemler islemYap = new OrtakIslemler();
+
+        private string tekUrunAdiGetir(string barkodKodu)
+        {
+            var result = SqlBaglantisi.ScalarTextCommand($"Select Adi FROM Urunler WHERE Bakod_kodu = '{barkodKodu}'");
+            return result;
+        }
         private void btnEkle_Click(object sender, EventArgs e)
         {
             try
             {
                 if (EklemeKontrolEt())
                 {
+                    var urunAdi = tekUrunAdiGetir(txtBarkodEkle.Text);
+
+                    if (!string.IsNullOrWhiteSpace(urunAdi))
+                    {
+                        MessageBox.Show($"Bu ürün {urunAdi} adıyla kayıtlı. Aynı ürün ikinci defa kaydedilemez.", "Ekleme Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        eklemeAlaniTemizle();
+                        return;
+                    }
                     SqlParameter[] parameterEkleme = new SqlParameter[7];
                     parameterEkleme[0] = new SqlParameter();
                     parameterEkleme[0].ParameterName = "@Adi";
@@ -85,7 +108,7 @@ namespace Otomasyon
                         SqlDataReader rd = SqlBaglantisi.OkuProcedure("EKLENENURUNUGETIR", prm);
 
                         rd.Read();
-                        string[] yeniUrun = new string[9];
+                        string[] yeniUrun = new string[10];
                         yeniUrun[0] = rd["No"].ToString();
                         yeniUrun[1] = rd["Bakod_kodu"].ToString();
                         yeniUrun[2] = rd["Adi"].ToString();
@@ -101,14 +124,9 @@ namespace Otomasyon
                         yeniUrun[6] = rd[6].ToString();
                         yeniUrun[7] = rd["Id"].ToString();
                         yeniUrun[8] = rd["Kritik_miktar"].ToString();
+                        yeniUrun[9] = "false";
                         varsayilanTblo.Rows.Add(yeniUrun);
-                        txtAdiEkle.Text = "";
-                        txtStokEkle.Text = "";
-                        txtMaliyetiEkle.Text = "";
-                        txtSatisFiyatiEkle.Text = "";
-                        txtEkleKritikMiktar.Text = "";
-                        txtBarkodEkle.Text = "";
-                        cbBirimler.SelectedIndex = 0;
+                        eklemeAlaniTemizle();
                         nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde eklendi.";
                         nfBasarili.Visible = true;
                         nfBasarili.ShowBalloonTip(2000);
@@ -121,9 +139,19 @@ namespace Otomasyon
                 return;
             }
         }
+
+        void eklemeAlaniTemizle()
+        {
+            txtAdiEkle.Text = "";
+            txtStokEkle.Text = "";
+            txtMaliyetiEkle.Text = "";
+            txtSatisFiyatiEkle.Text = "";
+            txtEkleKritikMiktar.Text = "";
+            txtBarkodEkle.Text = "";
+            cbBirimler.SelectedIndex = 0;
+        }
         bool EklemeKontrolEt()
         {
-            
             try
             {
                 if (txtMaliyetiEkle.Text == "")
@@ -147,21 +175,26 @@ namespace Otomasyon
                 txtBarkodSorgula.Select();
             }
         }
-        public void frmStokIslemleri_Load(object sender, EventArgs e)
+
+        public void Load()
         {
             if (Program.kritik)
             {
                 tmYanipSonme.Enabled = true;
             }
-            
-                UrunleriAl();
-                TabloyuDuzenle();
-            
+
+            UrunleriAl();
+            TabloyuDuzenle();
+
             UrunSayisiKontrolEt();
             if (dgUrunler.RowCount > 0) btnExcel.Enabled = true;
             cbBirimler.DataSource = SqlBaglantisi.DisconnectedProcedure("BIRIMSORGULAMA", new SqlParameter[0]);
             cbBirimler.ValueMember = "Id";
             cbBirimler.DisplayMember = "Adi";
+        }
+        public void frmStokIslemleri_Load(object sender, EventArgs e)
+        {
+
 
         }
         DataGridViewButtonColumn dgvBtn;
@@ -214,9 +247,10 @@ namespace Otomasyon
                 dgUrunler.Columns[8].Width = 0;
                 dgUrunler.Columns[7].Visible = false;
                 dgUrunler.Columns[8].Visible = false;
+                dgUrunler.Columns[9].Visible = false;
                 dgvBtn = new DataGridViewButtonColumn();
                 //Kolon Başlığı
-                dgvBtn.HeaderText = "Silgi";
+                dgvBtn.HeaderText = "";
                 // Butonun Text
                 dgvBtn.Text = "Sil";
                 // Butonda Text Kullanılmasını aktifleştirme
@@ -234,6 +268,7 @@ namespace Otomasyon
                 dgvBtn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 // Butonun genişiliği
                 dgvBtn.Width = 45;
+                
                 dgUrunler.Columns.Add(dgvBtn);
                
                 dgvBtn.Dispose();
@@ -411,7 +446,7 @@ namespace Otomasyon
         int guncellenecekRowIndex = -1;
         private void dgUrunler_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if(e.RowIndex!=-1 && e.ColumnIndex!=9)
+            if(e.RowIndex!=-1 && e.ColumnIndex!=10)
             {
                 txtBarkodKodu.Text = dgUrunler.Rows[e.RowIndex].Cells["Bakod_kodu"].Value.ToString();
                 txtAdi.Text = dgUrunler.Rows[e.RowIndex].Cells["Adi"].Value.ToString();
@@ -419,6 +454,7 @@ namespace Otomasyon
                 txtSatisFiyati.Text = dgUrunler.Rows[e.RowIndex].Cells["Satis_fiyati"].Value.ToString();
                 txtStokSayisi.Text = dgUrunler.Rows[e.RowIndex].Cells["Stok"].Value.ToString();
                 txtKritikMiktar.Text = dgUrunler.Rows[e.RowIndex].Cells["Kritik_miktar"].Value.ToString();
+                chkHizliEkrandaGoster.Checked = (bool)dgUrunler.Rows[e.RowIndex].Cells["Hizli_urun"].Value;
                 btnGuncelle.Enabled = true;
                 guncellenecekRowIndex = e.RowIndex;
                 if (Convert.ToInt16(dgUrunler.Rows[e.RowIndex].Cells["Id"].Value) == 1) ff = false;
@@ -435,7 +471,7 @@ namespace Otomasyon
         {
             if (KontrolEt())
             {
-                SqlParameter[] parameterGuncelleme = new SqlParameter[6];
+                SqlParameter[] parameterGuncelleme = new SqlParameter[7];
                 parameterGuncelleme[0] = new SqlParameter();
                 parameterGuncelleme[0].ParameterName = "@Adi";
                 parameterGuncelleme[0].SqlDbType = SqlDbType.NVarChar;
@@ -465,11 +501,18 @@ namespace Otomasyon
                 parameterGuncelleme[5].ParameterName = "@Barkod";
                 parameterGuncelleme[5].SqlDbType = SqlDbType.NVarChar;
                 parameterGuncelleme[5].SqlValue = txtBarkodKodu.Text;
+
+                parameterGuncelleme[6] = new SqlParameter();
+                parameterGuncelleme[6].ParameterName = "@HizliUrun";
+                parameterGuncelleme[6].SqlDbType = SqlDbType.Bit;
+                parameterGuncelleme[6].SqlValue = chkHizliEkrandaGoster.Checked;
+
                 bool kapat = false;
                 if (SqlBaglantisi.GuncelleProcedure("URUNGUNCELLE", parameterGuncelleme) == 1)
                 {
                     if (Program.kritik && Convert.ToDecimal(txtKritikMiktar.Text) < Convert.ToDecimal(txtStokSayisi.Text))
                     {
+                        
                         UrunleriAl();
                         TabloyuDuzenle();
                         if (dgUrunler.RowCount == 0) kapat = true;
@@ -482,6 +525,7 @@ namespace Otomasyon
                         varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Adi"] = dgUrunler.Rows[guncellenecekRowIndex].Cells["Adi"].Value = txtAdi.Text;
                         varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Maliyet"] = dgUrunler.Rows[guncellenecekRowIndex].Cells["Maliyet"].Value = Convert.ToDecimal(txtMaliyeti.Text).ToString("F");
                         varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Satis_fiyati"] = dgUrunler.Rows[guncellenecekRowIndex].Cells["Satis_fiyati"].Value = Convert.ToDecimal(txtSatisFiyati.Text).ToString("F");
+                        varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Hizli_urun"] = dgUrunler.Rows[guncellenecekRowIndex].Cells["Hizli_urun"].Value = chkHizliEkrandaGoster.Checked;
                         if (Convert.ToInt16(varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Id"]) != 1)
                         {
                            varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Stok"] = dgUrunler.Rows[guncellenecekRowIndex].Cells["Stok"].Value = Convert.ToDecimal(txtStokSayisi.Text).ToString("F1");
@@ -502,6 +546,7 @@ namespace Otomasyon
                     txtKritikMiktar.Text = "";
                     btnGuncelle.Enabled = false;
                     guncellenecekRowIndex = -1;
+                    chkHizliEkrandaGoster.Checked = false;
                     ff = true;
 
                     nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde güncellendi.";
@@ -567,11 +612,7 @@ namespace Otomasyon
 
         private void dgUrunler_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            int column;
-            if (urunAraniyor)
-                column = 0;
-            else column = 9;
-            if (e.RowIndex >-1 && e.ColumnIndex == column)
+            if (e.RowIndex >-1 && dgUrunler.Columns[e.ColumnIndex].GetType().IsEquivalentTo(typeof(DataGridViewButtonColumn)))
             {
                 DialogResult silmeOnayi = MessageBox.Show(" Bu ürünü silmek üzeresiniz. \nDevam etmek istiyor musunuz?","Silgi Onayı",MessageBoxButtons.YesNoCancel,MessageBoxIcon.Question);
                 

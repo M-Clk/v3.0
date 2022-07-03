@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Configuration;
+using System.Windows.Forms;
 
 namespace Otomasyon
 {
@@ -11,6 +12,8 @@ namespace Otomasyon
             foreach(SettingsPropertyValue pv in settings.PropertyValues)
                 settingConfigurations.SetValue(pv.Name, pv.PropertyValue);
             settings.Save();
+            settings.Upgrade();
+            Application.Restart();
         }
         internal static void Load(this Properties.Settings settings)
         {

@@ -1,9 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Data.SqlClient;
 
 namespace Otomasyon
 {
@@ -11,135 +6,54 @@ namespace Otomasyon
     {
         public static bool IsAvailable(this SqlConnection connection)
         {
-            var result = true;
             try
             {
-                connection.Open();
+                connection.OpenSafe();
                 connection.Close();
             }
-            catch(SqlException)
+            catch (SqlException)
             {
-                return result;
+                return false;
             }
-            finally
-            {
-                connection.Dispose();
-            }
-
-            return result;
-        }
-    }
-    public enum RegistryHive
-    {
-        Wow64,
-        Wow6432
-    }
-
-    public class RegistryValueDataReader
-    {
-        private static readonly int KEY_WOW64_32KEY = 0x200;
-        private static readonly int KEY_WOW64_64KEY = 0x100;
-
-        private static readonly UIntPtr HKEY_LOCAL_MACHINE = (UIntPtr)0x80000002;
-
-        private static readonly int KEY_QUERY_VALUE = 0x1;
-
-        [DllImport("advapi32.dll", CharSet = CharSet.Unicode, EntryPoint = "RegOpenKeyEx")]
-        static extern int RegOpenKeyEx(
-                    UIntPtr hKey,
-                    string subKey,
-                    uint options,
-                    int sam,
-                    out IntPtr phkResult);
-
-
-        [DllImport("advapi32.dll", SetLastError = true)]
-        static extern int RegQueryValueEx(
-                    IntPtr hKey,
-                    string lpValueName,
-                    int lpReserved,
-                    out uint lpType,
-                    IntPtr lpData,
-                    ref uint lpcbData);
-
-        private static int GetRegistryHiveKey(RegistryHive registryHive)
+            return true;
+        } 
+        public static void EnsureDbCreated(this SqlConnection connection)
         {
-            return registryHive == RegistryHive.Wow64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY;
+            var command = connection.CreateCommand();
+            connection.OpenSafe();
+            command.CommandText = "select Count(*) from sys.databases WHERE name = 'OtomasyonDB'";
+            var dbCount = (int)command.ExecuteScalar();
+            if (dbCount > 0)
+            {
+                DbOperations.Connection.ConnectionString = connection.ConnectionString.Replace("master", "OtomasyonDb");
+                connection.Close();
+                return;
+            }
+            command.CommandText = "Create Database OtomasyonDb";
+            command.ExecuteNonQuery();
+            connection.Close();
         }
 
-        private static UIntPtr GetRegistryKeyUIntPtr(RegistryKey registry)
+        public static bool IsDatabaseExist(this SqlConnection connection)
         {
-            if(registry == Registry.LocalMachine)
-            {
-                return HKEY_LOCAL_MACHINE;
+            var dbCount = 0;
+            connection.OpenSafe();
+            var command = connection.CreateCommand();
+            try
+            {           
+                command.CommandText = "select Count(*) from sys.databases WHERE name = 'OtomasyonDB'";
+                dbCount = (int)command.ExecuteScalar();
+                command.Dispose();
+                connection.Close();
             }
-
-            return UIntPtr.Zero;
+            catch { }
+            return dbCount > 0;
         }
 
-        public string[] ReadRegistryValueData(RegistryHive registryHive, RegistryKey registryKey, string subKey, string valueName)
+        public static void OpenSafe(this SqlConnection connection)
         {
-            string[] instanceNames = new string[0];
-
-            int key = GetRegistryHiveKey(registryHive);
-            UIntPtr registryKeyUIntPtr = GetRegistryKeyUIntPtr(registryKey);
-
-            IntPtr hResult;
-
-            int res = RegOpenKeyEx(registryKeyUIntPtr, subKey, 0, KEY_QUERY_VALUE | key, out hResult);
-
-            if(res == 0)
-            {
-                uint type;
-                uint dataLen = 0;
-
-                RegQueryValueEx(hResult, valueName, 0, out type, IntPtr.Zero, ref dataLen);
-
-                byte[] databuff = new byte[dataLen];
-                byte[] temp = new byte[dataLen];
-
-                List<String> values = new List<string>();
-
-                GCHandle handle = GCHandle.Alloc(databuff, GCHandleType.Pinned);
-                try
-                {
-                    RegQueryValueEx(hResult, valueName, 0, out type, handle.AddrOfPinnedObject(), ref dataLen);
-                }
-                finally
-                {
-                    handle.Free();
-                }
-
-                int i = 0;
-                int j = 0;
-
-                while(i < databuff.Length)
-                {
-                    if(databuff[i] == '\0')
-                    {
-                        j = 0;
-                        string str = Encoding.Default.GetString(temp).Trim('\0');
-
-                        if(!string.IsNullOrEmpty(str))
-                        {
-                            values.Add(str);
-                        }
-
-                        temp = new byte[dataLen];
-                    }
-                    else
-                    {
-                        temp[j++] = databuff[i];
-                    }
-
-                    ++i;
-                }
-
-                instanceNames = new string[values.Count];
-                values.CopyTo(instanceNames);
-            }
-
-            return instanceNames;
+            connection.Close();
+            connection.Open();
         }
     }
 }

@@ -9,7 +9,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Server=LOCALHOST;Database=OtomasyonDB;Trusted_Connection=True;Connection Timeout=5</Value>
+      <Value Profile="(Default)">Server=LOCALHOST\SqlExpress;Database=OtomasyonDB;Trusted_Connection=True;Connection Timeout=5</Value>
     </Setting>
     <Setting Name="PaymentType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
@@ -24,7 +24,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="LocalSqlServerName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">LOCALHOST\SqlExpress</Value>
     </Setting>
     <Setting Name="IsDbCreated" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

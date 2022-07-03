@@ -67,7 +67,6 @@
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.lblKar = new System.Windows.Forms.Label();
-            this.btnExcel = new System.Windows.Forms.Button();
             this.lblTopTutar = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -77,6 +76,7 @@
             this.dtBitisTarihi = new System.Windows.Forms.DateTimePicker();
             this.nfBasarili = new System.Windows.Forms.NotifyIcon(this.components);
             this.saveExceleKaydet = new System.Windows.Forms.SaveFileDialog();
+            this.btnExcel = new System.Windows.Forms.Button();
             this.gbIade.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -598,24 +598,6 @@
             this.lblKar.TabIndex = 30;
             this.lblKar.Text = "Toplam Gider Tutarı : 0,00 ₺";
             // 
-            // btnExcel
-            // 
-            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.btnExcel.Enabled = false;
-            this.btnExcel.FlatAppearance.BorderSize = 0;
-            this.btnExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExcel.Image = global::Otomasyon.Properties.Resources.excell_up;
-            this.btnExcel.Location = new System.Drawing.Point(327, 3);
-            this.btnExcel.MaximumSize = new System.Drawing.Size(82, 89);
-            this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(82, 60);
-            this.btnExcel.TabIndex = 35;
-            this.btnExcel.Text = "Excele Aktar";
-            this.btnExcel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnExcel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnExcel.UseVisualStyleBackColor = true;
-            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
-            // 
             // lblTopTutar
             // 
             this.lblTopTutar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -723,6 +705,24 @@
             this.nfBasarili.BalloonTipClosed += new System.EventHandler(this.nfBasariliKapat);
             this.nfBasarili.Click += new System.EventHandler(this.nfBasariliKapat);
             this.nfBasarili.DoubleClick += new System.EventHandler(this.nfBasariliKapat);
+            // 
+            // btnExcel
+            // 
+            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.btnExcel.Enabled = false;
+            this.btnExcel.FlatAppearance.BorderSize = 0;
+            this.btnExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExcel.Image = global::Otomasyon.Properties.Resources.excell_up;
+            this.btnExcel.Location = new System.Drawing.Point(327, 3);
+            this.btnExcel.MaximumSize = new System.Drawing.Size(82, 89);
+            this.btnExcel.Name = "btnExcel";
+            this.btnExcel.Size = new System.Drawing.Size(82, 60);
+            this.btnExcel.TabIndex = 35;
+            this.btnExcel.Text = "Excele Aktar";
+            this.btnExcel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnExcel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnExcel.UseVisualStyleBackColor = true;
+            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
             // 
             // frmGelirGider
             // 

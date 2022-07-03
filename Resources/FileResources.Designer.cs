@@ -19,7 +19,7 @@ namespace Otomasyon.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class FileResources {
@@ -63,22 +63,24 @@ namespace Otomasyon.Resources {
         /// <summary>
         ///   Looks up a localized string similar to USE [master]
         ///GO
-        ///DECLARE @dbname nvarchar(128)
-        ///SET @dbname = N&apos;OtomasyonDB&apos;
-        ///
-        ///IF (EXISTS (SELECT name 
-        ///FROM master.dbo.sysdatabases 
-        ///WHERE (&apos;[&apos; + name + &apos;]&apos; = @dbname 
-        ///OR name = @dbname)))
-        ///RETURN
-        ////****** Object:  Database [OtomasyonDB]    Script Date: 31.10.2020 05:47:49 ******/
         ///CREATE DATABASE [OtomasyonDB]
         ///GO
         ///ALTER DATABASE [OtomasyonDB] SET COMPATIBILITY_LEVEL = 140
         ///GO
         ///IF (1 = FULLTEXTSERVICEPROPERTY(&apos;IsFullTextInstalled&apos;))
         ///begin
-        ///EXEC [OtomasyonDB].[dbo].[sp_fulltext_database] @action = &apos;e [rest of string was truncated]&quot;;.
+        ///EXEC [OtomasyonDB].[dbo].[sp_fulltext_database] @action = &apos;enable&apos;
+        ///end
+        ///GO
+        ///ALTER DATABASE [OtomasyonDB] SET ANSI_NULL_DEFAULT OFF 
+        ///GO
+        ///ALTER DATABASE [OtomasyonDB] SET ANSI_NULLS OFF 
+        ///GO
+        ///ALTER DATABASE [OtomasyonDB] SET ANSI_PADDING OFF 
+        ///GO
+        ///ALTER DATABASE [OtomasyonDB] SET ANSI_WARNINGS OFF 
+        ///GO
+        ///ALTER DATABASE [OtomasyonD [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DbCreateScript {
             get {

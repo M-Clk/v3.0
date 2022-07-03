@@ -19,6 +19,7 @@ namespace Otomasyon
     {
         DbOperations SqlOperation = new DbOperations();
         private RegistryKey SerialKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\License");
+        private static RegistryKey _settingsKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Settings");
         RegistryKey OtomasyonKeys = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
         public frmGiris()
         {
@@ -50,24 +51,18 @@ namespace Otomasyon
             {
                 if(dataRead != null)
                 {
-                    if(SqlOperation.con.State == ConnectionState.Closed)
-                    {
-                        SqlOperation.con.Open();
-                    }
 
                     if(dataRead.NextResult()) //KULLANICISORGULA Stored Procedure göre eğer iki tablo sonuç geri döndüyse kullanıcı adı doğru girildi, şifre yanlış olabilir.
                     {
                         if(dataRead.HasRows) //Eğer tablo boş değilse kullanıcı adı ve şifre doğru girildi. Kullanıcı adı ve şifreyi hafızda tut programa giriş yap.
                         {
-                            if(SqlOperation.con.State == ConnectionState.Closed)
-                                SqlOperation.con.Open();
                             dataRead.Read();
                             Program.k_adi = dataRead["Adi"].ToString();
                             Program.k_id = Convert.ToInt32(dataRead["Id"]);
                             Program.sifre = dataRead["Sifre"].ToString();
                             Program.yetki = (Program.Yetki)(Convert.ToInt16(dataRead["Yetki"]));
 
-                            SqlOperation.con.Close();
+                            DbOperations.Connection.Close();
                             //Eğer cbHatirla seçili ise kayıt defterindeki K_Adi kaydının değerini girilen kullanıcı adı ile değiştir. Seçili değilse kaydı sil.
                             if(Program.sifreIstesin)
                             {
@@ -82,7 +77,6 @@ namespace Otomasyon
                                 }
                             }
 
-                            SqlOperation.con.Dispose();
                             Program.giris = true;
                             this.Close();
                         }
@@ -91,12 +85,12 @@ namespace Otomasyon
                             dataRead.NextResult(); //3. Tabloya git.
                             dataRead.Read();
                             MessageBox.Show(dataRead["Hata"].ToString(), "Kullanıcı Girişi Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            SqlOperation.con.Close();
+                            DbOperations.Connection.Close();
                         }
                     }
                     else
                         MessageBox.Show(SqlOperation.bilgiMessage, "Kullanıcı Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    SqlOperation.con.Close();
+                    DbOperations.Connection.Close();
                 }
                 else
                 { txtSifre.Text = ""; return; }
@@ -139,6 +133,13 @@ namespace Otomasyon
         }
         void GirisKapisi()
         {
+            try
+            {
+                Program.quickProductsCount = int.Parse(_settingsKey.GetValue("QuickProductsCount", "10").ToString());
+            }
+            catch (Exception)
+            {
+            }
             if(LisansKontrol())
                 Program.lisans = true;
             else
