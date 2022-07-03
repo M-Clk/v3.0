@@ -211,6 +211,7 @@ namespace Otomasyon
             clearCalisiyor = true;
             dgUrunler.Columns.Clear();
             dgUrunler.DataSource = varsayilanTblo;
+            btnExcel.Visible = dgUrunler.RowCount > 0;
             for (int i = 0; i < varsayilanTblo.Rows.Count; i++)
             {
                 if (Convert.ToInt16(varsayilanTblo.Rows[i][7]) == 1)
@@ -421,6 +422,7 @@ namespace Otomasyon
                 {
                     txtBarkodSorgula.Text = "";
                     dgUrunler.DataSource = sorgula;
+                    btnExcel.Visible = dgUrunler.RowCount > 0;
                     urunAraniyor = true;
                 }
 
@@ -435,13 +437,14 @@ namespace Otomasyon
             }
         }
         DataView adAra;
-        bool urunAraniyor = false;
+        bool urunAraniyor;
         private void txtAdaGoreAra_TextChanged(object sender, EventArgs e)
         {
             adAra = varsayilanTblo.DefaultView;
             adAra.RowFilter = "Adi like '%"+txtAdaGoreAra.Text+"%'";
             dgUrunler.DataSource = adAra;
             urunAraniyor = true;
+            btnExcel.Visible = dgUrunler.RowCount > 0;
         }
         int guncellenecekRowIndex = -1;
         private void dgUrunler_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -458,6 +461,7 @@ namespace Otomasyon
                 btnGuncelle.Enabled = true;
                 guncellenecekRowIndex = e.RowIndex;
                 if (Convert.ToInt16(dgUrunler.Rows[e.RowIndex].Cells["Id"].Value) == 1) ff = false;
+                groupBox1.Visible = true;
             }
             
         }
@@ -548,6 +552,7 @@ namespace Otomasyon
                     guncellenecekRowIndex = -1;
                     chkHizliEkrandaGoster.Checked = false;
                     ff = true;
+                    groupBox1.Visible = false;
 
                     nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde güncellendi.";
                     nfBasarili.Visible = true;
@@ -648,6 +653,7 @@ namespace Otomasyon
                     else MessageBox.Show("Seçili ürün silinemedi. Başka kullanıcı tarafından silinmiş ya da veritabanında yetkisiz erişim olabilir.", "İşlem Yapılamadı", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            btnExcel.Visible = dgUrunler.RowCount > 0;
         }
 
         private void btnExcel_Click(object sender, EventArgs e)
@@ -782,6 +788,7 @@ namespace Otomasyon
             }
         }
         Color acikGri = ColorTranslator.FromHtml("#f2f2f2");
+
         private void nfBasariliKapat(object sender, EventArgs e)
         {
             nfBasarili.Visible = false;

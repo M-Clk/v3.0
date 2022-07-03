@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmStokIslemleri));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gbDuzenle = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -59,7 +59,6 @@
             this.txtBarkodKodu = new System.Windows.Forms.TextBox();
             this.txtStokSayisi = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.chkHizliEkrandaGoster = new System.Windows.Forms.CheckBox();
             this.btnGuncelle = new System.Windows.Forms.Button();
@@ -143,9 +142,9 @@
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.041958F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 61.88811F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 88.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.Size = new System.Drawing.Size(860, 464);
             this.tableLayoutPanel2.TabIndex = 11;
             // 
@@ -240,6 +239,7 @@
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Ürün Bilgileri";
+            this.groupBox1.Visible = false;
             // 
             // tableLayoutPanel4
             // 
@@ -460,7 +460,7 @@
             // 
             this.tableLayoutPanel7.ColumnCount = 1;
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel7.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel7.Controls.Add(this.chkHizliEkrandaGoster, 0, 0);
             this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel8, 0, 1);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(476, 2);
@@ -472,25 +472,13 @@
             this.tableLayoutPanel7.Size = new System.Drawing.Size(370, 111);
             this.tableLayoutPanel7.TabIndex = 2;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 1);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(230, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "*Ürün bilgisini değiştirmek için ürüne çift tıklayın.\r\n";
-            // 
             // tableLayoutPanel8
             // 
             this.tableLayoutPanel8.ColumnCount = 3;
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel8.Controls.Add(this.chkHizliEkrandaGoster, 0, 0);
-            this.tableLayoutPanel8.Controls.Add(this.btnGuncelle, 1, 0);
-            this.tableLayoutPanel8.Controls.Add(this.btnExcel, 2, 0);
+            this.tableLayoutPanel8.Controls.Add(this.btnGuncelle, 2, 0);
             this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel8.Location = new System.Drawing.Point(2, 35);
             this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(2);
@@ -504,11 +492,11 @@
             // 
             this.chkHizliEkrandaGoster.AutoSize = true;
             this.chkHizliEkrandaGoster.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkHizliEkrandaGoster.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkHizliEkrandaGoster.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkHizliEkrandaGoster.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.chkHizliEkrandaGoster.Location = new System.Drawing.Point(3, 3);
             this.chkHizliEkrandaGoster.Name = "chkHizliEkrandaGoster";
-            this.chkHizliEkrandaGoster.Size = new System.Drawing.Size(116, 68);
+            this.chkHizliEkrandaGoster.Size = new System.Drawing.Size(212, 27);
             this.chkHizliEkrandaGoster.TabIndex = 24;
             this.chkHizliEkrandaGoster.Text = "Satış Ekranında Hızlı Ürün Olarak Göster";
             this.chkHizliEkrandaGoster.UseVisualStyleBackColor = true;
@@ -520,7 +508,7 @@
             this.btnGuncelle.FlatAppearance.BorderSize = 0;
             this.btnGuncelle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGuncelle.Image = ((System.Drawing.Image)(resources.GetObject("btnGuncelle.Image")));
-            this.btnGuncelle.Location = new System.Drawing.Point(160, 3);
+            this.btnGuncelle.Location = new System.Drawing.Point(282, 3);
             this.btnGuncelle.Margin = new System.Windows.Forms.Padding(3, 3, 4, 3);
             this.btnGuncelle.Name = "btnGuncelle";
             this.btnGuncelle.Size = new System.Drawing.Size(80, 66);
@@ -534,19 +522,21 @@
             // 
             // btnExcel
             // 
+            this.btnExcel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnExcel.Enabled = false;
             this.btnExcel.FlatAppearance.BorderSize = 0;
             this.btnExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExcel.Image = global::Otomasyon.Properties.Resources.excell;
-            this.btnExcel.Location = new System.Drawing.Point(248, 3);
+            this.btnExcel.Location = new System.Drawing.Point(241, 3);
             this.btnExcel.Margin = new System.Windows.Forms.Padding(4, 3, 3, 3);
             this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(80, 66);
+            this.btnExcel.Size = new System.Drawing.Size(80, 64);
             this.btnExcel.TabIndex = 23;
             this.btnExcel.Text = "Excel\'e Aktar";
             this.btnExcel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnExcel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnExcel.UseVisualStyleBackColor = true;
+            this.btnExcel.Visible = false;
             this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
             this.btnExcel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmAnaForm_AllControls);
             // 
@@ -561,24 +551,24 @@
             this.dgUrunler.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgUrunler.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgUrunler.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.DeepSkyBlue;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.NullValue = null;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ScrollBar;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgUrunler.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.DeepSkyBlue;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.NullValue = null;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ScrollBar;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgUrunler.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgUrunler.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.AliceBlue;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HotTrack;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgUrunler.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.AliceBlue;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HotTrack;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgUrunler.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgUrunler.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgUrunler.EnableHeadersVisualStyles = false;
             this.dgUrunler.GridColor = System.Drawing.SystemColors.Control;
@@ -894,13 +884,14 @@
             this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             this.tableLayoutPanel13.Controls.Add(this.btnEkle, 0, 1);
+            this.tableLayoutPanel13.Controls.Add(this.btnExcel, 0, 0);
             this.tableLayoutPanel13.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel13.Location = new System.Drawing.Point(534, 2);
             this.tableLayoutPanel13.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel13.Name = "tableLayoutPanel13";
             this.tableLayoutPanel13.RowCount = 2;
-            this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.47059F));
+            this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.52941F));
             this.tableLayoutPanel13.Size = new System.Drawing.Size(324, 136);
             this.tableLayoutPanel13.TabIndex = 35;
             // 
@@ -910,9 +901,9 @@
             this.btnEkle.FlatAppearance.BorderSize = 0;
             this.btnEkle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEkle.Image = global::Otomasyon.Properties.Resources.tab_new1;
-            this.btnEkle.Location = new System.Drawing.Point(241, 54);
+            this.btnEkle.Location = new System.Drawing.Point(241, 73);
             this.btnEkle.Name = "btnEkle";
-            this.btnEkle.Size = new System.Drawing.Size(80, 68);
+            this.btnEkle.Size = new System.Drawing.Size(80, 60);
             this.btnEkle.TabIndex = 22;
             this.btnEkle.Text = "Ekle";
             this.btnEkle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -990,7 +981,6 @@
             this.tableLayoutPanel7.ResumeLayout(false);
             this.tableLayoutPanel7.PerformLayout();
             this.tableLayoutPanel8.ResumeLayout(false);
-            this.tableLayoutPanel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgUrunler)).EndInit();
             this.gbUrunEkle.ResumeLayout(false);
             this.gbUrunEkle.PerformLayout();
@@ -1034,7 +1024,6 @@
         private System.Windows.Forms.TextBox txtBarkodKodu;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnGuncelle;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtBarkodSorgula;
         private System.Windows.Forms.DataGridView dgUrunler;
         private System.Windows.Forms.Label label1;
