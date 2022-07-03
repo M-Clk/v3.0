@@ -1,60 +1,70 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Otomasyon
 {
     public class OrtakIslemler
     {
-        NotifyIcon nfBasarili;
-        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAnaForm));
+        private readonly EventArgs evA = EventArgs.Empty;
+        private frmConfiguration lisansYolu;
+        private readonly NotifyIcon nfBasarili;
+        private readonly ComponentResourceManager resources = new ComponentResourceManager(typeof(frmAnaForm));
+
         public OrtakIslemler()
         {
             nfBasarili = new NotifyIcon();
-            this.nfBasarili.BalloonTipText = "İşlem başarıyla gerçekleşti.";
-            this.nfBasarili.BalloonTipTitle = "Başarılı İşlem";
-            this.nfBasarili.Text = "Başarılı";
-            this.nfBasarili.BalloonTipClicked += new System.EventHandler(nfBasariliKapat);
-            this.nfBasarili.BalloonTipClosed += new System.EventHandler(this.nfBasariliKapat);
-            this.nfBasarili.Click += new System.EventHandler(this.nfBasariliKapat);
-            this.nfBasarili.DoubleClick += new System.EventHandler(this.nfBasariliKapat);
+            nfBasarili.BalloonTipText = "İşlem başarıyla gerçekleşti.";
+            nfBasarili.BalloonTipTitle = "Başarılı İşlem";
+            nfBasarili.Text = "Başarılı";
+            nfBasarili.BalloonTipClicked += nfBasariliKapat;
+            nfBasarili.BalloonTipClosed += nfBasariliKapat;
+            nfBasarili.Click += nfBasariliKapat;
+            nfBasarili.DoubleClick += nfBasariliKapat;
         }
-        ~OrtakIslemler() { nfBasarili.Dispose(); }
-        public void BilgiVer(string yazi,int sure,string baslik,string ikon)
+
+        ~OrtakIslemler()
         {
-            this.nfBasarili.BalloonTipClicked -= LisansEtkinlestirme;
-            this.nfBasarili.BalloonTipClicked += new System.EventHandler(nfBasariliKapat);
-            this.nfBasarili.Icon = ((System.Drawing.Icon)(resources.GetObject(ikon)));
+            nfBasarili.Dispose();
+        }
+
+        public void BilgiVer(string yazi, int sure, string baslik, string ikon)
+        {
+            nfBasarili.BalloonTipClicked -= LisansEtkinlestirme;
+            nfBasarili.BalloonTipClicked += nfBasariliKapat;
+            nfBasarili.Icon = (Icon)resources.GetObject(ikon);
             nfBasarili.BalloonTipText = yazi;
             nfBasarili.Visible = true;
             nfBasarili.ShowBalloonTip(sure);
         }
+
         public void LisansUyarisi(string mesaj)
         {
             if (mesaj == "")
-                mesaj = "Lisanssız yazılım kullanıyorsunuz. Ürünü etkinleştirmediğiniz sürece kısıtlı kullanmak durumundasınız. Eğer ürün anahtarınız varsa etkinleştirmek için tıklayın.";
-            this.nfBasarili.BalloonTipClicked -= nfBasariliKapat;
-            this.nfBasarili.BalloonTipClicked += new System.EventHandler(LisansEtkinlestirme);
-            this.nfBasarili.Icon = ((System.Drawing.Icon)(resources.GetObject("nfHata.Icon")));
+                mesaj =
+                    "Lisanssız yazılım kullanıyorsunuz. Ürünü etkinleştirmediğiniz sürece kısıtlı kullanmak durumundasınız. Eğer ürün anahtarınız varsa etkinleştirmek için tıklayın.";
+            nfBasarili.BalloonTipClicked -= nfBasariliKapat;
+            nfBasarili.BalloonTipClicked += LisansEtkinlestirme;
+            nfBasarili.Icon = (Icon)resources.GetObject("nfHata.Icon");
             nfBasarili.BalloonTipText = mesaj;
-            this.nfBasarili.BalloonTipTitle = "Lisansınız Yok!";
-            this.nfBasarili.Text = "Teşekkür ederiz...";
+            nfBasarili.BalloonTipTitle = "Lisansınız Yok!";
+            nfBasarili.Text = "Teşekkür ederiz...";
             nfBasarili.Visible = true;
             nfBasarili.ShowBalloonTip(3000);
         }
-        EventArgs evA=EventArgs.Empty;
-        public void LisansUyarisiMesaj (string mesaj)
+
+        public void LisansUyarisiMesaj(string mesaj)
         {
-            DialogResult sor = MessageBox.Show(mesaj,"Lisans Uyarısı",MessageBoxButtons.OKCancel,MessageBoxIcon.Warning);
-            if(sor==DialogResult.OK)
-            {
-                LisansEtkinlestirme(0, evA);
-            }
+            var sor = MessageBox.Show(mesaj, "Lisans Uyarısı", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (sor == DialogResult.OK) LisansEtkinlestirme(0, evA);
         }
+
         private void nfBasariliKapat(object sender, EventArgs e)
         {
             nfBasarili.Visible = false;
         }
-        frmConfiguration lisansYolu;
+
         private void LisansEtkinlestirme(object sender, EventArgs e)
         {
             lisansYolu = new frmConfiguration();

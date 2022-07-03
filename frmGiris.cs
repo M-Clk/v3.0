@@ -1,37 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Net.Mail;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using System.Management;
-using System.Data.Sql;
-using Microsoft.Win32;
 using System.Data.SqlClient;
+using System.Management;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
-using System.Globalization;
+using System.Text;
+using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace Otomasyon
 {
-    public partial class frmGiris :Form
+    public partial class frmGiris : Form
     {
-        DbOperations SqlOperation = new DbOperations();
-        private RegistryKey SerialKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\License");
-        private static RegistryKey _settingsKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Settings");
-        RegistryKey OtomasyonKeys = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
+        private static readonly RegistryKey _settingsKey =
+            Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Settings");
+
+        private string mclksiz = "";
+        private readonly RegistryKey OtomasyonKeys = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
+        private readonly RegistryKey SerialKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\License");
+        private readonly DbOperations SqlOperation = new DbOperations();
+
         public frmGiris()
         {
             InitializeComponent();
         }
-        void GirisYap()
+
+        private void GirisYap()
         {
-            SqlParameter[] parameterCollection = new SqlParameter[2];
+            var parameterCollection = new SqlParameter[2];
             parameterCollection[0] = new SqlParameter();
             parameterCollection[0].ParameterName = "@Adi";
             parameterCollection[0].SqlDbType = SqlDbType.NVarChar;
-            if(Program.sifreIstesin)
+            if (Program.sifreIstesin)
                 parameterCollection[0].SqlValue = txtKullaniciAdi.Text;
             else
                 parameterCollection[0].SqlValue = Program.k_adi;
@@ -39,99 +40,108 @@ namespace Otomasyon
             parameterCollection[1] = new SqlParameter();
             parameterCollection[1].ParameterName = "@Sifre";
             parameterCollection[1].SqlDbType = SqlDbType.NVarChar;
-            if(Program.sifreIstesin)
+            if (Program.sifreIstesin)
                 parameterCollection[1].SqlValue = txtSifre.Text;
             else
                 parameterCollection[1].SqlValue = Program.sifre;
 
-            this.Cursor = Cursors.WaitCursor;
-            SqlDataReader dataRead = SqlOperation.OkuProcedure("KULLANICISORGULA", parameterCollection);
-            this.Cursor = Cursors.Default;
-            try
+            Cursor = Cursors.WaitCursor;
+            var dataRead = SqlOperation.OkuProcedure("KULLANICISORGULA", parameterCollection);
+            Cursor = Cursors.Default;
+            if (dataRead != null)
             {
-                if(dataRead != null)
+                if (dataRead.NextResult()) //KULLANICISORGULA Stored Procedure göre eğer iki tablo sonuç geri döndüyse kullanıcı adı doğru girildi, şifre yanlış olabilir.
                 {
-
-                    if(dataRead.NextResult()) //KULLANICISORGULA Stored Procedure göre eğer iki tablo sonuç geri döndüyse kullanıcı adı doğru girildi, şifre yanlış olabilir.
+                    if (dataRead.HasRows) //Eğer tablo boş değilse kullanıcı adı ve şifre doğru girildi. Kullanıcı adı ve şifreyi hafızda tut programa giriş yap.
                     {
-                        if(dataRead.HasRows) //Eğer tablo boş değilse kullanıcı adı ve şifre doğru girildi. Kullanıcı adı ve şifreyi hafızda tut programa giriş yap.
-                        {
-                            dataRead.Read();
-                            Program.k_adi = dataRead["Adi"].ToString();
-                            Program.k_id = Convert.ToInt32(dataRead["Id"]);
-                            Program.sifre = dataRead["Sifre"].ToString();
-                            Program.yetki = (Program.Yetki)(Convert.ToInt16(dataRead["Yetki"]));
+                        dataRead.Read();
+                        Program.k_adi = dataRead["Adi"].ToString();
+                        Program.k_id = Convert.ToInt32(dataRead["Id"]);
+                        Program.sifre = dataRead["Sifre"].ToString();
+                        Program.yetki = (Program.Yetki)Convert.ToInt16(dataRead["Yetki"]);
 
-                            DbOperations.Connection.Close();
-                            //Eğer cbHatirla seçili ise kayıt defterindeki K_Adi kaydının değerini girilen kullanıcı adı ile değiştir. Seçili değilse kaydı sil.
-                            if(Program.sifreIstesin)
+                        DbOperations.Connection.Close();
+                        //Eğer cbHatirla seçili ise kayıt defterindeki K_Adi kaydının değerini girilen kullanıcı adı ile değiştir. Seçili değilse kaydı sil.
+                        if (Program.sifreIstesin)
+                        {
+                            if (cbHatirla.Checked)
                             {
-                                if(cbHatirla.Checked)
-                                {
-                                    OtomasyonKeys.SetValue("K_Adi", txtKullaniciAdi.Text);
-                                }
-                                else
-                                {
-                                    OtomasyonKeys.SetValue("K_Adi", "");
-                                    OtomasyonKeys.DeleteValue("K_Adi");
-                                }
+                                OtomasyonKeys.SetValue("K_Adi", txtKullaniciAdi.Text);
                             }
+                            else
+                            {
+                                OtomasyonKeys.SetValue("K_Adi", "");
+                                OtomasyonKeys.DeleteValue("K_Adi");
+                            }
+                        }
 
-                            Program.giris = true;
-                            this.Close();
-                        }
-                        else
-                        {
-                            dataRead.NextResult(); //3. Tabloya git.
-                            dataRead.Read();
-                            MessageBox.Show(dataRead["Hata"].ToString(), "Kullanıcı Girişi Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            DbOperations.Connection.Close();
-                        }
+                        Program.giris = true;
+                        Close();
                     }
                     else
-                        MessageBox.Show(SqlOperation.bilgiMessage, "Kullanıcı Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    DbOperations.Connection.Close();
+                    {
+                        dataRead.NextResult(); //3. Tabloya git.
+                        dataRead.Read();
+                        MessageBox.Show(dataRead["Hata"].ToString(), "Kullanıcı Girişi Uyarısı", MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        DbOperations.Connection.Close();
+                    }
                 }
                 else
-                { txtSifre.Text = ""; return; }
-                Program.sifreIstesin = true;
+                {
+                    MessageBox.Show(SqlOperation.bilgiMessage, "Kullanıcı Girişi Hatası", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+
+                DbOperations.Connection.Close();
             }
-            catch(Exception)
+            else
             {
-
-                throw;
+                txtSifre.Text = "";
+                return;
             }
 
-
+            Program.sifreIstesin = true;
         }
+
         private void btnGirisYap_Click(object sender, EventArgs e)
         {
             GirisKapisi();
         }
-        bool MailGonder()
+
+        private bool MailGonder()
         {
-            MailMessage ePosta = new MailMessage();
+            var ePosta = new MailMessage();
             ePosta.From = new MailAddress("mclk.yzlm@gmail.com");
             ePosta.To.Add("mclk.yazilim.lisanshavuzu@gmail.com");
             ePosta.Subject = "Lisans İsteği";
-            ePosta.Body = "<table style=\"width: 276.4px; \" border=\"1\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr style=\"height: 17px; \"><td style=\"width: 281.4px; height: 17px; \">İşletme Adı</td><td style=\"width: 281.4px; height: 17px; \">&nbsp;" + Program.isletmeAdi + "</td></tr><tr style=\"height: 17px; \"><td style=\"width: 281.4px; height: 17px; \">E-Mail</td><td style=\"width: 281.4px; height: 17px; \">&nbsp;" + Program.email + "</td></tr><tr style=\"height: 17px; \"><td style=\"width: 281.4px; height: 17px; \">Telefon</td><td style=\"width: 281.4px; height: 17px; \">&nbsp;" + Program.telefon + "</td></tr><tr style=\"height: 15.8px; \"><td style=\"width: 281.4px; text - align: center; height: 15.8px; \" colspan=\"2\"><center>" + mclksiz + "<center/></td></tr></tbody></table>";
+            ePosta.Body =
+                "<table style=\"width: 276.4px; \" border=\"1\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr style=\"height: 17px; \"><td style=\"width: 281.4px; height: 17px; \">İşletme Adı</td><td style=\"width: 281.4px; height: 17px; \">&nbsp;" +
+                Program.isletmeAdi +
+                "</td></tr><tr style=\"height: 17px; \"><td style=\"width: 281.4px; height: 17px; \">E-Mail</td><td style=\"width: 281.4px; height: 17px; \">&nbsp;" +
+                Program.email +
+                "</td></tr><tr style=\"height: 17px; \"><td style=\"width: 281.4px; height: 17px; \">Telefon</td><td style=\"width: 281.4px; height: 17px; \">&nbsp;" +
+                Program.telefon +
+                "</td></tr><tr style=\"height: 15.8px; \"><td style=\"width: 281.4px; text - align: center; height: 15.8px; \" colspan=\"2\"><center>" +
+                mclksiz + "<center/></td></tr></tbody></table>";
             ePosta.IsBodyHtml = true;
-            SmtpClient smtp = new SmtpClient();
-            smtp.Credentials = new System.Net.NetworkCredential("mclk.yzlm@gmail.com", "m-clk123");
+            var smtp = new SmtpClient();
+            smtp.Credentials = new NetworkCredential("mclk.yzlm@gmail.com", "m-clk123");
             smtp.Port = 587;
             smtp.Host = "smtp.gmail.com";
             smtp.EnableSsl = true;
             try
             {
-                smtp.SendAsync(ePosta, (object)ePosta);
+                smtp.SendAsync(ePosta, ePosta);
                 return true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
         }
-        void GirisKapisi()
+
+        private void GirisKapisi()
         {
             try
             {
@@ -140,13 +150,16 @@ namespace Otomasyon
             catch (Exception)
             {
             }
-            if(LisansKontrol())
+
+            if (LisansKontrol())
+            {
                 Program.lisans = true;
+            }
             else
             {
                 Program.lisans = false;
-                if(OtomasyonKeys.GetValue("MailGittiMi") == null || (int)OtomasyonKeys.GetValue("MailGittiMi") == 0)
-                    if(MailGonder())
+                if (OtomasyonKeys.GetValue("MailGittiMi") == null || (int)OtomasyonKeys.GetValue("MailGittiMi") == 0)
+                    if (MailGonder())
                         OtomasyonKeys.SetValue("MailGittiMi", 1);
                     else
                         OtomasyonKeys.SetValue("MailGittiMi", 0);
@@ -156,53 +169,53 @@ namespace Otomasyon
 
             GirisYap();
         }
-        bool LisansKontrol()
+
+        private bool LisansKontrol()
         {
             try
             {
-                if(SerialKey.ValueCount >= 1)
+                if (SerialKey.ValueCount >= 1)
                 {
-                    string Key = SerialKey.GetValue("LicenseCode").ToString();
-                    ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
-                    ManagementObjectCollection mcol = mangnmt.GetInstances();
-                    string result = "";
-                    foreach(ManagementObject strt in mcol)
+                    var Key = SerialKey.GetValue("LicenseCode").ToString();
+                    var mangnmt = new ManagementClass("Win32_LogicalDisk");
+                    var mcol = mangnmt.GetInstances();
+                    var result = "";
+                    foreach (ManagementObject strt in mcol)
                         result += Convert.ToString(strt["VolumeSerialNumber"]);
                     result = MClkSifremele(result);
-                    if(result == Key)
+                    if (result == Key)
                         return true;
-
                 }
                 else
+                {
                     return false;
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Lisans kontrolü yapılırken bir sorun oluştu. Hata Mesajı : " + ex.Message);
             }
+
             return false;
-
-
         }
-        private string mclksiz = "";
 
-        string MClkSifremele(string sifre)
+        private string MClkSifremele(string sifre)
         {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            var md5 = new MD5CryptoServiceProvider();
             //Parametre olarak gelen veriyi byte dizisine dönüştürdük.
-            byte[] dizi = Encoding.UTF8.GetBytes(sifre);
+            var dizi = Encoding.UTF8.GetBytes(sifre);
             //dizinin hash'ini hesaplattık.
             dizi = md5.ComputeHash(dizi);
             //Hashlenmiş verileri depolamak için StringBuilder nesnesi oluşturduk.
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             //Her byte'i dizi içerisinden alarak string türüne dönüştürdük.
 
-            foreach(byte ba in dizi)
+            foreach (var ba in dizi)
                 sb.Append(ba.ToString("x2").ToUpper());
-            string md5li = sb.ToString();
+            var md5li = sb.ToString();
             mclksiz = md5li;
-            char[] sonHal = new char[24];  // "MCLKMXXXXCXXXXLXXXXKXXXX";
-                                           //Kendi şifreleme yöntemim => MCLK-MXXXX-CXXXX-LXXXX-KXXXX  (24)
+            var sonHal = new char[24]; // "MCLKMXXXXCXXXXLXXXXKXXXX";
+            //Kendi şifreleme yöntemim => MCLK-MXXXX-CXXXX-LXXXX-KXXXX  (24)
             sonHal[0] = 'M';
             sonHal[1] = 'C';
             sonHal[2] = 'L';
@@ -228,43 +241,42 @@ namespace Otomasyon
             sonHal[22] = md5li[27];
             sonHal[23] = md5li[25];
             md5li = "";
-            for(int i = 0; i < 24; i++)
-            {
-                md5li += sonHal[i];
-            }
-            return md5li.ToString();
+            for (var i = 0; i < 24; i++) md5li += sonHal[i];
+            return md5li;
         }
+
         private void frmGiris_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(Program.giris == false)
+            if (Program.giris == false)
             {
                 Application.ExitThread();
                 Application.Exit();
-
             }
         }
+
         private void KullaniciKontrol()
         {
             //Software\Otomasyon dizininde adı K_Adi olan kaydın varlığını kontrol et. Eğer varsa txtKullaniciAdi textbox'ına K_Adi kaydının değerini yaz.
-            string[] degerler = OtomasyonKeys.GetValueNames();
-            for(int i = 0; i < degerler.Length; i++)
-            {
-                if(degerler[i] == "K_Adi")
+            var degerler = OtomasyonKeys.GetValueNames();
+            for (var i = 0; i < degerler.Length; i++)
+                if (degerler[i] == "K_Adi")
                 {
                     txtKullaniciAdi.Text = OtomasyonKeys.GetValue("K_Adi").ToString();
                     cbHatirla.Checked = true;
                     txtSifre.Select();
                 }
                 else
+                {
                     txtKullaniciAdi.Select();
-            }
+                }
         }
-        void IsletmeKontrol()
+
+        private void IsletmeKontrol()
         {
-            SqlDataReader IsletmeOku = SqlOperation.SqlTextReader("SELECT Adi,Telefon,Email,Adres FROM Isletme");
+            var IsletmeOku = SqlOperation.SqlTextReader("SELECT Adi,Telefon,Email,Adres FROM Isletme");
             try
             {
-                if(IsletmeOku.Read())
+                if (IsletmeOku.Read())
                 {
                     Program.isletmeAdi = IsletmeOku[0].ToString();
                     Program.telefon = IsletmeOku[1].ToString();
@@ -275,23 +287,18 @@ namespace Otomasyon
             catch
             {
             }
-
         }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBox1.Checked == true)
-            {
+            if (checkBox1.Checked)
                 txtSifre.PasswordChar = '\0';
-            }
-            else if(checkBox1.Checked == false)
-            {
-                txtSifre.PasswordChar = '•';
-            }
+            else if (checkBox1.Checked == false) txtSifre.PasswordChar = '•';
         }
 
         private void txtSifre_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
                 GirisKapisi();
         }
 
@@ -299,25 +306,26 @@ namespace Otomasyon
         {
             DefaultLoad();
         }
-        void DefaultLoad()
+
+        private void DefaultLoad()
         {
             KullaniciKontrol();
             IsletmeKontrol();
-            if(!Program.sifreIstesin)
+            if (!Program.sifreIstesin)
                 GirisKapisi();
-            if(txtKullaniciAdi.TextLength > 0)
+            if (txtKullaniciAdi.TextLength > 0)
                 txtSifre.Select();
         }
 
         private void label3_Click(object sender, EventArgs e)
         {
-            frmConfiguration frmCon = new frmConfiguration();
+            var frmCon = new frmConfiguration();
             frmCon.ShowDialog();
         }
 
         private void label8_Click(object sender, EventArgs e)
         {
-            frmDestek frmDes = new frmDestek();
+            var frmDes = new frmDestek();
             frmDes.Show();
         }
     }

@@ -1,27 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Win32;
 using static Otomasyon.frmAnaForm;
 
 namespace Otomasyon
 {
-    public partial class frmSatis :Form
+    public partial class frmSatis : Form
     {
-        int satirIndex;
-        private bool a = true;
-        OrtakIslemler islemYap = new OrtakIslemler();
         private static frmSatis singletonSatis;
-        decimal toplam = 0, Borc = 0, seciliMiktar, odenenNakit = 0, odenenKredi = 0, paraUstu = 0, varsayilanMiktar = 1;
         private static frmAnaForm _frmAna;
-        int[] taksitAylari = new int[5];
+        private bool a = true;
+
+        private bool d = true;
+        private bool f = true;
+        private readonly OrtakIslemler islemYap = new OrtakIslemler();
+        private int satirIndex;
+        private readonly DbOperations SqlOperation = new DbOperations();
+        private readonly int[] taksitAylari = new int[5];
+        private decimal toplam;
+        private readonly decimal Borc = 0;
+        private decimal seciliMiktar, odenenNakit, odenenKredi, paraUstu, varsayilanMiktar = 1;
+
         private frmSatis()
         {
             InitializeComponent();
@@ -31,35 +32,42 @@ namespace Otomasyon
             taksitAylari[3] = 24;
             taksitAylari[4] = 36;
         }
+
         public static frmSatis GetFrmSatis(frmAnaForm frmAna)
         {
-            if(singletonSatis == null || (singletonSatis?.IsDisposed ?? true))
+            if (singletonSatis == null || (singletonSatis?.IsDisposed ?? true))
                 singletonSatis = new frmSatis();
             _frmAna = frmAna;
             return singletonSatis;
         }
-        DbOperations SqlOperation = new DbOperations();
 
         private void btnSatisYap_Click(object sender, EventArgs e)
         {
             if (paraUstu < 0)
             {
-                MessageBox.Show("Ücret tamamen ödenmedi. " + (-paraUstu).ToString() + " TL ödenmesi gerek. Lütfen satış tutarı tamamen ödendikten sonra tekrar deneyin.", "Satış Tutarı Tamamen Ödenmedi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Ücret tamamen ödenmedi. " + -paraUstu +
+                    " TL ödenmesi gerek. Lütfen satış tutarı tamamen ödendikten sonra tekrar deneyin.",
+                    "Satış Tutarı Tamamen Ödenmedi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 rbNakit.Checked = true;
                 return;
             }
+
             if (!Program.lisans)
             {
-                int satisSayisi = Convert.ToInt32(SqlOperation.ScalarTextCommand("Select COUNT(Id) From Satislar"));
+                var satisSayisi = Convert.ToInt32(SqlOperation.ScalarTextCommand("Select COUNT(Id) From Satislar"));
                 try
                 {
                     if (satisSayisi < 10)
                     {
-                        islemYap.LisansUyarisi("Lisanssız yazılım kullanıyorsunuz. En fazla 10 satış yapabilirsiniz. " + (9 - satisSayisi) + " hakkınız kaldı. Eğer ürün anahtarınız varsa etkinleştirmek için tıklayın.");
+                        islemYap.LisansUyarisi("Lisanssız yazılım kullanıyorsunuz. En fazla 10 satış yapabilirsiniz. " +
+                                               (9 - satisSayisi) +
+                                               " hakkınız kaldı. Eğer ürün anahtarınız varsa etkinleştirmek için tıklayın.");
                     }
                     else
                     {
-                        islemYap.LisansUyarisiMesaj("Lisanssız yazılım kullanıyorsunuz. Maksimum satış limitinize ulaştınız. Artık satış yapamazsınız. Eğer ürün anahtarınız varsa limitsiz kullanım için etkinleştirin.");
+                        islemYap.LisansUyarisiMesaj(
+                            "Lisanssız yazılım kullanıyorsunuz. Maksimum satış limitinize ulaştınız. Artık satış yapamazsınız. Eğer ürün anahtarınız varsa limitsiz kullanım için etkinleştirin.");
                         return;
                     }
                 }
@@ -91,9 +99,10 @@ namespace Otomasyon
             txtBarkodOku.Text = "";
             txtBarkodOku.Select();
         }
-        void SatisDetayiEkle()
+
+        private void SatisDetayiEkle()
         {
-            SqlParameter[] detayParametresi = new SqlParameter[4];
+            var detayParametresi = new SqlParameter[4];
             detayParametresi[0] = new SqlParameter();
             detayParametresi[0].ParameterName = "@Id";
             detayParametresi[0].SqlDbType = SqlDbType.Int;
@@ -116,14 +125,14 @@ namespace Otomasyon
                 SqlOperation.GuncelleProcedure("SATISDETAYIEKLE", detayParametresi);
             }
         }
-        void SatisiYap()
+
+        private void SatisiYap()
         {
             decimal toplamMaliyet = 0;
-            for (int i = 0; i < dgSepet.Rows.Count; i++)
-            {
-                toplamMaliyet += Convert.ToDecimal(dgSepet.Rows[i].Cells[6].Value) * Convert.ToDecimal(dgSepet.Rows[i].Cells["Miktar"].Value);
-            }
-            SqlParameter[] paramtr = new SqlParameter[9];
+            for (var i = 0; i < dgSepet.Rows.Count; i++)
+                toplamMaliyet += Convert.ToDecimal(dgSepet.Rows[i].Cells[6].Value) *
+                                 Convert.ToDecimal(dgSepet.Rows[i].Cells["Miktar"].Value);
+            var paramtr = new SqlParameter[9];
 
             paramtr[0] = new SqlParameter();
             paramtr[0].SqlDbType = SqlDbType.Int;
@@ -170,7 +179,8 @@ namespace Otomasyon
             paramtr[8].SqlDbType = SqlDbType.TinyInt;
             paramtr[8].SqlValue = taksitAylari[cbTaksit.SelectedIndex];
 
-            _frmAna.sonSatisId = Convert.ToInt32(SqlOperation.OkuScalar("SATISEKLE", CommandType.StoredProcedure, paramtr));
+            _frmAna.sonSatisId =
+                Convert.ToInt32(SqlOperation.OkuScalar("SATISEKLE", CommandType.StoredProcedure, paramtr));
             Program.satisYapildi = true;
         }
 
@@ -180,38 +190,41 @@ namespace Otomasyon
             while (cbMiktar.Items.Count < 100)
                 cbMiktar.Items.Add(cbMiktar.Items.Count + 1);
             cbMiktar.SelectedIndex = 0;
-            SqlParameter[] parameter = new SqlParameter[1];
+            var parameter = new SqlParameter[1];
             parameter[0] = new SqlParameter();
             parameter[0].ParameterName = "@UrunSayisi";
             parameter[0].SqlDbType = SqlDbType.TinyInt;
             parameter[0].SqlValue = Program.quickProductsCount;
-            SqlDataReader dReader = SqlOperation.OkuProcedure("HIZLIURUNLERIGETIR", parameter);
-            while(dReader.Read())
+            var dReader = SqlOperation.OkuProcedure("HIZLIURUNLERIGETIR", parameter);
+            while (dReader.Read())
             {
                 var newButton = new Button();
                 newButton.Text = dReader["Adi"].ToString();
                 newButton.Tag = dReader["Bakod_kodu"].ToString();
                 newButton.Name = $"button{nameId++}";
                 newButton.Size = new Size(150, 80);
-                newButton.Click += new EventHandler(ProductClick);
+                newButton.Click += ProductClick;
                 flowLayoutPanel1.Controls.Add(newButton);
             }
         }
-        decimal HarfleriSil()
+
+        private decimal HarfleriSil()
         {
-            string toplam = lblToplam.Text.Remove(lblToplam.Text.Length - 2, 2);
+            var toplam = lblToplam.Text.Remove(lblToplam.Text.Length - 2, 2);
             toplam = toplam.Remove(0, 9);
             return Convert.ToDecimal(toplam);
         }
+
         private void frmSatis_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.F1 || e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.F1 || e.KeyCode == Keys.Enter)
             {
                 txtBarkodOku.Text = "";
                 txtBarkodOku.Select();
             }
         }
-        void Etkinlestir()
+
+        private void Etkinlestir()
         {
             rbNakit.Checked = true;
             tableLayoutPanel25.Visible = true;
@@ -238,7 +251,8 @@ namespace Otomasyon
             cbOdenenNakit.SelectedIndex = 0;
             txtOdenenKredi.Text = "0";
         }
-        void Etkisizlestir()
+
+        private void Etkisizlestir()
         {
             tableLayoutPanel25.Visible = false;
             tableLayoutPanel26.Visible = false;
@@ -266,16 +280,17 @@ namespace Otomasyon
             odenenNakit = 0;
             paraUstu = 0;
         }
+
         private void dgSepet_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if(e.RowIndex != -1 && e.ColumnIndex != 4)
+            if (e.RowIndex != -1 && e.ColumnIndex != 4)
             {
-                if(e.RowIndex < dgSepet.Rows.Count)
-                    for(int i = e.RowIndex; i < dgSepet.Rows.Count; i++)
-                        dgSepet.Rows[i].Cells[0].Value = i;//Bu satırın altındaki satırların numarasını 1 azalt.
+                if (e.RowIndex < dgSepet.Rows.Count)
+                    for (var i = e.RowIndex; i < dgSepet.Rows.Count; i++)
+                        dgSepet.Rows[i].Cells[0].Value = i; //Bu satırın altındaki satırların numarasını 1 azalt.
                 dgSepet.Rows.Remove(dgSepet.Rows[e.RowIndex]);
                 ToplamHesapla(); //Toplam tutarı hesapla
-                if(dgSepet.RowCount <= 0) //Eğer satır kalmadıysa herseyi pasifize et
+                if (dgSepet.RowCount <= 0) //Eğer satır kalmadıysa herseyi pasifize et
                     Etkisizlestir();
                 txtBarkodOku.Text = "";
                 txtBarkodOku.Select();
@@ -284,7 +299,7 @@ namespace Otomasyon
 
         private void dgSepet_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if(dgSepet.Rows.Count == 1)
+            if (dgSepet.Rows.Count == 1)
                 Etkinlestir();
         }
 
@@ -303,8 +318,8 @@ namespace Otomasyon
             if (e.RowIndex != -1 && e.ColumnIndex != 4)
             {
                 if (e.RowIndex < dgSepet.Rows.Count)
-                    for (int i = e.RowIndex; i < dgSepet.Rows.Count; i++)
-                        dgSepet.Rows[i].Cells[0].Value = i;//Bu satırın altındaki satırların numarasını 1 azalt.
+                    for (var i = e.RowIndex; i < dgSepet.Rows.Count; i++)
+                        dgSepet.Rows[i].Cells[0].Value = i; //Bu satırın altındaki satırların numarasını 1 azalt.
                 dgSepet.Rows.Remove(dgSepet.Rows[e.RowIndex]);
                 ToplamHesapla(); //Toplam tutarı hesapla
                 if (dgSepet.RowCount <= 0) //Eğer satır kalmadıysa herseyi pasifize et
@@ -322,7 +337,6 @@ namespace Otomasyon
 
         private void dgSepet_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
-
         }
 
         private void dgSepet_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
@@ -335,46 +349,55 @@ namespace Otomasyon
         {
             if (e.RowIndex > -1 && e.ColumnIndex == 4) //Kayıt var mı kontrol et ve kayıt eklenme durumu değilse
             {
-                SqlParameter[] parameter = new SqlParameter[1];
+                var parameter = new SqlParameter[1];
                 parameter[0] = new SqlParameter();
                 parameter[0].ParameterName = "@BarkodKodu";
                 parameter[0].SqlDbType = SqlDbType.NVarChar;
                 parameter[0].SqlValue = dgSepet.Rows[e.RowIndex].Cells[1].Value;
-                using (SqlDataReader dReader = SqlOperation.OkuProcedure("URUNSORGULAMA", parameter)) //...Seçili ürünü getir
+                using (var dReader = SqlOperation.OkuProcedure("URUNSORGULAMA", parameter)) //...Seçili ürünü getir
                 {
-
                     try //Sayı dışında bir değer girilirse hata verir. Bunu yakala ve kullanıcıyı uyar.
                     {
                         dReader.Read();
-                        if (Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) > Convert.ToDecimal(dReader[3])) //Yeni değer stoktan büyükse uyar, max ile değiştir.
+                        if (Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) >
+                            Convert.ToDecimal(dReader[3])) //Yeni değer stoktan büyükse uyar, max ile değiştir.
                         {
-                            MessageBox.Show("Bu üründen stokta " + dReader[3].ToString() + " " + dReader[4].ToString().ToLower() + " var. Daha fazla seçilemez. ", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(
+                                "Bu üründen stokta " + dReader[3] + " " + dReader[4].ToString().ToLower() +
+                                " var. Daha fazla seçilemez. ", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = dReader[3].ToString();
                             dgSepet.Rows[e.RowIndex].Selected = true;
                         }
-                        else if (Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) <= 0) //Yeni değer 0 veya negatif ise hata mesajı göster 
+                        else if (Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) <=
+                                 0) //Yeni değer 0 veya negatif ise hata mesajı göster 
                         {
-                            MessageBox.Show("Miktar negatif veya 0 girilemez. Ürünü sepetten çıkarmak için ürünü seçip çift tıklayabilirsiniz.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = varsayilanMiktar;//Eski değerini gir.
+                            MessageBox.Show(
+                                "Miktar negatif veya 0 girilemez. Ürünü sepetten çıkarmak için ürünü seçip çift tıklayabilirsiniz.",
+                                "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = varsayilanMiktar; //Eski değerini gir.
                         }
                         else //Bunlardan hiçbiri değilse hatasız veri girişi yapılmıştır toplamı güncelle
                         {
-                            dgSepet.Rows[e.RowIndex].Cells["TopTutar"].Value = (Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells["Miktar"].Value) * Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells["BirimFiyat"].Value)).ToString("F2");
+                            dgSepet.Rows[e.RowIndex].Cells["TopTutar"].Value =
+                                (Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells["Miktar"].Value) *
+                                 Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells["BirimFiyat"].Value)).ToString("F2");
                             ToplamHesapla();
                         }
                     }
                     catch (Exception)
                     {
                         if (dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex + 1].Value.ToString() == "Adet")
-                        //Birimi adet ise doğal sayı gir uyar eski değer ile değiştir
+                            //Birimi adet ise doğal sayı gir uyar eski değer ile değiştir
                         {
-                            MessageBox.Show("Doğal sayı dışında veri girildi. Adet yalnız doğal sayı olmalıdır.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Doğal sayı dışında veri girildi. Adet yalnız doğal sayı olmalıdır.",
+                                "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = varsayilanMiktar;
                         }
                         else
-                        //
+                            //
                         {
-                            MessageBox.Show("Miktar sayısal olmalıdır. ", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Miktar sayısal olmalıdır. ", "Hata", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
                             dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = varsayilanMiktar;
                         }
                     }
@@ -384,6 +407,7 @@ namespace Otomasyon
                         SqlOperation.cmd.Dispose();
                     }
                 }
+
                 txtBarkodOku.Text = "";
                 txtBarkodOku.Select();
             }
@@ -397,10 +421,7 @@ namespace Otomasyon
 
         private void dgSepet_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            if (dgSepet.Rows.Count == 0)
-            {
-                Etkisizlestir();
-            }
+            if (dgSepet.Rows.Count == 0) Etkisizlestir();
         }
 
         private void dgSepet_RowEnter(object sender, DataGridViewCellEventArgs e)
@@ -441,10 +462,10 @@ namespace Otomasyon
             if (e.KeyCode == Keys.Right)
                 cbMiktar.Select();
             if (e.KeyCode == Keys.Enter && txtBarkodOku.Text != "")
-            UrunSorgula();
+                UrunSorgula();
         }
 
-        void UrunSorgula()
+        private void UrunSorgula()
         {
             try //Her ihtimale karşı miktarın sayısal girilip girilmediğini kontrol et
             {
@@ -454,17 +475,19 @@ namespace Otomasyon
                 }
                 else
                 {
-                    MessageBox.Show("Lütfen miktarı pozitif tamsayı olarak girin.", "Veri Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Lütfen miktarı pozitif tamsayı olarak girin.", "Veri Girişi Hatası",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cbMiktar.Text = "1";
                     return;
                 }
-
             }
             catch (Exception)
             {
-                MessageBox.Show("Lütfen miktarı sayısal olarak girin.", "Veri Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lütfen miktarı sayısal olarak girin.", "Veri Girişi Hatası", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return;
             }
+
             UrunSorgula(txtBarkodOku.Text);
         }
 
@@ -478,7 +501,8 @@ namespace Otomasyon
 
         private void cbMiktar_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Left || e.KeyCode == Keys.Space || e.KeyCode == Keys.RShiftKey || e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Left || e.KeyCode == Keys.Space ||
+                e.KeyCode == Keys.RShiftKey || e.KeyCode == Keys.Left)
             {
                 txtBarkodOku.Text = "";
                 txtBarkodOku.Select();
@@ -487,11 +511,8 @@ namespace Otomasyon
 
         private void cbMiktar_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (cbMiktar.Text.IndexOf(',') == -1)
-            {
-                a = true;
-            }
-            if (e.KeyChar == (char)44 && a == true)
+            if (cbMiktar.Text.IndexOf(',') == -1) a = true;
+            if (e.KeyChar == (char)44 && a)
             {
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
                 a = false;
@@ -504,13 +525,16 @@ namespace Otomasyon
 
         private void btnSatisIptalEt_Click(object sender, EventArgs e)
         {
-            DialogResult sil = MessageBox.Show("Satış iptal edilirse sepet boşaltılacak. İşleminiz sıfırlanacak. Satışı iptal etmek istediğinizden emin misiniz?", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var sil = MessageBox.Show(
+                "Satış iptal edilirse sepet boşaltılacak. İşleminiz sıfırlanacak. Satışı iptal etmek istediğinizden emin misiniz?",
+                "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (sil == DialogResult.Yes)
             {
                 Etkisizlestir();
                 dgSepet.Rows.Clear();
                 ToplamHesapla();
             }
+
             txtBarkodOku.Text = "";
             txtBarkodOku.Select();
         }
@@ -527,7 +551,9 @@ namespace Otomasyon
                 cbOdenenNakit.Focus();
             }
             else
+            {
                 rbNakit.BackColor = tableLayoutPanel25.BackColor = rbKrediKarti.BackColor;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -563,18 +589,15 @@ namespace Otomasyon
                 txtOdenenKredi.SelectAll();
             }
             else
+            {
                 rbKrediKarti.BackColor = tableLayoutPanel26.BackColor = rbNakit.BackColor;
+            }
         }
 
-        bool d = true;
         private void txtOdenenKredi_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (txtOdenenKredi.Text.IndexOf(',') == -1)
-            {
-                d = true;
-
-            }
-            if (e.KeyChar == (char)44 && d == true)
+            if (txtOdenenKredi.Text.IndexOf(',') == -1) d = true;
+            if (e.KeyChar == (char)44 && d)
             {
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
                 d = false;
@@ -584,14 +607,11 @@ namespace Otomasyon
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
             }
         }
-        bool f = true;
+
         private void cbOdenenNakit_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (cbOdenenNakit.Text.IndexOf(',') == -1)
-            {
-                f = true;
-            }
-            if (e.KeyChar == (char)44 && f == true)
+            if (cbOdenenNakit.Text.IndexOf(',') == -1) f = true;
+            if (e.KeyChar == (char)44 && f)
             {
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
                 f = false;
@@ -600,8 +620,8 @@ namespace Otomasyon
             {
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
             }
-
         }
+
         private void cbOdenenNakit_KeyDown(object sender, KeyEventArgs e)
         {
             if (paraUstu < 0 && e.KeyCode == Keys.Enter)
@@ -616,22 +636,20 @@ namespace Otomasyon
                 rbKrediKarti.Checked = true;
                 txtOdenenKredi.Focus();
                 txtOdenenKredi.SelectAll();
-
             }
 
             else if (e.KeyCode == Keys.F1)
-            { txtBarkodOku.Text = ""; txtBarkodOku.Select(); }
-
+            {
+                txtBarkodOku.Text = "";
+                txtBarkodOku.Select();
+            }
         }
 
         private void cbOdenenNakit_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                if (cbOdenenNakit.Text == "")
-                {
-                    odenenNakit = 0;
-                }
+                if (cbOdenenNakit.Text == "") odenenNakit = 0;
                 if (cbOdenenNakit.Text == ",")
                 {
                     cbOdenenNakit.Text = "0,";
@@ -645,26 +663,28 @@ namespace Otomasyon
                 foreach (var item in cbOdenenNakit.Items)
                 {
                     if (Convert.ToInt32(item.ToString()) > toplam)
-                    { cbOdenenNakit.SelectedItem = item; break; }
-                    else
+                    {
                         cbOdenenNakit.SelectedItem = item;
+                        break;
+                    }
+
+                    cbOdenenNakit.SelectedItem = item;
+
                     ;
                 }
+
                 odenenNakit = Convert.ToDecimal(cbOdenenNakit.Text);
                 cbOdenenNakit.Focus();
             }
+
             ParaUstuHesapla();
         }
 
         private void txtOdenenKredi_TextChanged(object sender, EventArgs e)
         {
-
             try
             {
-                if (txtOdenenKredi.Text == "")
-                {
-                    odenenKredi = 0;
-                }
+                if (txtOdenenKredi.Text == "") odenenKredi = 0;
 
                 if (txtOdenenKredi.Text == ",")
                 {
@@ -679,7 +699,8 @@ namespace Otomasyon
                 txtOdenenKredi.Text = "";
                 odenenKredi = 0;
             }
-            decimal diger = toplam - odenenNakit;
+
+            var diger = toplam - odenenNakit;
             if (odenenKredi > diger)
             {
                 if (odenenKredi != 0 && odenenNakit != 1)
@@ -694,8 +715,8 @@ namespace Otomasyon
                 txtOdenenKredi.Focus();
                 txtOdenenKredi.SelectAll();
             }
-            ParaUstuHesapla();
 
+            ParaUstuHesapla();
         }
 
         private void txtOdenenKredi_KeyDown(object sender, KeyEventArgs e)
@@ -708,19 +729,21 @@ namespace Otomasyon
                 cbOdenenNakit.SelectAll();
             }
             else if (e.KeyCode == Keys.Left)
-            { rbNakit.Checked = true; cbOdenenNakit.Focus(); }
+            {
+                rbNakit.Checked = true;
+                cbOdenenNakit.Focus();
+            }
             else if (e.KeyCode == Keys.F1)
-            { txtBarkodOku.Text = ""; txtBarkodOku.Select(); }
+            {
+                txtBarkodOku.Text = "";
+                txtBarkodOku.Select();
+            }
         }
 
         private void txtOdenenKredi_KeyPress_1(object sender, KeyPressEventArgs e)
         {
-            if (txtOdenenKredi.Text.IndexOf(',') == -1)
-            {
-                d = true;
-
-            }
-            if (e.KeyChar == (char)44 && d == true)
+            if (txtOdenenKredi.Text.IndexOf(',') == -1) d = true;
+            if (e.KeyChar == (char)44 && d)
             {
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
                 d = false;
@@ -733,13 +756,17 @@ namespace Otomasyon
 
         private void dgSepet_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if(e.RowIndex > -1 && e.ColumnIndex == 4) // Miktar tıklandı ise yanlış işlem sonucu eski değerini girmek için kaydet
+            if (e.RowIndex > -1 &&
+                e.ColumnIndex == 4) // Miktar tıklandı ise yanlış işlem sonucu eski değerini girmek için kaydet
             {
                 varsayilanMiktar = Convert.ToDecimal(dgSepet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
                 dgSepet.Focus();
             }
             else
-            { txtBarkodOku.Text = ""; txtBarkodOku.Select(); }
+            {
+                txtBarkodOku.Text = "";
+                txtBarkodOku.Select();
+            }
         }
 
         private void ProductClick(object sender, EventArgs e)
@@ -748,37 +775,36 @@ namespace Otomasyon
             var barcode = (string)((Button)sender).Tag;
             UrunSorgula(barcode);
         }
-        miktarDurum MiktarHesapla(string kod, decimal miktar, decimal istenenMiktar) //Sorgulanan ürünün miktarının yeterliliğini kontrol et ve sepette varsa seçilen miktarın eklemesi için yoksa sepete eklemesi için enum gönder
+
+        private miktarDurum
+            MiktarHesapla(string kod, decimal miktar,
+                decimal istenenMiktar) //Sorgulanan ürünün miktarının yeterliliğini kontrol et ve sepette varsa seçilen miktarın eklemesi için yoksa sepete eklemesi için enum gönder
         {
-            for(int i = 0; i < dgSepet.RowCount; i++)//Barkod kodunu sepettekilerle karşılaştır
-            {
-                if(dgSepet.Rows[i].Cells[1].Value.ToString() == kod) //Kod sepette varsa işlem yap
+            for (var i = 0; i < dgSepet.RowCount; i++) //Barkod kodunu sepettekilerle karşılaştır
+                if (dgSepet.Rows[i].Cells[1].Value.ToString() == kod) //Kod sepette varsa işlem yap
                 {
-                    if(Convert.ToDecimal(dgSepet.Rows[i].Cells["Miktar"].Value) + istenenMiktar > miktar)//istenen miktar stoktaki ve sepettikinin toplamında fazla ise onun anlamına gelen enumu gönder
-                    {
+                    if (Convert.ToDecimal(dgSepet.Rows[i].Cells["Miktar"].Value) + istenenMiktar >
+                        miktar) //istenen miktar stoktaki ve sepettikinin toplamında fazla ise onun anlamına gelen enumu gönder
                         return miktarDurum.sepette_var_yetersiz;
-                    }
-                    else //Sepette var yeterliyse onun anlamına gelen enumu gönder
-                    {
-                        satirIndex = i;
-                        return miktarDurum.sepette_var_yeterli;
-                    }
+
+                    satirIndex = i;
+                    return miktarDurum.sepette_var_yeterli;
                 }
-            }
 
-            if(istenenMiktar > miktar)
-                return miktarDurum.sepette_yok_yetersiz;//istenen miktar sepette yok ve yetersizse onun anlamına gelen enumu gönder
-            else
-                return miktarDurum.sepette_yok_yeterli; //bunlardan hiçbiri değilse tek enum kaldı onu gönder
+            if (istenenMiktar > miktar)
+                return
+                    miktarDurum
+                        .sepette_yok_yetersiz; //istenen miktar sepette yok ve yetersizse onun anlamına gelen enumu gönder
+            return miktarDurum.sepette_yok_yeterli; //bunlardan hiçbiri değilse tek enum kaldı onu gönder
         }
-        void ToplamHesapla() //Toplam fiyat tutarını hesapla
-        {
 
+        private void ToplamHesapla() //Toplam fiyat tutarını hesapla
+        {
             toplam = 0;
-            for(int i = 0; i < dgSepet.Rows.Count; i++)
+            for (var i = 0; i < dgSepet.Rows.Count; i++)
             {
                 toplam += Convert.ToDecimal(dgSepet.Rows[i].Cells["TopTutar"].Value);
-                if(i % 2 == 0)
+                if (i % 2 == 0)
                     dgSepet.Rows[i].DefaultCellStyle.BackColor = Color.LightPink;
                 else
                     dgSepet.Rows[i].DefaultCellStyle.BackColor = Color.LavenderBlush;
@@ -786,120 +812,141 @@ namespace Otomasyon
 
 
             lblToplam.Text = "Toplam : " + toplam.ToString("F2") + " ₺";
-            if(Program.odemeTipi == 1)
+            if (Program.odemeTipi == 1)
             {
                 odenenKredi = 0;
                 rbNakit.Checked = true;
                 txtOdenenKredi.Text = "0";
                 cbOdenenNakit.Text = toplam.ToString();
             }
-            else if(Program.odemeTipi == 2)
+            else if (Program.odemeTipi == 2)
             {
                 odenenNakit = 0;
                 rbKrediKarti.Checked = true;
                 cbOdenenNakit.Text = "0";
                 txtOdenenKredi.Text = toplam.ToString();
             }
+
             ParaUstuHesapla();
-
-
         }
-        void ParaUstuHesapla()
-        {
 
-            decimal odenen = odenenNakit + odenenKredi;
+        private void ParaUstuHesapla()
+        {
+            var odenen = odenenNakit + odenenKredi;
             paraUstu = odenen - toplam;
 
-            if(paraUstu < 0)
+            if (paraUstu < 0)
                 lblParaUstu.Text = (-paraUstu).ToString("F2") + " TL alacaklısınız.";
             else
                 lblParaUstu.Text = " Para Üstü : " + paraUstu.ToString("F2") + " TL";
-
         }
-        void UrunSorgula(string barcode)
+
+        private void UrunSorgula(string barcode)
         {
-            SqlParameter[] param = new SqlParameter[1];
+            var param = new SqlParameter[1];
             param[0] = new SqlParameter();
             param[0].ParameterName = "@BarkodKodu";
             param[0].SqlDbType = SqlDbType.NVarChar;
             param[0].SqlValue = barcode;
-            SqlDataReader dReader = SqlOperation.OkuProcedure("URUNSORGULAMA", param);
+            var dReader = SqlOperation.OkuProcedure("URUNSORGULAMA", param);
             try
             {
-                if(dReader != null)
+                if (dReader != null)
                 {
-                    if(dReader.HasRows)
+                    if (dReader.HasRows)
                     {
                         dReader.Read();
-                        miktarDurum durum = MiktarHesapla(barcode, Convert.ToDecimal(dReader[3]), seciliMiktar); //Seçilen miktarın yeterli mi fazla mı olduğunu kontrol et
+                        var durum = MiktarHesapla(barcode, Convert.ToDecimal(dReader[3]),
+                            seciliMiktar); //Seçilen miktarın yeterli mi fazla mı olduğunu kontrol et
 
-                        if(durum == miktarDurum.sepette_yok_yeterli) //Sepette yoksa ekle
+                        if (durum == miktarDurum.sepette_yok_yeterli) //Sepette yoksa ekle
                         {
-                            string[] satir = new string[dgSepet.ColumnCount];
+                            var satir = new string[dgSepet.ColumnCount];
                             satir[0] = (dgSepet.RowCount + 1).ToString(); //Satır numarası
                             satir[1] = barcode; //Barkod kodu
                             satir[2] = dReader[1].ToString(); // Ürün Adı
                             satir[3] = dReader[2].ToString(); //Birim Fiyatı
                             satir[4] = seciliMiktar.ToString(); //Miktarı
                             satir[5] = dReader[4].ToString(); //Birimi
-                            satir[6] = dReader[5].ToString(); //Maliyeti   (Visible özelliği false olan -Görünmez olan- kolona gir.)
-                            satir[7] = dReader[6].ToString(); //Birim Id'si(Visible özelliği false olan -Görünmez olan- kolona gir.)
-                            satir[8] = (seciliMiktar * (Convert.ToDecimal(dReader[2]))).ToString("F2"); //Toplam Tutar
+                            satir[6] = dReader[5]
+                                .ToString(); //Maliyeti   (Visible özelliği false olan -Görünmez olan- kolona gir.)
+                            satir[7] = dReader[6]
+                                .ToString(); //Birim Id'si(Visible özelliği false olan -Görünmez olan- kolona gir.)
+                            satir[8] = (seciliMiktar * Convert.ToDecimal(dReader[2])).ToString("F2"); //Toplam Tutar
                             dgSepet.Rows.Add(satir); //Satır dizisini ekle
                             dgSepet.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                             ToplamHesapla(); //Toplam tutarı hesapla
                             cbMiktar.Text = "1"; //İlk stok sayısını gir
-
                         }
-                        else if(durum == miktarDurum.sepette_var_yeterli)//Sepette varsa miktarı ve toplam fiyatı güncelle
+                        else if
+                            (durum == miktarDurum.sepette_var_yeterli) //Sepette varsa miktarı ve toplam fiyatı güncelle
                         {
-                            dgSepet.Rows[satirIndex].Cells["Miktar"].Value = Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value) + seciliMiktar;
-                            int ondalik = Convert.ToInt32(dgSepet.Rows[satirIndex].Cells["Miktar"].Value);
-                            decimal kesirli = Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value);
+                            dgSepet.Rows[satirIndex].Cells["Miktar"].Value =
+                                Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value) + seciliMiktar;
+                            var ondalik = Convert.ToInt32(dgSepet.Rows[satirIndex].Cells["Miktar"].Value);
+                            var kesirli = Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value);
 
-                            if(ondalik - kesirli == 0)
-                                dgSepet.Rows[satirIndex].Cells["Miktar"].Value = Convert.ToInt32(dgSepet.Rows[satirIndex].Cells["Miktar"].Value).ToString();
-                            dgSepet.Rows[satirIndex].Cells["TopTutar"].Value = (Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value) * Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["BirimFiyat"].Value)).ToString("F2");
+                            if (ondalik - kesirli == 0)
+                                dgSepet.Rows[satirIndex].Cells["Miktar"].Value = Convert
+                                    .ToInt32(dgSepet.Rows[satirIndex].Cells["Miktar"].Value).ToString();
+                            dgSepet.Rows[satirIndex].Cells["TopTutar"].Value =
+                                (Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value) *
+                                 Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["BirimFiyat"].Value)).ToString("F2");
                             ToplamHesapla(); //Toplam tutarı hesapla
                             cbMiktar.Text = "1"; //İlk stok sayısını gir
-
                         }
-                        else if(durum == miktarDurum.sepette_var_yetersiz)//Yoksa sepette var ve miktar yetersizse diye uyar ve en fazla ne kadar girmesi gerektiğini söyle
+                        else if
+                            (durum == miktarDurum
+                                .sepette_var_yetersiz) //Yoksa sepette var ve miktar yetersizse diye uyar ve en fazla ne kadar girmesi gerektiğini söyle
                         {
-                            if((Convert.ToDecimal(dReader[3]) - Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value)) > 0) //Eğer kalan miktar 0 dan büyükse, farklı 0'a eşitse farklı uyarı ver
+                            if (Convert.ToDecimal(dReader[3]) -
+                                Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value) >
+                                0) //Eğer kalan miktar 0 dan büyükse, farklı 0'a eşitse farklı uyarı ver
                             {
-                                MessageBox.Show("İstenilen ürün yeterli miktarda yok. En fazla " + (Convert.ToDecimal(dReader[3]) - Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value)).ToString() + " " + dReader[4].ToString().ToLower() + " seçebilirsiniz.", "Stok Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                cbMiktar.Text = (Convert.ToDecimal(dReader[3]) - Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value)).ToString();
-
+                                MessageBox.Show(
+                                    "İstenilen ürün yeterli miktarda yok. En fazla " +
+                                    (Convert.ToDecimal(dReader[3]) -
+                                     Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value)) + " " +
+                                    dReader[4].ToString().ToLower() + " seçebilirsiniz.", "Stok Uyarısı",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                cbMiktar.Text = (Convert.ToDecimal(dReader[3]) -
+                                                 Convert.ToDecimal(dgSepet.Rows[satirIndex].Cells["Miktar"].Value))
+                                    .ToString();
                             }
                             else
-                                MessageBox.Show("Bu ürün zaten sepete eklendi. Bu üründen daha fazla ekleyebilmeniz için stokta kalmadı.", "Stok Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+                            {
+                                MessageBox.Show(
+                                    "Bu ürün zaten sepete eklendi. Bu üründen daha fazla ekleyebilmeniz için stokta kalmadı.",
+                                    "Stok Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                         else //Bunların hiçbiri değilse sepette yok ve yetersizdir. Uyar ve en fazla seçebileceği miktarı yaz.
                         {
-                            if(Convert.ToDecimal(dReader[3]) > 0) //Sepette yok,0'dan büyük ve istenilen miktar kadar stokta yoksa uyar ve combobox text özelliğine max miktarı gir.
+                            if (Convert.ToDecimal(dReader[3]) >
+                                0) //Sepette yok,0'dan büyük ve istenilen miktar kadar stokta yoksa uyar ve combobox text özelliğine max miktarı gir.
                             {
-                                MessageBox.Show("İstenilen ürün yeterli miktarda yok. En fazla " + dReader[3].ToString() + " " + dReader[4].ToString().ToLower() + " seçebilirsiniz.", "Stok Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                MessageBox.Show(
+                                    "İstenilen ürün yeterli miktarda yok. En fazla " + dReader[3] + " " +
+                                    dReader[4].ToString().ToLower() + " seçebilirsiniz.", "Stok Uyarısı",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 cbMiktar.Text = dReader[3].ToString();
-
                             }
                             else //Sepette yok ve stok 0'a eşitse.
                             {
-                                MessageBox.Show("Bu ürün stokta kalmadı.", "Stok Hatası", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                MessageBox.Show("Bu ürün stokta kalmadı.", "Stok Hatası", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
                             }
                         }
-
                     }
                     else
                     {
-                        MessageBox.Show(txtBarkodOku.Text + " kodlu ürün bulunamadı.", "Dikkat!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+                        MessageBox.Show(txtBarkodOku.Text + " kodlu ürün bulunamadı.", "Dikkat!", MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
                     }
+
                     txtBarkodOku.Text = ""; //Barkod kodu girişini sıfırla
                     DbOperations.Connection.Close();
                     SqlOperation.cmd.Dispose();
-
                 }
                 else
                 {

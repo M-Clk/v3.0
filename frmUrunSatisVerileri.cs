@@ -7,19 +7,23 @@ namespace Otomasyon
 {
     public partial class frmUrunSatisVerileri : Form
     {
+        private readonly DbOperations DbOp = new DbOperations();
+        private bool sayiGiriliyor = true;
+        private int top = 10;
+
         public frmUrunSatisVerileri()
         {
             InitializeComponent();
         }
-        bool sayiGiriliyor = true;
+
         private void txtTop_KeyPress(object sender, KeyPressEventArgs e)
-        { 
-               if(sayiGiriliyor) e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        {
+            if (sayiGiriliyor) e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
         private void txtTop_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode==Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 Doldur();
                 if (!sayiGiriliyor) txtTop.Text = "";
@@ -28,7 +32,6 @@ namespace Otomasyon
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
             if (comboBox1.SelectedIndex == 2)
             {
                 txtTop.Visible = false;
@@ -36,10 +39,8 @@ namespace Otomasyon
             }
             else
             {
-                
                 if (comboBox1.SelectedIndex == 3)
                 {
-                   
                     sayiGiriliyor = false;
                     txtTop.Text = "";
                     textBox1.Text = "  Kodlu Ürün";
@@ -52,15 +53,16 @@ namespace Otomasyon
                     textBox1.Text = "  Ürün Göster";
                     txtTop.Width = 40;
                 }
+
                 textBox1.Visible = true;
                 txtTop.Visible = true;
                 txtTop.Select();
             }
+
             Doldur();
         }
-        int top=10;
-        DbOperations DbOp = new DbOperations();
-        void Doldur()
+
+        private void Doldur()
         {
             try
             {
@@ -69,13 +71,14 @@ namespace Otomasyon
             catch (Exception)
             {
                 top = 10;
-                if(sayiGiriliyor)
-                txtTop.Text = "10";
+                if (sayiGiriliyor)
+                    txtTop.Text = "10";
             }
+
             try
             {
                 dgUrunVerileri.Rows.Clear();
-                SqlParameter[] sqlPrm = new SqlParameter[3];
+                var sqlPrm = new SqlParameter[3];
                 sqlPrm[0] = new SqlParameter();
                 sqlPrm[0].ParameterName = "@GoruntelenecekAdet";
                 sqlPrm[0].SqlDbType = SqlDbType.Int;
@@ -90,17 +93,17 @@ namespace Otomasyon
                 sqlPrm[2].ParameterName = "@BarkodKodu";
                 sqlPrm[2].SqlDbType = SqlDbType.NVarChar;
                 sqlPrm[2].Value = txtTop.Text;
-                SqlDataReader tabOku = DbOp.OkuProcedure("ENCOKSATANLAR", sqlPrm);
-                string[] sutunlar = new string[5];
-                int i = 1;
+                var tabOku = DbOp.OkuProcedure("ENCOKSATANLAR", sqlPrm);
+                var sutunlar = new string[5];
+                var i = 1;
                 while (tabOku.Read())
                 {
                     sutunlar[0] = i.ToString();
                     sutunlar[1] = tabOku[1].ToString();
                     sutunlar[2] = tabOku[2].ToString();
 
-                    int ondalik = Convert.ToInt32(tabOku[3]);
-                    decimal kesirli = Convert.ToDecimal(tabOku[3]);
+                    var ondalik = Convert.ToInt32(tabOku[3]);
+                    var kesirli = Convert.ToDecimal(tabOku[3]);
 
                     if (ondalik - kesirli == 0)
                         sutunlar[3] = Convert.ToInt32(tabOku[3]).ToString();
@@ -114,7 +117,6 @@ namespace Otomasyon
             }
             catch (Exception)
             {
-                return;
             }
         }
 

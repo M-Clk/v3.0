@@ -1,13 +1,14 @@
-﻿using System.Resources;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("M-CLK Otomasyon")]
-[assembly: AssemblyDescription("Sadeliği, zengin içeriği ve kaliteyi bir arada sunan hizmeti kullanıyorsunuz. Bizi seçtiğiniz için teşekkür ederiz.")]
+[assembly:
+    AssemblyDescription(
+        "Sadeliği, zengin içeriği ve kaliteyi bir arada sunan hizmeti kullanıyorsunuz. Bizi seçtiğiniz için teşekkür ederiz.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("M-CLK Software")]
 [assembly: AssemblyProduct("Barkodlu Satış Sistemi")]
@@ -36,4 +37,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
 [assembly: NeutralResourcesLanguage("tr-TR")]
-

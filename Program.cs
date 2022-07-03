@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using System.Drawing.Printing;
-using System.Diagnostics;
-using System.IO;
-using System.Data.Common;
-using System.Data.SqlClient;
+using Otomasyon.Properties;
+using PaperSize = CrystalDecisions.Shared.PaperSize;
 
 namespace Otomasyon
 {
-    static class Program
+    internal static class Program
     {
         public enum Yetki
         {
@@ -18,6 +17,7 @@ namespace Otomasyon
         }
 
         public static RegistryKey Yapilandirma;
+
         public static bool
             stok_calisiyor = false,
             giris = false,
@@ -26,6 +26,7 @@ namespace Otomasyon
             lisans = false,
             sifreIstesin = true,
             herSatistaYazdir = false;
+
         public static Yetki yetki = Yetki.eleman;
 
         public static string
@@ -37,17 +38,19 @@ namespace Otomasyon
             email = "",
             adres = "",
             kayitliKagitTuru = "";
-        public static CrystalDecisions.Shared.PaperSize
-            kagiTuru = CrystalDecisions.Shared.PaperSize.PaperA4;
 
-        public static int k_id = 1, odemeTipi = 0, quickProductsCount = 0;
+        public static PaperSize
+            kagiTuru = PaperSize.PaperA4;
+
+        public static int k_id = 1, odemeTipi, quickProductsCount = 0;
+
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHadler);
+            AppDomain.CurrentDomain.UnhandledException += ExceptionHadler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             initialize();
@@ -63,26 +66,27 @@ namespace Otomasyon
                     Application.Run(new frmAnaForm(false));
                     return;
                 }
+
                 if (!DbOperations.Connection.IsAvailable())
-                    throw new InvalidOperationException("Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
+                    throw new InvalidOperationException(
+                        "Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
                 CheckAutoLogin();
                 DefaultYapilandirma();
                 Application.Run(new frmAnaForm(true));
             }
-
         }
-        static void CheckAutoLogin()
+
+        private static void CheckAutoLogin()
         {
-            RegistryKey sifreIste = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
+            var sifreIste = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
             try
             {
-                sifreIstesin = Convert.ToBoolean(sifreIste.GetValue("SifreIste",1));
+                sifreIstesin = Convert.ToBoolean(sifreIste.GetValue("SifreIste", 1));
                 if (!sifreIstesin)
                 {
                     k_adi = sifreIste.GetValue("KayitliK_Adi").ToString();
                     sifre = sifreIste.GetValue("KayitliK_Sifre").ToString();
                 }
-
             }
             catch (Exception ex)
             {
@@ -92,7 +96,8 @@ namespace Otomasyon
                 sifreIste.SetValue("KayitliK_Sifre", "");
             }
         }
-        static void DefaultYapilandirma()
+
+        private static void DefaultYapilandirma()
         {
             //TOO butun ayarlari RegistryKey den cek Properties.Settings e aktar. uygulamada oraya eris.
             //Yazıcı Adı
@@ -102,20 +107,20 @@ namespace Otomasyon
             }
             catch (Exception)
             {
-
                 Yapilandirma.SetValue("YaziciAdi", "");
             }
+
             //Kağıt Türü
             try
             {
-                
                 kayitliKagitTuru = Yapilandirma.GetValue("KagitTuru")?.ToString();
             }
             catch (Exception)
             {
                 Yapilandirma.SetValue("KagitTuru", "");
             }
-            Properties.Settings.Default.PrintEveryBills = herSatistaYazdir;
+
+            Settings.Default.PrintEveryBills = herSatistaYazdir;
             //Ödeme Tipi
             try
             {
@@ -125,27 +130,29 @@ namespace Otomasyon
             {
                 Yapilandirma.SetValue("OdemeTipi", 0);
             }
+
             try
             {
                 if (string.IsNullOrEmpty(yaziciAdi)) yaziciAdi = PrinterSettings.InstalledPrinters[0];
-                Array paperDizi = Enum.GetValues(typeof(CrystalDecisions.Shared.PaperSize));
+                var paperDizi = Enum.GetValues(typeof(PaperSize));
 
                 foreach (var item in paperDizi)
-                {
                     if (item.ToString() == kayitliKagitTuru)
                     {
-                        kagiTuru = (CrystalDecisions.Shared.PaperSize)item;
+                        kagiTuru = (PaperSize)item;
                         break;
                     }
-
-                }
             }
-            catch { }
+            catch
+            {
+            }
         }
-        static void ExceptionHadler(object sender, UnhandledExceptionEventArgs args)
+
+        private static void ExceptionHadler(object sender, UnhandledExceptionEventArgs args)
         {
             var e = (Exception)args.ExceptionObject;
-            MessageBox.Show($"Bilinmeyen bir hata ile karşılaşıldı. Hata: {e.Message}", "Bir Problem Var!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Bilinmeyen bir hata ile karşılaşıldı. Hata: {e.Message}", "Bir Problem Var!",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private static void initialize()
@@ -153,6 +160,5 @@ namespace Otomasyon
             DbOperations.InitializeSqlConfiguration();
             Yapilandirma = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Yazici");
         }
-
     }
 }

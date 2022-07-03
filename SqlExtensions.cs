@@ -15,8 +15,10 @@ namespace Otomasyon
             {
                 return false;
             }
+
             return true;
-        } 
+        }
+
         public static void EnsureDbCreated(this SqlConnection connection)
         {
             var command = connection.CreateCommand();
@@ -29,6 +31,7 @@ namespace Otomasyon
                 connection.Close();
                 return;
             }
+
             command.CommandText = "Create Database OtomasyonDb";
             command.ExecuteNonQuery();
             connection.Close();
@@ -40,13 +43,16 @@ namespace Otomasyon
             connection.OpenSafe();
             var command = connection.CreateCommand();
             try
-            {           
+            {
                 command.CommandText = "select Count(*) from sys.databases WHERE name = 'OtomasyonDB'";
                 dbCount = (int)command.ExecuteScalar();
                 command.Dispose();
                 connection.Close();
             }
-            catch { }
+            catch
+            {
+            }
+
             return dbCount > 0;
         }
 
