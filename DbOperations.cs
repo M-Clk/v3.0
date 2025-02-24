@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.Win32;
 using Otomasyon.Properties;
 using Otomasyon.Resources;
 
@@ -12,15 +11,12 @@ namespace Otomasyon
 {
     public class DbOperations
     {
-        public static RegistryKey SqlConfiguration =
-            Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\SqlServerConfiguration");
-
         public string bilgiMessage;
         public SqlCommand cmd;
 
         public static SqlConnection Connection { get; set; } = new SqlConnection();
 
-        public static bool IsDbCreated => Convert.ToBoolean(SqlConfiguration.GetValue("DbCreated", false));
+        public static bool IsDbCreated => ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "DbCreated",  Convert.ToBoolean,false);
 
         public SqlDataReader SqlTextReader(string command)
         {
@@ -322,32 +318,40 @@ namespace Otomasyon
 
         public static void InitializeSqlConfiguration()
         {
-            var serverName = (string)SqlConfiguration.GetValue("Server", "");
-            var userName = (string)SqlConfiguration.GetValue("DBUserName", "");
-            var password = (string)SqlConfiguration.GetValue("DBUserPassword", "");
-            var timeout = (int)SqlConfiguration.GetValue("Timeout", 5);
-            var dbName = IsDbCreated ? "OtomasyonDb" : "master";
+            var serverName = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "Server", Convert.ToString, "localhost");
+            var userName = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "DBUserName", Convert.ToString, "");
+            var password = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "DBUserPassword", Convert.ToString, "");
+            var timeout = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "Timeout", Convert.ToInt32, 5);
+            //var dbName = IsDbCreated ? "OtomasyonDb" : "master";
+            var dbName = "OtomasyonDb";
             Connection.Close();
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
-                Connection.ConnectionString =
-                    @$"Server={serverName};DataBase={dbName};Trusted_Connection=True;Connection Timeout={timeout}";
-            Connection.ConnectionString =
-                @$"Server={serverName};Database={dbName};User ID={userName};Password ={password};Trusted_Connection=True;Connection Timeout={timeout}";
+                Connection.ConnectionString = @$"Server={serverName};DataBase={dbName};Trusted_Connection=True;Connection Timeout={timeout}";
+            else
+                Connection.ConnectionString = @$"Server={serverName};Database={dbName};User ID={userName};Password ={password};Trusted_Connection=True;Connection Timeout={timeout}";
         }
 
         public static void SetSqlConfiguration(string server, string userName, string password, int timeout = 5)
         {
-            SqlConfiguration.SetValue("Server", server);
-            SqlConfiguration.SetValue("DBUserName", userName);
-            SqlConfiguration.SetValue("DBUserPassword", password);
-            SqlConfiguration.SetValue("Timeout", timeout);
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.DbConf, "Server", server);
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.DbConf, "DBUserName", userName);
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.DbConf, "DBUserPassword", password);
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.DbConf, "Timeout", timeout);
             SetDbCreatedFlag();
+        }
+
+        public void LoadComboBox(ComboBox cbMarkalar, string spName)
+        {
+            cbMarkalar.DataSource = DisconnectedProcedure(spName, new SqlParameter[0]);
+            cbMarkalar.ValueMember = "Id";
+            cbMarkalar.DisplayMember = "Adi";
         }
 
         private static void SetDbCreatedFlag()
         {
-            SqlConfiguration.SetValue("DbCreated", Connection.IsDatabaseExist());
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.DbConf, "DbCreated", Connection.IsDatabaseExist());
             InitializeSqlConfiguration();
         }
+
     }
 }

@@ -18,12 +18,9 @@ namespace Otomasyon
     {
         private readonly DbOperations _dbOperations = new DbOperations();
         private readonly bool _isDbCreated;
-        private readonly RegistryKey _settingsKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\Settings");
         private string Key = "";
-
-        private string mclksiz = "";
         private readonly RegistryKey Pass = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon");
-        private readonly RegistryKey SerialKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Otomasyon\\License");
+        private string mclksiz = "";
 
         private bool uygulaKontrol;
 
@@ -32,6 +29,7 @@ namespace Otomasyon
             InitializeComponent();
             _isDbCreated = isDbCreated;
             btnVeritabaniOlustur.Visible = !isDbCreated;
+            chkSadeceSatisFiyatiGoster.Checked = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.General, "SadeceSatisFiyatiGoster", Convert.ToBoolean, false);
         }
 
         private void IsletmeAdiGetir()
@@ -66,9 +64,9 @@ namespace Otomasyon
 
         private bool LisansKontrol()
         {
-            if (SerialKey.ValueCount >= 1)
+            Key = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.Licence, "LicenseCode", Convert.ToString, "");
+            if (!string.IsNullOrEmpty(Key))
             {
-                Key = SerialKey.GetValue("LicenseCode", "").ToString();
                 var result = MClkSifremele(SeriNoAl());
                 if (result == Key)
                     return true;
@@ -174,7 +172,7 @@ namespace Otomasyon
         {
             if (durum)
             {
-                mskLisansAnahtari.Text = SerialKey.GetValue("LicenseCode", "").ToString();
+                mskLisansAnahtari.Text = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.Licence, "LicenseCode", Convert.ToString, "");
                 mskLisansAnahtari.ReadOnly = true;
                 btnEtkinlestir.Enabled = false;
                 lblBilgi.Text = "Lisanslı Yazılım Kullanıyorsunuz. Teşekkür Ederiz.";
@@ -265,7 +263,7 @@ namespace Otomasyon
                 try
                 {
                     yaziciAdi = Program.Yapilandirma.GetValue("YaziciAdi", "").ToString();
-                    var count = (int)_settingsKey.GetValue("QuickProductsCount", 10);
+                    var count = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.General, "QuickProductsCount", Convert.ToInt32, 10);
 
                     rdHizliEkranUrunleriEnCokSatilan.Checked = count > 0;
                     comboBox1.SelectedIndex = rdHizliEkranUrunleriEnCokSatilan.Checked ? count / 5 - 1 : 0;
@@ -296,9 +294,9 @@ namespace Otomasyon
 
         private void frmConfiguration_Load(object sender, EventArgs e)
         {
-            txtServer.Text = (string)DbOperations.SqlConfiguration.GetValue("Server", "");
-            txtKAdi.Text = (string)DbOperations.SqlConfiguration.GetValue("DBUserName", "");
-            txtSifre.Text = (string)DbOperations.SqlConfiguration.GetValue("DBUserPassword", "");
+            txtServer.Text = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "Server", Convert.ToString, "");
+            txtKAdi.Text = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "DBUserName", Convert.ToString, "");
+            txtSifre.Text = ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.DbConf, "DBUserPassword", Convert.ToString, "");
             if (DbOperations.IsDbCreated && DbOperations.Connection.IsAvailable())
                 LoadControls();
             else
@@ -316,16 +314,9 @@ namespace Otomasyon
             DbOperations.SetSqlConfiguration(txtServer.Text, txtKAdi.Text, txtSifre.Text);
             if (DbOperations.Connection.IsAvailable())
             {
-                nfBasarili.BalloonTipText = "Veritabanı ayarlarınız yapılandırıldı. " +
-                                            (_isDbCreated
-                                                ? "Ancak veritabanı henüz oluşmadı."
-                                                : "Sistemi kullanabilirsiniz.");
+                nfBasarili.BalloonTipText = "Veritabanı ayarlarınız yapılandırıldı. " + (_isDbCreated ? "Ancak veritabanı henüz oluşmadı." : "Sistemi kullanabilirsiniz.");
                 nfBasarili.Visible = true;
                 nfBasarili.ShowBalloonTip(2000);
-                if (DbOperations.IsDbCreated)
-                {
-                }
-
                 btnVeritabaniOlustur.Enabled = !DbOperations.IsDbCreated;
             }
             else
@@ -523,7 +514,7 @@ namespace Otomasyon
 
         private void btnEtkinlestir_Click(object sender, EventArgs e)
         {
-            SerialKey.SetValue("LicenseCode", EksileriYokEt());
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.Licence, "LicenseCode", EksileriYokEt());
             if (LisansKontrol())
             {
                 nfBasarili.BalloonTipText =
@@ -665,9 +656,8 @@ namespace Otomasyon
 
         private void setQuickProductsCount()
         {
-            Program.quickProductsCount =
-                rdHizliEkranUrunleriEnCokSatilan.Checked ? (comboBox1.SelectedIndex + 1) * 5 : 0;
-            _settingsKey.SetValue("QuickProductsCount", Program.quickProductsCount);
+            Program.quickProductsCount = rdHizliEkranUrunleriEnCokSatilan.Checked ? (comboBox1.SelectedIndex + 1) * 5 : 0;
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.General, "QuickProductsCount", Program.quickProductsCount);
         }
 
         private void btnVeritabaniOlustur_Click(object sender, EventArgs e)
@@ -686,6 +676,11 @@ namespace Otomasyon
             Clipboard.SetText(commandsStr);
             MessageBox.Show("Hatalı komutlar ponoya kopyalandı. Başarısız Komutlar :\n" + commandsStr,
                 "Veritabanı Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void chkSadeceSatisFiyatiGoster_CheckedChanged(object sender, EventArgs e)
+        {
+            ConfigurationManager.SetKeyValueToRegistry(ConfigurationCategory.General, "SadeceSatisFiyatiGoster", chkSadeceSatisFiyatiGoster.Checked);
         }
     }
 }

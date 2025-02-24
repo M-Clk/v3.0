@@ -40,7 +40,17 @@ namespace Otomasyon
         {
             if (_frmStokIslemleri == null)
                 _frmStokIslemleri = new frmStokIslemleri();
+            
             return _frmStokIslemleri;
+        }
+
+        public DialogResult Ac()
+        {
+            if(varsayilanTblo != null && varsayilanTblo.Rows.Count > 0)
+                varsayilanTblo.DefaultView.RowFilter = "";
+            txtAdaGoreAra.Text = "";
+            txtBarkodSorgula.Text = "";
+            return ShowDialog();
         }
 
         private void tmYanipSonme_Tick(object sender, EventArgs e)
@@ -54,136 +64,49 @@ namespace Otomasyon
             }
         }
 
-        private string tekUrunAdiGetir(string barkodKodu)
-        {
-            var result = SqlBaglantisi.ScalarTextCommand($"Select Adi FROM Urunler WHERE Bakod_kodu = '{barkodKodu}'");
-            return result;
-        }
-
         private void btnEkle_Click(object sender, EventArgs e)
         {
-            try
+            var urunKaydetPopup = frmUrunKaydet.SingletonFrmGetir();
+            urunKaydetPopup.ShowDialog(null);
+            if(urunKaydetPopup.EklenenUrunBarkodKodu != null)
             {
-                if (EklemeKontrolEt())
-                {
-                    var urunAdi = tekUrunAdiGetir(txtBarkodEkle.Text);
+                var sqlParams = new SqlParameter[1];
 
-                    if (!string.IsNullOrWhiteSpace(urunAdi))
-                    {
-                        MessageBox.Show($"Bu ürün {urunAdi} adıyla kayıtlı. Aynı ürün ikinci defa kaydedilemez.",
-                            "Ekleme Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        eklemeAlaniTemizle();
-                        return;
-                    }
+                sqlParams[0] = new SqlParameter();
+                sqlParams[0].ParameterName = "@BarkodKodu";
+                sqlParams[0].SqlDbType = SqlDbType.NVarChar;
+                sqlParams[0].SqlValue = urunKaydetPopup.EklenenUrunBarkodKodu;
 
-                    var parameterEkleme = new SqlParameter[7];
-                    parameterEkleme[0] = new SqlParameter();
-                    parameterEkleme[0].ParameterName = "@Adi";
-                    parameterEkleme[0].SqlDbType = SqlDbType.NVarChar;
-                    parameterEkleme[0].SqlValue = txtAdiEkle.Text.ToUpper();
+                var rd = SqlBaglantisi.OkuProcedure("EKLENENURUNUGETIR", sqlParams);
 
-                    parameterEkleme[1] = new SqlParameter();
-                    parameterEkleme[1].ParameterName = "@Stok";
-                    parameterEkleme[1].SqlDbType = SqlDbType.Decimal;
-                    parameterEkleme[1].SqlValue = txtStokEkle.Text;
+                rd.Read();
+                var yeniUrun = new string[12];
+                yeniUrun[0] = rd["No"].ToString();
+                yeniUrun[1] = rd["Bakod_kodu"].ToString();
+                yeniUrun[2] = rd["Marka_Adi"].ToString();
+                yeniUrun[3] = rd["Adi"].ToString();
+                yeniUrun[4] = rd["Maliyet"].ToString();
+                yeniUrun[5] = rd["Satis_fiyati"].ToString();
+                var ondalik = Convert.ToInt32(rd["Stok"]);
+                var kesirli = Convert.ToDecimal(rd["Stok"]);
 
-                    parameterEkleme[2] = new SqlParameter();
-                    parameterEkleme[2].ParameterName = "@Maliyet";
-                    parameterEkleme[2].SqlDbType = SqlDbType.Decimal;
-                    parameterEkleme[2].SqlValue = txtMaliyetiEkle.Text;
-
-                    parameterEkleme[3] = new SqlParameter();
-                    parameterEkleme[3].ParameterName = "@SatisFiyati";
-                    parameterEkleme[3].SqlDbType = SqlDbType.Decimal;
-                    parameterEkleme[3].SqlValue = txtSatisFiyatiEkle.Text;
-
-                    parameterEkleme[4] = new SqlParameter();
-                    parameterEkleme[4].ParameterName = "@KritikMiktar";
-                    parameterEkleme[4].SqlDbType = SqlDbType.Decimal;
-                    parameterEkleme[4].SqlValue = txtEkleKritikMiktar.Text;
-
-                    parameterEkleme[5] = new SqlParameter();
-                    parameterEkleme[5].ParameterName = "@BarkodKodu";
-                    parameterEkleme[5].SqlDbType = SqlDbType.NVarChar;
-                    parameterEkleme[5].SqlValue = txtBarkodEkle.Text;
-
-                    parameterEkleme[6] = new SqlParameter();
-                    parameterEkleme[6].ParameterName = "@StokBirimi";
-                    parameterEkleme[6].SqlDbType = SqlDbType.TinyInt;
-                    parameterEkleme[6].SqlValue = cbBirimler.SelectedValue;
-
-                    if (SqlBaglantisi.GuncelleProcedure("URUNEKLE", parameterEkleme) == 1)
-                    {
-                        var prm = new SqlParameter[1];
-                        prm[0] = parameterEkleme[5];
-                        var rd = SqlBaglantisi.OkuProcedure("EKLENENURUNUGETIR", prm);
-
-                        rd.Read();
-                        var yeniUrun = new string[10];
-                        yeniUrun[0] = rd["No"].ToString();
-                        yeniUrun[1] = rd["Bakod_kodu"].ToString();
-                        yeniUrun[2] = rd["Adi"].ToString();
-                        yeniUrun[3] = rd["Maliyet"].ToString();
-                        yeniUrun[4] = rd["Satis_fiyati"].ToString();
-                        var ondalik = Convert.ToInt32(rd["Stok"]);
-                        var kesirli = Convert.ToDecimal(rd["Stok"]);
-
-                        if (ondalik - kesirli == 0)
-                            yeniUrun[5] = Convert.ToInt32(rd["Stok"]).ToString();
-                        else
-                            yeniUrun[5] = rd["Stok"].ToString();
-                        yeniUrun[6] = rd[6].ToString();
-                        yeniUrun[7] = rd["Id"].ToString();
-                        yeniUrun[8] = rd["Kritik_miktar"].ToString();
-                        yeniUrun[9] = "false";
-                        varsayilanTblo.Rows.Add(yeniUrun);
-                        eklemeAlaniTemizle();
-                        nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde eklendi.";
-                        nfBasarili.Visible = true;
-                        nfBasarili.ShowBalloonTip(2000);
-                    }
-                }
+                if (ondalik - kesirli == 0)
+                    yeniUrun[6] = Convert.ToInt32(rd["Stok"]).ToString();
                 else
-                {
-                    MessageBox.Show(
-                        "Lütfen verileri doğru girin. Sayısal veri girilmesi gereken yerler boş bırakılamaz. Ancak 0 girebilirsiniz.",
-                        "Veri Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception)
-            {
+                    yeniUrun[6] = rd["Stok"].ToString();
+                yeniUrun[7] = rd["Birim_Adi"].ToString();
+                yeniUrun[8] = rd["Stok_birimi"].ToString();
+                yeniUrun[9] = rd["Kritik_miktar"].ToString();
+                yeniUrun[10] = rd["Hizli_urun"].ToString();
+                yeniUrun[11] = rd["Marka_Id"].ToString();
+                varsayilanTblo.Rows.Add(yeniUrun);
+
+                nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde eklendi.";
+                nfBasarili.Visible = true;
+                nfBasarili.ShowBalloonTip(2000);
             }
         }
 
-        private void eklemeAlaniTemizle()
-        {
-            txtAdiEkle.Text = "";
-            txtStokEkle.Text = "";
-            txtMaliyetiEkle.Text = "";
-            txtSatisFiyatiEkle.Text = "";
-            txtEkleKritikMiktar.Text = "";
-            txtBarkodEkle.Text = "";
-            cbBirimler.SelectedIndex = 0;
-        }
-
-        private bool EklemeKontrolEt()
-        {
-            try
-            {
-                if (txtMaliyetiEkle.Text == "")
-                    txtMaliyetiEkle.Text = txtSatisFiyatiEkle.Text;
-                if (txtEkleKritikMiktar.Text == "") txtEkleKritikMiktar.Text = "10";
-                Convert.ToDecimal(txtMaliyetiEkle.Text);
-                Convert.ToDecimal(txtSatisFiyatiEkle.Text);
-                Convert.ToDecimal(txtStokEkle.Text);
-                Convert.ToDecimal(txtEkleKritikMiktar.Text);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         private void frmAnaForm_AllControls(object sender, KeyEventArgs e)
         {
@@ -198,10 +121,8 @@ namespace Otomasyon
             TabloyuDuzenle();
 
             UrunSayisiKontrolEt();
-            if (dgUrunler.RowCount > 0) btnExcel.Enabled = true;
-            cbBirimler.DataSource = SqlBaglantisi.DisconnectedProcedure("BIRIMSORGULAMA", new SqlParameter[0]);
-            cbBirimler.ValueMember = "Id";
-            cbBirimler.DisplayMember = "Adi";
+            if (dgUrunler.RowCount > 0) 
+                btnExcel.Enabled = true;
         }
 
         public void frmStokIslemleri_Load(object sender, EventArgs e)
@@ -221,11 +142,13 @@ namespace Otomasyon
             dgUrunler.DataSource = varsayilanTblo;
             btnExcel.Visible = dgUrunler.RowCount > 0;
             for (var i = 0; i < varsayilanTblo.Rows.Count; i++)
-                if (Convert.ToInt16(varsayilanTblo.Rows[i][7]) == 1)
-                {
-                    varsayilanTblo.Rows[i][5] = Convert.ToInt32(varsayilanTblo.Rows[i][5]);
-                    varsayilanTblo.Rows[i]["Kritik_miktar"] = Convert.ToInt32(varsayilanTblo.Rows[i]["Kritik_miktar"]);
-                }
+            {
+                varsayilanTblo.Rows[i]["Stok"] = Convert.ToDecimal(varsayilanTblo.Rows[i]["Stok"]).ToString("0.##");
+                varsayilanTblo.Rows[i]["Kritik_miktar"] = Convert.ToDecimal(varsayilanTblo.Rows[i]["Kritik_miktar"]).ToString("0.##");
+                varsayilanTblo.Rows[i]["Satis_fiyati"] = Convert.ToDecimal(varsayilanTblo.Rows[i]["Satis_fiyati"]).ToString("0.##");
+                varsayilanTblo.Rows[i]["Maliyet"] = Convert.ToDecimal(varsayilanTblo.Rows[i]["Maliyet"]).ToString("0.##");
+            }
+
         }
 
         public void TabloyuDuzenle()
@@ -239,24 +162,28 @@ namespace Otomasyon
                     dgUrunler.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
                 }
 
-                dgUrunler.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-                dgUrunler.Columns[0].Width = 40;
-                dgUrunler.Columns[1].Width = 120;
-                dgUrunler.Columns[1].HeaderText = "Barkod";
-                dgUrunler.Columns[2].HeaderText = "Adı";
-                dgUrunler.Columns[3].HeaderText = "Maliyeti (₺)";
-                dgUrunler.Columns[4].HeaderText = "Fiyatı (₺)";
-                dgUrunler.Columns[5].HeaderText = "Miktarı";
-                dgUrunler.Columns[6].HeaderText = "Birimi";
+                dgUrunler.Columns["Adi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;  
+                dgUrunler.Columns["Adi"].HeaderText = "Adı";
+                dgUrunler.Columns["No"].Width = 40;
+                dgUrunler.Columns["Bakod_kodu"].Width = 120;
+                dgUrunler.Columns["Bakod_kodu"].HeaderText = "Barkod";
+                
+                dgUrunler.Columns["Marka_Adi"].HeaderText = "Marka";
+                dgUrunler.Columns["Marka_Adi"].Width = 200;
 
-                dgUrunler.Columns[3].Width = dgUrunler.Columns[4].Width = 110;
-                dgUrunler.Columns[5].Width = 65;
-                dgUrunler.Columns[6].Width = 65;
-                dgUrunler.Columns[7].Width = 0;
-                dgUrunler.Columns[8].Width = 0;
-                dgUrunler.Columns[7].Visible = false;
-                dgUrunler.Columns[8].Visible = false;
-                dgUrunler.Columns[9].Visible = false;
+                dgUrunler.Columns["Maliyet"].HeaderText = "Maliyeti (₺)";
+                dgUrunler.Columns["Satis_fiyati"].HeaderText = "Fiyatı (₺)";
+                dgUrunler.Columns["Stok"].HeaderText = "Miktarı";
+                dgUrunler.Columns["Birim_Adi"].HeaderText = "Birimi";
+
+                dgUrunler.Columns["Maliyet"].Width = dgUrunler.Columns["Satis_fiyati"].Width = 110;
+                dgUrunler.Columns["Maliyet"].Visible = !ConfigurationManager.GetValueFromRegistry(ConfigurationCategory.General, "SadeceSatisFiyatiGoster", Convert.ToBoolean, false);
+                
+                dgUrunler.Columns["Stok"].Width = dgUrunler.Columns["Birim_Adi"].Width = 65;
+                dgUrunler.Columns["Stok_birimi"].Visible = false;
+                dgUrunler.Columns["Kritik_miktar"].Visible = false;
+                dgUrunler.Columns["Hizli_urun"].Visible = false;
+                dgUrunler.Columns["Marka_Id"].Visible = false;
                 dgvBtn = new DataGridViewButtonColumn();
                 //Kolon Başlığı
                 dgvBtn.HeaderText = "";
@@ -288,7 +215,6 @@ namespace Otomasyon
         {
             if (dgUrunler.Rows.Count <= 0 && clearCalisiyor == false)
             {
-                btnGuncelle.Enabled = false;
                 txtAdaGoreAra.Enabled = false;
                 txtBarkodSorgula.Enabled = false;
                 btnExcel.Enabled = false;
@@ -308,101 +234,7 @@ namespace Otomasyon
                 txtAdaGoreAra_TextChanged(0, e);
             }
         }
-
-        private void txtSatisFiyati_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (txtSatisFiyati.Text.IndexOf(',') == -1) a = true;
-            if (e.KeyChar == (char)44 && a)
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
-                a = false;
-            }
-            else
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-            }
-        }
-
-        private void txtMaliyeti_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (txtMaliyeti.Text.IndexOf(',') == -1) b = true;
-            if (e.KeyChar == (char)44 && b)
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
-                b = false;
-            }
-            else
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-            }
-        }
-
-        private void txtSatisFiyatiEkle_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (txtSatisFiyatiEkle.Text.IndexOf(',') == -1) c = true;
-            if (e.KeyChar == (char)44 && c)
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
-                c = false;
-            }
-            else
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-            }
-        }
-
-        private void txtMaliyetiEkle_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (txtMaliyetiEkle.Text.IndexOf(',') == -1) d = true;
-            if (e.KeyChar == (char)44 && d)
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
-                d = false;
-            }
-            else
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-            }
-        }
-
-        private void txtStokSayisi_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-        }
-
-        private void txtStokEkle_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-        }
-
-        private void txtKritikMiktar_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (txtKritikMiktar.Text.IndexOf(',') == -1) f = true;
-            if (e.KeyChar == (char)44 && f && ff)
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
-                f = false;
-            }
-            else
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-            }
-        }
-
-        private void txtEkleKritikMiktar_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (txtEkleKritikMiktar.Text.IndexOf(',') == -1) g = true;
-            if (e.KeyChar == (char)44 && g)
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != (char)44;
-                g = false;
-            }
-            else
-            {
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-            }
-        }
-
+        
         private void txtBarkodSorgula_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter && txtBarkodSorgula.Text != "")
@@ -440,155 +272,40 @@ namespace Otomasyon
         {
             if (e.RowIndex != -1 && e.ColumnIndex != 10)
             {
-                txtBarkodKodu.Text = dgUrunler.Rows[e.RowIndex].Cells["Bakod_kodu"].Value.ToString();
-                txtAdi.Text = dgUrunler.Rows[e.RowIndex].Cells["Adi"].Value.ToString();
-                txtMaliyeti.Text = dgUrunler.Rows[e.RowIndex].Cells["Maliyet"].Value.ToString();
-                txtSatisFiyati.Text = dgUrunler.Rows[e.RowIndex].Cells["Satis_fiyati"].Value.ToString();
-                txtStokSayisi.Text = dgUrunler.Rows[e.RowIndex].Cells["Stok"].Value.ToString();
-                txtKritikMiktar.Text = dgUrunler.Rows[e.RowIndex].Cells["Kritik_miktar"].Value.ToString();
-                chkHizliEkrandaGoster.Checked = (bool)dgUrunler.Rows[e.RowIndex].Cells["Hizli_urun"].Value;
-                btnGuncelle.Enabled = true;
-                guncellenecekRowIndex = e.RowIndex;
-                if (Convert.ToInt16(dgUrunler.Rows[e.RowIndex].Cells["Id"].Value) == 1) ff = false;
-                groupBox1.Visible = true;
+                var urunKaydetPopup = frmUrunKaydet.SingletonFrmGetir();
+                urunKaydetPopup.ShowDialog(dgUrunler.Rows[e.RowIndex]);
+                
+                var kapat = false;
+                if (urunKaydetPopup.IslemYapildi)
+                {
+                    if (Program.kritik && Convert.ToDecimal(urunKaydetPopup.DgRow.Cells["Kritik_miktar"].Value) < Convert.ToDecimal(urunKaydetPopup.DgRow.Cells["Stok"].Value))
+                    {
+                        UrunleriAl();
+                        TabloyuDuzenle();
+                        if (dgUrunler.RowCount == 0) 
+                            kapat = true;
+                    }
+                    ff = true;
+
+                    nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde güncellendi.";
+                    nfBasarili.Visible = true;
+                    nfBasarili.ShowBalloonTip(2000);
+
+                }           
+                if (kapat) 
+                    Close();
             }
+
+            //btnGuncelle.Enabled = true;
+            guncellenecekRowIndex = e.RowIndex;
+                if (Convert.ToInt16(dgUrunler.Rows[e.RowIndex].Cells["Stok_birimi"].Value) == 1) ff = false;
+                //groupBox1.Visible = true;
+            
         }
 
         private void dgUrunler_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             UrunSayisiKontrolEt();
-        }
-
-        private void btnGuncelle_Click(object sender, EventArgs e)
-        {
-            if (KontrolEt())
-            {
-                var parameterGuncelleme = new SqlParameter[7];
-                parameterGuncelleme[0] = new SqlParameter();
-                parameterGuncelleme[0].ParameterName = "@Adi";
-                parameterGuncelleme[0].SqlDbType = SqlDbType.NVarChar;
-                parameterGuncelleme[0].SqlValue = txtAdi.Text.ToUpper();
-
-                parameterGuncelleme[1] = new SqlParameter();
-                parameterGuncelleme[1].ParameterName = "@Miktar";
-                parameterGuncelleme[1].SqlDbType = SqlDbType.Decimal;
-                parameterGuncelleme[1].SqlValue = Convert.ToDecimal(txtStokSayisi.Text);
-
-                parameterGuncelleme[2] = new SqlParameter();
-                parameterGuncelleme[2].ParameterName = "@Maliyet";
-                parameterGuncelleme[2].SqlDbType = SqlDbType.Decimal;
-                parameterGuncelleme[2].SqlValue = Convert.ToDecimal(txtMaliyeti.Text);
-
-                parameterGuncelleme[3] = new SqlParameter();
-                parameterGuncelleme[3].ParameterName = "@Fiyat";
-                parameterGuncelleme[3].SqlDbType = SqlDbType.Decimal;
-                parameterGuncelleme[3].SqlValue = Convert.ToDecimal(txtSatisFiyati.Text);
-
-                parameterGuncelleme[4] = new SqlParameter();
-                parameterGuncelleme[4].ParameterName = "@KritikMiktar";
-                parameterGuncelleme[4].SqlDbType = SqlDbType.Decimal;
-                parameterGuncelleme[4].SqlValue = Convert.ToDecimal(txtKritikMiktar.Text);
-
-                parameterGuncelleme[5] = new SqlParameter();
-                parameterGuncelleme[5].ParameterName = "@Barkod";
-                parameterGuncelleme[5].SqlDbType = SqlDbType.NVarChar;
-                parameterGuncelleme[5].SqlValue = txtBarkodKodu.Text;
-
-                parameterGuncelleme[6] = new SqlParameter();
-                parameterGuncelleme[6].ParameterName = "@HizliUrun";
-                parameterGuncelleme[6].SqlDbType = SqlDbType.Bit;
-                parameterGuncelleme[6].SqlValue = chkHizliEkrandaGoster.Checked;
-
-                var kapat = false;
-                if (SqlBaglantisi.GuncelleProcedure("URUNGUNCELLE", parameterGuncelleme) == 1)
-                {
-                    if (Program.kritik &&
-                        Convert.ToDecimal(txtKritikMiktar.Text) < Convert.ToDecimal(txtStokSayisi.Text))
-                    {
-                        UrunleriAl();
-                        TabloyuDuzenle();
-                        if (dgUrunler.RowCount == 0) kapat = true;
-                    }
-                    else
-                    {
-                        var updateRow = varsayilanTblo.Select("Bakod_kodu='" + txtBarkodKodu.Text + "'");
-
-                        varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Adi"] =
-                            dgUrunler.Rows[guncellenecekRowIndex].Cells["Adi"].Value = txtAdi.Text;
-                        varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Maliyet"] =
-                            dgUrunler.Rows[guncellenecekRowIndex].Cells["Maliyet"].Value =
-                                Convert.ToDecimal(txtMaliyeti.Text).ToString("F");
-                        varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Satis_fiyati"] =
-                            dgUrunler.Rows[guncellenecekRowIndex].Cells["Satis_fiyati"].Value =
-                                Convert.ToDecimal(txtSatisFiyati.Text).ToString("F");
-                        varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Hizli_urun"] =
-                            dgUrunler.Rows[guncellenecekRowIndex].Cells["Hizli_urun"].Value =
-                                chkHizliEkrandaGoster.Checked;
-                        if (Convert.ToInt16(varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Id"]) != 1)
-                        {
-                            varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Stok"] =
-                                dgUrunler.Rows[guncellenecekRowIndex].Cells["Stok"].Value =
-                                    Convert.ToDecimal(txtStokSayisi.Text).ToString("F1");
-                            varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Kritik_miktar"] =
-                                dgUrunler.Rows[guncellenecekRowIndex].Cells["Kritik_miktar"].Value =
-                                    Convert.ToDecimal(txtKritikMiktar.Text).ToString("F1");
-                        }
-                        else
-                        {
-                            varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Stok"] =
-                                dgUrunler.Rows[guncellenecekRowIndex].Cells["Stok"].Value = txtStokSayisi.Text;
-                            varsayilanTblo.Rows[varsayilanTblo.Rows.IndexOf(updateRow[0])]["Kritik_miktar"] =
-                                dgUrunler.Rows[guncellenecekRowIndex].Cells["Kritik_miktar"].Value =
-                                    txtKritikMiktar.Text;
-                        }
-                    }
-
-                    txtBarkodKodu.Text = "";
-                    txtAdi.Text = "";
-                    txtMaliyeti.Text = "";
-                    txtSatisFiyati.Text = "";
-                    txtStokSayisi.Text = "";
-                    txtKritikMiktar.Text = "";
-                    btnGuncelle.Enabled = false;
-                    guncellenecekRowIndex = -1;
-                    chkHizliEkrandaGoster.Checked = false;
-                    ff = true;
-                    groupBox1.Visible = false;
-
-                    nfBasarili.BalloonTipText = "Ürün başarılı bir şekilde güncellendi.";
-                    nfBasarili.Visible = true;
-                    nfBasarili.ShowBalloonTip(2000);
-                    if (kapat) Close();
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "Lütfen verileri doğru girin. Sayısal veri girilmesi gereken yerler boş bırakılamaz. Ancak 0 girebilirsiniz.",
-                        "Veri Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show(
-                    "Lütfen verileri doğru girin. Sayısal veri girilmesi gereken yerler boş bırakılamaz. Ancak 0 girebilirsiniz.",
-                    "Veri Girişi Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private bool KontrolEt()
-        {
-            try
-            {
-                Convert.ToDecimal(txtMaliyeti.Text);
-                Convert.ToDecimal(txtSatisFiyati.Text);
-                Convert.ToDecimal(txtStokSayisi.Text);
-                Convert.ToDecimal(txtKritikMiktar.Text);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         private void frmStokIslemleri_FormClosed(object sender, FormClosedEventArgs e)
@@ -600,26 +317,6 @@ namespace Otomasyon
         private void txtAdi_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = char.IsPunctuation(e.KeyChar);
-        }
-
-        private void txtAdi_TextChanged(object sender, EventArgs e)
-        {
-            lblMaxKarakter.Text = txtAdi.TextLength.ToString();
-            if (txtAdi.TextLength < 25) lblMaxKarakter.ForeColor = Color.Lime;
-            else if (txtAdi.TextLength < 50) lblMaxKarakter.ForeColor = Color.ForestGreen;
-            else if (txtAdi.TextLength < 75) lblMaxKarakter.ForeColor = Color.Goldenrod;
-            else if (txtAdi.TextLength < 100) lblMaxKarakter.ForeColor = Color.DeepPink;
-            else lblMaxKarakter.ForeColor = Color.Red;
-        }
-
-        private void txtAdiEkle_TextChanged(object sender, EventArgs e)
-        {
-            lblMaxKarakterEkle.Text = txtAdiEkle.TextLength.ToString();
-            if (txtAdiEkle.TextLength < 25) lblMaxKarakterEkle.ForeColor = Color.Lime;
-            else if (txtAdiEkle.TextLength < 50) lblMaxKarakterEkle.ForeColor = Color.ForestGreen;
-            else if (txtAdiEkle.TextLength < 75) lblMaxKarakterEkle.ForeColor = Color.Goldenrod;
-            else if (txtAdiEkle.TextLength < 100) lblMaxKarakterEkle.ForeColor = Color.DeepPink;
-            else lblMaxKarakterEkle.ForeColor = Color.Red;
         }
 
         private void dgUrunler_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -819,6 +516,21 @@ namespace Otomasyon
             public int sonSatir;
             public int baslikSatiri;
             public int tabloBasligiSatiri;
+        }
+
+        private void btnMarka_Click(object sender, EventArgs e)
+        {
+            var markaYonetimPopup = frmMarkaYonetim.SingletonFrmGetir();
+            markaYonetimPopup.ShowDialog();
+        }
+
+        private void btnTopluFiyatGuncelle_Click(object sender, EventArgs e)
+        {
+            dgUrunler.Visible = false;
+            var topluFiyatGuncelleme = frmTopluFiyatGuncelleme.SingletonFrmGetir();
+            topluFiyatGuncelleme.ShowDialog(varsayilanTblo);
+            varsayilanTblo.DefaultView.RowFilter = "";
+            dgUrunler.Visible = true;
         }
 
         private struct altBilgiButunlugu

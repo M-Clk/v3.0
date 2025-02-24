@@ -4,7 +4,6 @@ using System.Drawing.Printing;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Otomasyon.Properties;
-using PaperSize = CrystalDecisions.Shared.PaperSize;
 
 namespace Otomasyon
 {
@@ -39,9 +38,6 @@ namespace Otomasyon
             adres = "",
             kayitliKagitTuru = "";
 
-        public static PaperSize
-            kagiTuru = PaperSize.PaperA4;
-
         public static int k_id = 1, odemeTipi, quickProductsCount = 0;
 
         /// <summary>
@@ -61,15 +57,14 @@ namespace Otomasyon
             }
             else
             {
-                if (!DbOperations.IsDbCreated)
-                {
-                    Application.Run(new frmAnaForm(false));
-                    return;
-                }
+                //if (!DbOperations.IsDbCreated)
+                //{
+                //    Application.Run(new frmAnaForm(false));
+                //    return;
+                //}
 
                 if (!DbOperations.Connection.IsAvailable())
-                    throw new InvalidOperationException(
-                        "Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
+                    throw new InvalidOperationException("Veritabanına bağlanılamadı. Lütfen Sql Server servisinin açık olduğundan emin olun.");
                 CheckAutoLogin();
                 DefaultYapilandirma();
                 Application.Run(new frmAnaForm(true));
@@ -139,7 +134,6 @@ namespace Otomasyon
                 foreach (var item in paperDizi)
                     if (item.ToString() == kayitliKagitTuru)
                     {
-                        kagiTuru = (PaperSize)item;
                         break;
                     }
             }
@@ -151,8 +145,7 @@ namespace Otomasyon
         private static void ExceptionHadler(object sender, UnhandledExceptionEventArgs args)
         {
             var e = (Exception)args.ExceptionObject;
-            MessageBox.Show($"Bilinmeyen bir hata ile karşılaşıldı. Hata: {e.Message}", "Bir Problem Var!",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Bilinmeyen bir hata ile karşılaşıldı. Hata: {e.Message}", "Bir Problem Var!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private static void initialize()

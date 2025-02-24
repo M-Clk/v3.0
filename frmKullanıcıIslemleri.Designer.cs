@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmKullanıcıIslemleri));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -118,7 +118,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(3, 27);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(142, 14);
+            this.label1.Size = new System.Drawing.Size(143, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Eski Şifreniz :";
             // 
@@ -127,9 +127,9 @@
             this.cbSifreGoster1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSifreGoster1.AutoSize = true;
             this.cbSifreGoster1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.cbSifreGoster1.Location = new System.Drawing.Point(151, 72);
+            this.cbSifreGoster1.Location = new System.Drawing.Point(152, 72);
             this.cbSifreGoster1.Name = "cbSifreGoster1";
-            this.cbSifreGoster1.Size = new System.Drawing.Size(183, 17);
+            this.cbSifreGoster1.Size = new System.Drawing.Size(182, 17);
             this.cbSifreGoster1.TabIndex = 10;
             this.cbSifreGoster1.Text = "Şifreleri Göster";
             this.cbSifreGoster1.UseVisualStyleBackColor = true;
@@ -140,14 +140,14 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.Location = new System.Drawing.Point(3, 50);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(142, 14);
+            this.label2.Size = new System.Drawing.Size(143, 14);
             this.label2.TabIndex = 1;
             this.label2.Text = "Yeni Şifreniz :";
             // 
             // txtYeni
             // 
             this.txtYeni.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtYeni.Location = new System.Drawing.Point(151, 49);
+            this.txtYeni.Location = new System.Drawing.Point(152, 49);
             this.txtYeni.Name = "txtYeni";
             this.txtYeni.PasswordChar = '•';
             this.txtYeni.Size = new System.Drawing.Size(127, 20);
@@ -156,7 +156,7 @@
             // txtEski
             // 
             this.txtEski.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtEski.Location = new System.Drawing.Point(151, 26);
+            this.txtEski.Location = new System.Drawing.Point(152, 26);
             this.txtEski.Name = "txtEski";
             this.txtEski.PasswordChar = '•';
             this.txtEski.Size = new System.Drawing.Size(127, 20);
@@ -167,7 +167,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.Location = new System.Drawing.Point(3, 4);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(142, 14);
+            this.label3.Size = new System.Drawing.Size(143, 14);
             this.label3.TabIndex = 2;
             this.label3.Text = "Kullanıcı Adınız :";
             // 
@@ -176,9 +176,9 @@
             this.lblK_Adi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblK_Adi.AutoSize = true;
             this.lblK_Adi.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.lblK_Adi.Location = new System.Drawing.Point(151, 3);
+            this.lblK_Adi.Location = new System.Drawing.Point(152, 3);
             this.lblK_Adi.Name = "lblK_Adi";
-            this.lblK_Adi.Size = new System.Drawing.Size(183, 17);
+            this.lblK_Adi.Size = new System.Drawing.Size(182, 17);
             this.lblK_Adi.TabIndex = 3;
             // 
             // btnGuncelle
@@ -188,7 +188,7 @@
             this.btnGuncelle.BackColor = System.Drawing.SystemColors.ControlLight;
             this.btnGuncelle.FlatAppearance.BorderSize = 0;
             this.btnGuncelle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGuncelle.Location = new System.Drawing.Point(151, 95);
+            this.btnGuncelle.Location = new System.Drawing.Point(152, 95);
             this.btnGuncelle.Name = "btnGuncelle";
             this.btnGuncelle.Size = new System.Drawing.Size(75, 25);
             this.btnGuncelle.TabIndex = 6;
@@ -203,9 +203,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSifreIste.AutoSize = true;
             this.cbSifreIste.ForeColor = System.Drawing.Color.Red;
-            this.cbSifreIste.Location = new System.Drawing.Point(151, 126);
+            this.cbSifreIste.Location = new System.Drawing.Point(152, 126);
             this.cbSifreIste.Name = "cbSifreIste";
-            this.cbSifreIste.Size = new System.Drawing.Size(183, 28);
+            this.cbSifreIste.Size = new System.Drawing.Size(182, 28);
             this.cbSifreIste.TabIndex = 12;
             this.cbSifreIste.Text = "Giriş Yaparken Şifre İstesin";
             this.cbSifreIste.UseVisualStyleBackColor = true;
@@ -378,29 +378,29 @@
             this.dgKullanicilar.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgKullanicilar.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgKullanicilar.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.DeepSkyBlue;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.InactiveBorder;
-            dataGridViewCellStyle3.NullValue = null;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ScrollBar;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgKullanicilar.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.DeepSkyBlue;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.InactiveBorder;
+            dataGridViewCellStyle1.NullValue = null;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ScrollBar;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgKullanicilar.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgKullanicilar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgKullanicilar.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.No,
             this.Adi,
             this.Yetki,
             this.Sifre});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.AliceBlue;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HotTrack;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgKullanicilar.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.AliceBlue;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HotTrack;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgKullanicilar.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgKullanicilar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgKullanicilar.EnableHeadersVisualStyles = false;
             this.dgKullanicilar.GridColor = System.Drawing.SystemColors.Control;

@@ -27,8 +27,8 @@ namespace Otomasyon
             var dbCount = (int)command.ExecuteScalar();
             if (dbCount > 0)
             {
-                DbOperations.Connection.ConnectionString = connection.ConnectionString.Replace("master", "OtomasyonDb");
                 connection.Close();
+                DbOperations.Connection.ConnectionString = connection.ConnectionString.Replace("master", "OtomasyonDb");
                 return;
             }
 

@@ -80,7 +80,7 @@ namespace Otomasyon
                     nf_cagirdi = false;
                 Program.stok_calisiyor = true;
                 frmStok = frmStokIslemleri.SingletonStokFrmGetir();
-                frmStok.ShowDialog();
+                frmStok.Ac();
             }
 
             txtBarkodOku.Text = "";
